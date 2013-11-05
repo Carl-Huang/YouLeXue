@@ -16,6 +16,6 @@ DerivedData
 .idea/
 *.hmap
 *.xccheckout
-
+/Users/Carl/Documents/YouLeXue/YouLeXue.xcodeproj/*
 #CocoaPods
 Pods
