@@ -26,6 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.afterLoginView setHidden:YES];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -42,6 +43,17 @@
 }
 - (void)viewDidUnload {
     [self setRightTable:nil];
+    [self setAfterLoginView:nil];
+    [self setBeforeLoginView:nil];
+    [self setUserNameTextField:nil];
+    [self setPasswordTextField:nil];
+    [self setUserNameImage:nil];
+    [self setPasswordImage:nil];
+    [self setUserImage:nil];
+    [self setPhoneAlertBtnAction:nil];
+    [self setUserNamelabel:nil];
+    [self setUserDesclabel:nil];
+    [self setUserDetailDescLabel:nil];
     [super viewDidUnload];
 }
 
@@ -71,5 +83,29 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
+}
+
+
+- (IBAction)loginAction:(id)sender {
+    
+}
+- (IBAction)phoneAlertBtnAction:(id)sender {
+    
+}
+
+- (IBAction)adviceBtnAction:(id)sender {
+    
+}
+
+- (IBAction)reloadQuesBankAction:(id)sender {
+}
+
+- (IBAction)userInfoAction:(id)sender {
+}
+
+- (IBAction)updatePaperAction:(id)sender {
+}
+
+- (IBAction)logoutAction:(id)sender {
 }
 @end
