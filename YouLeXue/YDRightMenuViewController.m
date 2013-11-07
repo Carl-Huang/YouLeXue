@@ -35,4 +35,41 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)userCenterAction:(id)sender {
+}
+
+- (IBAction)upgrateVersionAction:(id)sender {
+}
+- (void)viewDidUnload {
+    [self setRightTable:nil];
+    [super viewDidUnload];
+}
+
+
+#pragma mark -
+#pragma mark UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 10;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *identifier = @"Cell";
+    UITableViewCell *cell = [self.rightTable dequeueReusableCellWithIdentifier:identifier];
+    if (cell == nil)
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    
+    cell.textLabel.text = @"hello";
+    
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
 @end

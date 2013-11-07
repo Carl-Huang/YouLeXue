@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface YDRightMenuViewController : UIViewController
+- (IBAction)userCenterAction:(id)sender;
+- (IBAction)upgrateVersionAction:(id)sender;
+@property (weak, nonatomic) IBOutlet UITableView *rightTable;
 
 @end

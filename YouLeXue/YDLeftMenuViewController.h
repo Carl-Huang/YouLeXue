@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface YDLeftMenuViewController : UIViewController
+- (IBAction)leftHistoryBtnAction:(id)sender;
+- (IBAction)leftCleanHistoryAction:(id)sender;
+@property (weak, nonatomic) IBOutlet UITableView *leftTable;
 
 @end

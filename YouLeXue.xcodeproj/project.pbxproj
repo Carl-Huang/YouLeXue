@@ -22,6 +22,10 @@
 		4E0C26F5182AB0D300AC0611 /* SettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E0C26F4182AB0D300AC0611 /* SettingViewController.xib */; };
 		4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */; };
 		4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */; };
+		4EE6055A182BBB19003CDDDE /* loginCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EE60559182BBB19003CDDDE /* loginCell.xib */; };
+		4EE6055D182BBB34003CDDDE /* loginCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE6055C182BBB34003CDDDE /* loginCell.m */; };
+		4EE60560182BBEC2003CDDDE /* UserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE6055F182BBEC2003CDDDE /* UserInfoCell.m */; };
+		4EE60562182BBED1003CDDDE /* UserInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EE60561182BBED1003CDDDE /* UserInfoCell.xib */; };
 		4EF1863F182A8B3800E5EEA8 /* home-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862D182A8B3800E5EEA8 /* home-icon.png */; };
 		4EF18640182A8B3800E5EEA8 /* reveal-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862E182A8B3800E5EEA8 /* reveal-icon.png */; };
 		4EF18641182A8B3800E5EEA8 /* reveal-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862F182A8B3800E5EEA8 /* reveal-icon@2x.png */; };
@@ -236,6 +240,12 @@
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
 		4E34D8AA182B8A7200965E55 /* CaseAnalysisViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaseAnalysisViewController.h; sourceTree = "<group>"; };
 		4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaseAnalysisViewController.m; sourceTree = "<group>"; };
+		4EE60559182BBB19003CDDDE /* loginCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = loginCell.xib; sourceTree = "<group>"; };
+		4EE6055B182BBB34003CDDDE /* loginCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loginCell.h; sourceTree = "<group>"; };
+		4EE6055C182BBB34003CDDDE /* loginCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = loginCell.m; sourceTree = "<group>"; };
+		4EE6055E182BBEC2003CDDDE /* UserInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoCell.h; sourceTree = "<group>"; };
+		4EE6055F182BBEC2003CDDDE /* UserInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoCell.m; sourceTree = "<group>"; };
+		4EE60561182BBED1003CDDDE /* UserInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoCell.xib; sourceTree = "<group>"; };
 		4EF1862D182A8B3800E5EEA8 /* home-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home-icon.png"; sourceTree = "<group>"; };
 		4EF1862E182A8B3800E5EEA8 /* reveal-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reveal-icon.png"; sourceTree = "<group>"; };
 		4EF1862F182A8B3800E5EEA8 /* reveal-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reveal-icon@2x.png"; sourceTree = "<group>"; };
@@ -471,6 +481,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4EE60558182BBAFC003CDDDE /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4EE60559182BBB19003CDDDE /* loginCell.xib */,
+				4EE6055B182BBB34003CDDDE /* loginCell.h */,
+				4EE6055C182BBB34003CDDDE /* loginCell.m */,
+				4EE6055E182BBEC2003CDDDE /* UserInfoCell.h */,
+				4EE6055F182BBEC2003CDDDE /* UserInfoCell.m */,
+				4EE60561182BBED1003CDDDE /* UserInfoCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		4EF1862A182A8B3800E5EEA8 /* Lib */ = {
 			isa = PBXGroup;
 			children = (
@@ -835,6 +858,7 @@
 		C32C21571828912200FBF75C /* YouLeXue */ = {
 			isa = PBXGroup;
 			children = (
+				4EE60558182BBAFC003CDDDE /* View */,
 				4EF187EB182A9DD500E5EEA8 /* Class */,
 				4EF18664182A8BCE00E5EEA8 /* Controller */,
 				4EF1862A182A8B3800E5EEA8 /* Lib */,
@@ -1104,6 +1128,8 @@
 				4E09FDB8182B6A5A00AE023C /* Case_List_Bg01@2x.png in Resources */,
 				4E09FDB9182B6A5A00AE023C /* Case_List_Bg02@2x.png in Resources */,
 				4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */,
+				4EE6055A182BBB19003CDDDE /* loginCell.xib in Resources */,
+				4EE60562182BBED1003CDDDE /* UserInfoCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1136,6 +1162,8 @@
 				C32C215E1828912200FBF75C /* main.m in Sources */,
 				4EF18661182A8BA400E5EEA8 /* MBProgressHUD.m in Sources */,
 				4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */,
+				4EE6055D182BBB34003CDDDE /* loginCell.m in Sources */,
+				4EE60560182BBEC2003CDDDE /* UserInfoCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

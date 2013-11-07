@@ -55,6 +55,8 @@
     //默认选中第一页
     currentPage = 1;
     [self.firstBtn setSelected:YES];
+    
+    [self settingPullRefreshAction];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -146,12 +148,13 @@
 #pragma  mark - UIScrollView Delegate
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    CGFloat pageWidth = scrollView.frame.size.width;
-    float fractionalPage = scrollView.contentOffset.x / pageWidth;
-    NSInteger page = lround(fractionalPage)+1;
-//    NSLog(@"%d",page);
-     [self updateBtnStatusWithIndex:page];
-
+    CGFloat offsetX = scrollView.contentOffset.x;
+    if (offsetX > 50) {
+        CGFloat pageWidth = scrollView.frame.size.width;
+        float fractionalPage = scrollView.contentOffset.x / pageWidth;
+        NSInteger page = lround(fractionalPage)+1;
+        [self updateBtnStatusWithIndex:page];
+    }
 }
 
 
