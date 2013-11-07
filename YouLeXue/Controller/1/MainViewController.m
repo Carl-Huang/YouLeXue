@@ -7,7 +7,7 @@
 //
 
 #import "MainViewController.h"
-
+#import <QuartzCore/QuartzCore.h>
 @interface MainViewController ()
 
 @end
@@ -27,9 +27,32 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [self animation];
 
     // Do any additional setup after loading the view from its nib.
+}
+
+-(void)animation
+{
+    
+    CABasicAnimation *translate1 = [CABasicAnimation animationWithKeyPath:@"transform"];
+    translate1.duration = 0.4;
+    translate1.autoreverses = YES;
+    translate1.repeatCount  = MAXFLOAT;
+    translate1.removedOnCompletion = NO;
+    translate1.fromValue   = [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)];
+    translate1.toValue   = [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(30, 0, 0)];
+    [self.leftImage.layer addAnimation:translate1 forKey:@"shakeAnimation"];
+    
+    
+    CABasicAnimation *translate2 = [CABasicAnimation animationWithKeyPath:@"transform"];
+    translate2.duration = 0.4;
+    translate2.autoreverses = YES;
+    translate2.repeatCount  = MAXFLOAT;
+    translate2.removedOnCompletion = NO;
+    translate2.fromValue   = [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(0, 0, 0)];
+    translate2.toValue   = [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(-30, 0, 0)];
+    [self.rightImage.layer addAnimation:translate2 forKey:@"shakeAnimation"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -43,4 +66,9 @@
 	return @"Bottom_Icon_Home_Down";
 }
 
+- (void)viewDidUnload {
+    [self setLeftImage:nil];
+    [self setRightImage:nil];
+    [super viewDidUnload];
+}
 @end

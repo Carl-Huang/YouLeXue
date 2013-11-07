@@ -9,7 +9,9 @@
 #import "YDRightMenuViewController.h"
 
 @interface YDRightMenuViewController ()
-
+{
+    NSArray * descriptionArray;
+}
 @end
 
 @implementation YDRightMenuViewController
@@ -27,6 +29,7 @@
 {
     [super viewDidLoad];
     [self.afterLoginView setHidden:YES];
+    descriptionArray = @[@"如何成为手机版用户？",@"忘记了用户名或者密码怎么办？",@"使用手机号来登陆手机端？",@"上进版服务说明？",@"版权和免责声明！"];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -66,7 +69,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return [descriptionArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -75,8 +78,16 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     
-    cell.textLabel.text = @"hello";
+    cell.textLabel.text = [descriptionArray objectAtIndex:indexPath.row];
+    if ([descriptionArray count]-1 == indexPath.row) {
+        cell.imageView.image = [UIImage imageNamed:@"Unfold_Right_Button_Emphasise"];
+    }else
+    cell.imageView.image = [UIImage imageNamed:@"Unfold_Right_Button_Help"];
     
+    cell.textLabel.font  = [UIFont systemFontOfSize:14];
+    cell.textLabel.textColor = [UIColor grayColor];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
