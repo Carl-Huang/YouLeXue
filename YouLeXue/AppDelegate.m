@@ -8,14 +8,63 @@
 
 #import "AppDelegate.h"
 
+#import "YDMenuItem.h"
+#import "ViewController.h"
+#import "AKTabBarController.h"
+#import "MainViewController.h"
+#import "TestUserGroupViewController.h"
+#import "CaseAnalysisViewController.h"
+#import "WrongBookViewController.h"
+#import "SettingViewController.h"
+
+
 @implementation AppDelegate
+@synthesize akTabBarController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self customUI];
     // Override point for customization after application launch.
+    akTabBarController = [[AKTabBarController alloc] initWithTabBarHeight:49.0];
+    MainViewController * firstViewController = [[MainViewController alloc]initWithNibName:@"MainViewController" bundle:nil];
+//    UINavigationController * nav_a = [[UINavigationController alloc] initWithRootViewController:firstViewController];
+    
+    TestUserGroupViewController *secondViewController = [[TestUserGroupViewController alloc]initWithNibName:@"TestUserGroupViewController" bundle:nil];
+//     UINavigationController * nav_b = [[UINavigationController alloc] initWithRootViewController:secondViewController];
+    
+    CaseAnalysisViewController * thirdViewController = [[CaseAnalysisViewController alloc]initWithNibName:@"CaseAnalysisViewController" bundle:nil];
+//     UINavigationController * nav_c = [[UINavigationController alloc] initWithRootViewController:thirdViewController];
+    
+    WrongBookViewController * fourthViewController = [[WrongBookViewController alloc]initWithNibName:@"WrongBookViewController" bundle:nil];
+//     UINavigationController * nav_d = [[UINavigationController alloc] initWithRootViewController:fourthViewController];
+    
+    SettingViewController * fifthViewController = [[SettingViewController alloc]initWithNibName:@"SettingViewController" bundle:nil];
+//    UINavigationController * nav_e = [[UINavigationController alloc] initWithRootViewController:fifthViewController];
+    
+//    akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:nav_a,nav_b,nav_c,nav_d,nav_e,nil];
+    akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:firstViewController,secondViewController,thirdViewController,fourthViewController,fifthViewController,nil];
+//    [akTabBarController setBackgroundImageName:@"Bottom_Bar"];
+    
+    
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:akTabBarController];
+
+    self.leftMenuViewController = [[YDLeftMenuViewController alloc] init];
+
+    
+    self.rightMenuViewController = [[YDRightMenuViewController alloc] init];
+
+
+    self.containerViewController = [YDSlideMenuContainerViewController
+                      containerWithCenterViewController:[self navigationController]
+                      leftMenuViewController:self.leftMenuViewController
+                      rightMenuViewController:self.rightMenuViewController];
+    self.window.rootViewController = self.containerViewController;
+    self.containerViewController.delegate=self;
+    [self.window makeKeyAndVisible];
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -41,6 +90,40 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+-(void)toggleLeftMenu
+{
+    if (self.containerViewController.menuState == YDSLideMenuStateLeftMenuOpen)
+    {
+        [self.containerViewController setMenuState:YDSLideMenuStateClosed];
+    }
+    else
+    {
+        [self.containerViewController setMenuState:YDSLideMenuStateLeftMenuOpen];
+    }
+    
+}
+-(void)toggleRightMenu
+{
+    if (self.containerViewController.menuState == YDSLideMenuStateRightMenuOpen)
+    {
+        [self.containerViewController setMenuState:YDSLideMenuStateClosed];
+    }
+    else
+    {
+        [self.containerViewController setMenuState:YDSLideMenuStateRightMenuOpen];
+    }
+}
+-(void)menuWillHide
+{
+    //called by the YDSlideMenuContainerViewController if the menu goes off screen
+    //you can perform additional actions
+}
+
+- (void)customUI
+{
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"Top_Bar"] forBarMetrics:UIBarMetricsDefault];
 }
 
 @end

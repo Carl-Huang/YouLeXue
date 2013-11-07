@@ -7,9 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YDRightMenuViewController.h"
+#import "YDLeftMenuViewController.h"
+#import "YDSlideMenuContainerViewController.h"
+@class AKTabBarController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate,YDSlideMenuContainerViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) AKTabBarController * akTabBarController;
+@property (strong, nonatomic) UINavigationController * navigationController;
+@property (strong, nonatomic) YDSlideMenuContainerViewController *containerViewController;
+@property(strong,nonatomic)YDLeftMenuViewController* leftMenuViewController;
+@property(strong,nonatomic)YDRightMenuViewController* rightMenuViewController;
 
+-(void)toggleLeftMenu;
+-(void)toggleRightMenu;
 @end
