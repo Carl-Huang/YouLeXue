@@ -7,14 +7,17 @@
 //
 
 #import "YDRightMenuViewController.h"
-
+#import "HttpHelper.h"
+#import "UserLoginInfo.h"
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
+    
 }
 @end
 
 @implementation YDRightMenuViewController
+@synthesize userInfo;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,6 +36,7 @@
     // Do any additional setup after loading the view from its nib.
     
     self.userNameImage.highlighted = YES;
+    userInfo = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -100,6 +104,29 @@
 
 
 - (IBAction)loginAction:(id)sender {
+//用户登录
+//    [HttpHelper userLoginWithName:@"test" pwd:@"test" completedBlock:^(id item, NSError *error) {
+//       userInfo = (UserLoginInfo *)item;
+//        if (userInfo) {
+//            [HttpHelper printClassInfo:userInfo];
+//        }
+//    }];
+    
+    
+//考试列表
+//    [HttpHelper getGroupExamListWithId:@"42" completedBlock:^(id item, NSError *error) {
+//    }];
+    
+    
+//试卷题目列表
+//    [HttpHelper getExamPaperListWithExamId:@"819" completedBlock:^(id item, NSError *error) {
+//        ;
+//    }];
+    
+//案例题目列表    
+    [HttpHelper getExampleListWithGroupId:@"42" completedBlock:^(id item, NSError *error) {
+        ;
+    }];
     
 }
 - (IBAction)phoneAlertBtnAction:(id)sender {

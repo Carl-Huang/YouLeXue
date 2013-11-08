@@ -1,5 +1,5 @@
 //
-//  ExamplePaperInfo.h
+//  FetchDataInfo.h
 //  YouLeXue
 //
 //  Created by vedon on 8/11/13.
@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ExamplePaperInfo : NSObject
-@property (strong ,nonatomic) NSString * ID; //案例题ID
+@interface FetchDataInfo : NSObject
+@property (strong ,nonatomic) NSString * ID;
 @property (strong ,nonatomic) NSString * TID;
 @property (strong ,nonatomic) NSString * KeyWords;
 @property (strong ,nonatomic) NSString * TitleType;
@@ -19,7 +19,7 @@
 @property (strong ,nonatomic) NSString * ShowComment;
 @property (strong ,nonatomic) NSString * TitleFontColor;
 @property (strong ,nonatomic) NSString * TitleFontType;
-@property (strong ,nonatomic) NSString * ArticleContent; //题目内容
+@property (strong ,nonatomic) NSString * ArticleContent;
 @property (strong ,nonatomic) NSString * PageTitle;
 @property (strong ,nonatomic) NSString * Author;
 @property (strong ,nonatomic) NSString * Origin;
@@ -69,7 +69,6 @@
 @property (strong ,nonatomic) NSString * SEOTitle;
 @property (strong ,nonatomic) NSString * SEOKeyWord;
 @property (strong ,nonatomic) NSString * SEODescript;
-@property (strong ,nonatomic) NSString * KS_daan; //答案解释
-@property (strong ,nonatomic) NSString * KS_leixing;
+@property (strong ,nonatomic) NSString * KS_phoneSeq;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class UserLoginInfo;
 @interface YDRightMenuViewController : UIViewController
 - (IBAction)userCenterAction:(id)sender;
 - (IBAction)upgrateVersionAction:(id)sender;
@@ -36,4 +36,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *userDesclabel;
 @property (weak, nonatomic) IBOutlet UILabel *userDetailDescLabel;
 
+
+
+@property (strong ,nonatomic) UserLoginInfo * userInfo;
 @end
