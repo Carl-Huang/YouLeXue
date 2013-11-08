@@ -28,7 +28,7 @@
 {
     [super viewDidLoad];
     [self animation];
-
+    [self.afterLoginView setHidden:YES];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -66,9 +66,11 @@
 	return @"Bottom_Icon_Home_Down";
 }
 
+
 - (void)viewDidUnload {
     [self setLeftImage:nil];
     [self setRightImage:nil];
+    [self setAfterLoginView:nil];
     [super viewDidUnload];
 }
 @end

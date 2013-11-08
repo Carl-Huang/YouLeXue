@@ -94,7 +94,7 @@ static const float kTopMargin = 2.0;
         }
         else {
             [[UIColor colorWithPatternImage:[UIImage imageNamed:@"AKTabBarController.bundle/noise-pattern"]] set];
-//            CGContextFillRect(ctx, rect);
+            CGContextFillRect(ctx, rect);
         }
     } else {
         if (_selectedBackgroundImageName) {
@@ -107,7 +107,7 @@ static const float kTopMargin = 2.0;
             }
         }
         else {
-            [[UIColor colorWithPatternImage:[UIImage imageNamed:@"AKTabBarController.bundle/noise-pattern"]] set];
+//            [[UIColor colorWithPatternImage:[UIImage imageNamed:@"AKTabBarController.bundle/noise-pattern"]] set];
 //            CGContextFillRect(ctx, rect);
         }
     }

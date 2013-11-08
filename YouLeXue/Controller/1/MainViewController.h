@@ -11,5 +11,6 @@
 @interface MainViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UIImageView *leftImage;
 @property (weak, nonatomic) IBOutlet UIImageView *rightImage;
+@property (weak, nonatomic) IBOutlet UIView *afterLoginView;
 
 @end

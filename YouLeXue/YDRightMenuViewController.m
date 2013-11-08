@@ -31,6 +31,8 @@
     [self.afterLoginView setHidden:YES];
     descriptionArray = @[@"如何成为手机版用户？",@"忘记了用户名或者密码怎么办？",@"使用手机号来登陆手机端？",@"上进版服务说明？",@"版权和免责声明！"];
     // Do any additional setup after loading the view from its nib.
+    
+    self.userNameImage.highlighted = YES;
 }
 
 - (void)didReceiveMemoryWarning
