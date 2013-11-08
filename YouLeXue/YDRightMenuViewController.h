@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class UserLoginInfo;
-@interface YDRightMenuViewController : UIViewController
+@interface YDRightMenuViewController : UIViewController<UITextFieldDelegate>
 - (IBAction)userCenterAction:(id)sender;
 - (IBAction)upgrateVersionAction:(id)sender;
 @property (weak, nonatomic) IBOutlet UITableView *rightTable;

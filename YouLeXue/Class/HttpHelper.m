@@ -10,10 +10,14 @@
 #import "Constant.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
+
 #import "UserLoginInfo.h"
 #import "ExamInfo.h"
 #import "ExamPaperInfo.h"
 #import "ExamplePaperInfo.h"
+#import "FetchDataInfo.h"
+#import "FetchUserMessageInfo.h"
+
 @implementation HttpHelper
 +(void)userLoginWithName:(NSString *)name pwd:(NSString *)password completedBlock:(void (^)(id item,NSError * error))block
 {
@@ -68,7 +72,7 @@
 
 +(void)getExampleListWithGroupId:(NSString *)groupId completedBlock:(void (^)(id item,NSError * error))block
 {
-    NSString * cmdStr = [NSString stringWithFormat:@"case.asp?KS_leixing=1&groupid%@",groupId];
+    NSString * cmdStr = [NSString stringWithFormat:@"case.asp?KS_leixing=1&groupid=%@",groupId];
     cmdStr = [Server_URL stringByAppendingString:cmdStr];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -85,10 +89,56 @@
 
 +(void)getOtherInformationCompletedBlock:(void (^)(id item,NSError * error))block
 {
-    
+    NSString * cmdStr = [NSString stringWithFormat:@"http://www.55280.com/jsonapi/otherinfo.asp"];
+    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if ([responseObject count]) {
+            NSArray * tempArray = [HttpHelper mapModelArrProcess:responseObject withClass:[FetchDataInfo class]];
+            block(tempArray,nil);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        block(nil,error);
+    }];
+
 }
 
++(void)getUserMessageWithUserName:(NSString *)name completedBlock:(void (^)(id item,NSError * error))block
+{
+    NSString * cmdStr = [NSString stringWithFormat:@"usermessage.asp?username=%@",name];
+    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if ([responseObject count]) {
+            NSArray * tempArray = [HttpHelper mapModelArrProcess:responseObject withClass:[FetchUserMessageInfo class]];
+            block(tempArray,nil);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        block(nil,error);
+    }];
 
+}
+
++(void)updateUserInfoWithUserId:(NSString *)userId
+                       realName:(NSString *)realName
+                          qqNum:(NSString *)qqNum
+                         mobile:(NSString *)mobile
+                          email:(NSString *)email
+                 completedBlock:(void (^)(id item,NSError *error))block
+{
+    NSString * cmdStr = [NSString stringWithFormat:@"updateUser.asp?UserID=%@&realnam=%@&qq=%@&mobile=%@&email=%@",userId,realName,qqNum,mobile,email];
+    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
+    [manager POST:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@",responseObject);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        block(nil,error);
+    }];
+}
+
+//***********************************************************************
 //将取得的内容转换为模型
 + (id )mapModelProcess:(id)responseObject withClass:(Class)class
 {
@@ -129,9 +179,6 @@
     }
     return (NSArray *)models;
 }
-
-
-
 
 
 +(void)printClassInfo:(NSObject *)info
