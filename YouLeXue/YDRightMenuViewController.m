@@ -183,18 +183,18 @@
     if (self.passwordTextField.text.length == 0) {
         [self showAlertView:@"密码不能为空"];
     }
-    __weak YDRightMenuViewController * weakSelf = self;
-    [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
-        if (item) {
-            userInfo = (UserLoginInfo *)item;
-            [weakSelf saveDataTolocal];
-        }
-//        if (userInfo) {
-//            [HttpHelper printClassInfo:userInfo];
-//            
+//    __weak YDRightMenuViewController * weakSelf = self;
+//    [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
+//        if (item) {
+//            userInfo = (UserLoginInfo *)item;
+//            [weakSelf saveDataTolocal];
 //        }
-    }];
-
+////        if (userInfo) {
+////            [HttpHelper printClassInfo:userInfo];
+////            
+////        }
+//    }];
+    [[PersistentDataManager sharePersistenDataManager]readDataWithPrimaryKey:@"UserID" keyValue:@"735" withTableName:@"UserLoginInfoTable" withObj:[UserLoginInfo class]];;
     
 }
 - (IBAction)phoneAlertBtnAction:(id)sender {

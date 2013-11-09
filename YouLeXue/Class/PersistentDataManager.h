@@ -15,4 +15,5 @@
 
 
 -(void)createUserLoginInfoTable:(UserLoginInfo *)info;
+-(void)readDataWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue withTableName:(NSString *)tableName withObj:(id)obj;
 @end
