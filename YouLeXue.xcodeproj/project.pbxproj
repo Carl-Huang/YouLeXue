@@ -39,6 +39,8 @@
 		4E3DF38E182BDEF80056493A /* Student_Center_Icon_UserName_H@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF38A182BDEE40056493A /* Student_Center_Icon_UserName_H@2x.png */; };
 		4E3DF38F182BDEF80056493A /* Unfold_Right_Icon_Logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF38B182BDEED0056493A /* Unfold_Right_Icon_Logo@2x.png */; };
 		4E691C4E182C7AF400EB73EA /* HttpHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E691C4D182C7AF400EB73EA /* HttpHelper.m */; };
+		4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */; };
+		4E8A8DF9182F45CC00A73F71 /* RightPhontNotiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */; };
 		4EC621E2182CC09F001266A6 /* ExamInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E1182CC09F001266A6 /* ExamInfo.m */; };
 		4EC621E5182CC2BD001266A6 /* ExamPaperInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E4182CC2BD001266A6 /* ExamPaperInfo.m */; };
 		4EC621E8182CC3FA001266A6 /* ExamplePaperInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E7182CC3FA001266A6 /* ExamplePaperInfo.m */; };
@@ -302,6 +304,9 @@
 		4E3DF38B182BDEED0056493A /* Unfold_Right_Icon_Logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Unfold_Right_Icon_Logo@2x.png"; sourceTree = "<group>"; };
 		4E691C4C182C7AF400EB73EA /* HttpHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHelper.h; sourceTree = "<group>"; };
 		4E691C4D182C7AF400EB73EA /* HttpHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpHelper.m; sourceTree = "<group>"; };
+		4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightPhontNotiViewController.h; sourceTree = "<group>"; };
+		4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightPhontNotiViewController.m; sourceTree = "<group>"; };
+		4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RightPhontNotiViewController.xib; sourceTree = "<group>"; };
 		4EC621E0182CC09F001266A6 /* ExamInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamInfo.h; sourceTree = "<group>"; };
 		4EC621E1182CC09F001266A6 /* ExamInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamInfo.m; sourceTree = "<group>"; };
 		4EC621E3182CC2BD001266A6 /* ExamPaperInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamPaperInfo.h; sourceTree = "<group>"; };
@@ -624,6 +629,16 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		4E8A8DF4182F45CC00A73F71 /* Right */ = {
+			isa = PBXGroup;
+			children = (
+				4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */,
+				4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */,
+				4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */,
+			);
+			path = Right;
+			sourceTree = "<group>";
+		};
 		4EC62263182CD877001266A6 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -747,6 +762,7 @@
 		4EF18664182A8BCE00E5EEA8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				4E8A8DF4182F45CC00A73F71 /* Right */,
 				4EF18665182A912D00E5EEA8 /* 1 */,
 				4EF18666182A912D00E5EEA8 /* 2 */,
 				4EF18667182A912D00E5EEA8 /* 3 */,
@@ -1343,6 +1359,7 @@
 				4E3DF38D182BDEF80056493A /* Student_Center_Icon_Password_Normal@2x.png in Resources */,
 				4E3DF38E182BDEF80056493A /* Student_Center_Icon_UserName_H@2x.png in Resources */,
 				4E3DF38F182BDEF80056493A /* Unfold_Right_Icon_Logo@2x.png in Resources */,
+				4E8A8DF9182F45CC00A73F71 /* RightPhontNotiViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1404,6 +1421,7 @@
 				4E1306DA182D34370099B6CC /* FMDatabaseQueue.m in Sources */,
 				4E1306DB182D34370099B6CC /* FMResultSet.m in Sources */,
 				4E1306DE182D34A50099B6CC /* PersistentDataManager.m in Sources */,
+				4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

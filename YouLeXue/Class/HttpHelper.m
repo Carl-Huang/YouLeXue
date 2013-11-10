@@ -109,6 +109,7 @@
     cmdStr = [Server_URL stringByAppendingString:cmdStr];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
         if ([responseObject count]) {
             NSArray * tempArray = [HttpHelper mapModelArrProcess:responseObject withClass:[FetchUserMessageInfo class]];
             block(tempArray,nil);

@@ -9,9 +9,9 @@
 #import "UIViewController+TabbarConfigure.h"
 
 @implementation UIViewController (TabbarConfigure)
-- (void) setBackItem:(SEL)action
+- (void) setBackItem:(SEL)action withImage:(NSString *)imageName
 {
-    UIImage * backImg = [UIImage imageNamed:@"Unfold_Left_Button"];
+    UIImage * backImg = [UIImage imageNamed:imageName];
     UIButton * backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setFrame:CGRectMake(0, 0, backImg.size.width, backImg.size.height)];
     [backBtn setImage:backImg forState:UIControlStateNormal];
@@ -24,7 +24,7 @@
         [backBtn addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
     }
     UIBarButtonItem * backItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
-    self.navigationItem.rightBarButtonItem = backItem;
+    self.navigationItem.leftBarButtonItem = backItem;
 }
 
 - (void)pushBack:(id)sender

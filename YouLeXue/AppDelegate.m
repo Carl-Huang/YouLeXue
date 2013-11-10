@@ -20,6 +20,7 @@
 
 @implementation AppDelegate
 @synthesize akTabBarController;
+@synthesize userInfo;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -47,21 +48,13 @@
     [akTabBarController setBackgroundImageName:@"Bottom_Bar01"];
     [akTabBarController setSelectedTabColors:@[[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor]]];
     [akTabBarController setTabColors:@[[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor]]];
-    [akTabBarController setTabEdgeColor:[UIColor clearColor]];
-    [akTabBarController  setTabIconPreRendered:NO];
-    [akTabBarController setTabInnerStrokeColor:[UIColor clearColor]];
-    [akTabBarController setIconColors:@[[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor]]];
-    [akTabBarController setIconGlossyIsHidden:YES];
-    
-//    [akTabBarController setIconShadowColor:[UIColor clearColor]];
+
     [akTabBarController setTabInnerStrokeColor:[UIColor clearColor]];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:akTabBarController];
 
     self.leftMenuViewController = [[YDLeftMenuViewController alloc] init];
-
     
     self.rightMenuViewController = [[YDRightMenuViewController alloc] init];
-
 
     self.containerViewController = [YDSlideMenuContainerViewController
                       containerWithCenterViewController:[self navigationController]

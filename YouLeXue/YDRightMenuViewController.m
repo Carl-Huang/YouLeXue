@@ -18,6 +18,9 @@
 #import "HttpHelper.h"
 #import "UserLoginInfo.h"
 #import "PersistentDataManager.h"
+#import "UIImageView+AFNetworking.h"
+#import "RightPhontNotiViewController.h"
+#import "AppDelegate.h"
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
@@ -40,13 +43,55 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    UIButton * leftBtn  = [UIButton buttonWithType:UIButtonTypeCustom];
+    [leftBtn setFrame:CGRectMake(0, 0, 30, 30)];
+    [leftBtn setBackgroundImage:[UIImage imageNamed:@"Unfold_Right_Button_Student_Center"] forState:UIControlStateNormal];
+    
+    self.navigationController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBtn];
+    
     [self.afterLoginView setHidden:YES];
+    [self.beforeLoginView setHidden:YES];
     descriptionArray = @[@"如何成为手机版用户？",@"忘记了用户名或者密码怎么办？",@"使用手机号来登陆手机端？",@"上进版服务说明？",@"版权和免责声明！"];
-    // Do any additional setup after loading the view from its nib.
     
     
-    userInfo = nil;
-    
+    userInfo = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if (userInfo == nil) {
+        [self.beforeLoginView setHidden:NO];
+    }else
+    {
+        [self.afterLoginView setHidden:NO];
+        NSString * imageStr = [userInfo valueForKey:@"UserFace"];
+        imageStr = [imageStr stringByReplacingOccurrencesOfString:@"3g" withString:@"www"];
+        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageStr] cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
+        __weak UIImageView *weakImageview = self.userImage;
+        [self.userImage setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+            [weakImageview setImage:image];
+        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            ;
+        }];
+        
+        //用户名
+        self.userNamelabel.text = [userInfo valueForKey:@"RealName"];
+        
+        
+        //判断证件的有效期
+        NSString * beginData = [userInfo valueForKey:@"BeginDate"];
+        beginData = [beginData stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        beginData = [beginData substringToIndex:8];
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyyMMdd"];
+        NSDate *date = [dateFormat dateFromString:beginData];
+        NSString * validateDays = [userInfo valueForKey:@"EDays"];
+        int daysToAdd = [validateDays integerValue];
+        NSDate *newDate1 = [date dateByAddingTimeInterval:60*60*24*daysToAdd];
+        NSDateFormatter* fmt = [[NSDateFormatter alloc] init];
+        fmt.dateStyle = kCFDateFormatterLongStyle;
+        fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
+        NSString* dateString = [fmt stringFromDate:newDate1];
+        self.userDetailDescLabel.text = [NSString stringWithFormat:@"软件有效期：%@",dateString];
+        self.userDesclabel.text = [NSString stringWithFormat:@"你报考的专业是：%@",[userInfo valueForKey:@"GroupName"]];
+    }
+
     
     self.userNameTextField.tag = UserNameTextFieldTag;
     self.passwordTextField.tag = PassWordTextFieldTag;
@@ -183,22 +228,30 @@
     if (self.passwordTextField.text.length == 0) {
         [self showAlertView:@"密码不能为空"];
     }
-//    __weak YDRightMenuViewController * weakSelf = self;
-//    [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
-//        if (item) {
-//            userInfo = (UserLoginInfo *)item;
-//            [weakSelf saveDataTolocal];
-//        }
-////        if (userInfo) {
-////            [HttpHelper printClassInfo:userInfo];
-////            
-////        }
-//    }];
-    [[PersistentDataManager sharePersistenDataManager]readDataWithPrimaryKey:@"UserID" keyValue:@"735" withTableName:@"UserLoginInfoTable" withObj:[UserLoginInfo class]];;
+    __weak YDRightMenuViewController * weakSelf = self;
+    [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
+        if (item) {
+            userInfo = (UserLoginInfo *)item;
+            [weakSelf saveDataTolocal];
+        }
+        [weakSelf.afterLoginView setHidden:NO];
+        [weakSelf.beforeLoginView setHidden:YES];
+    }];
+    
     
 }
 - (IBAction)phoneAlertBtnAction:(id)sender {
     
+    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    RightPhontNotiViewController * viewcontroller = [[RightPhontNotiViewController alloc]initWithNibName:@"RightPhontNotiViewController" bundle:nil];
+    [myDelegate.containerViewController presentModalViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
+//    RightPhontNotiViewController * viewcontroller = [[RightPhontNotiViewController alloc]initWithNibName:@"RightPhontNotiViewController" bundle:nil];
+//    [self addChildViewController:viewcontroller];
+//    [self.view addSubview:viewcontroller.view];
+    
+
+    viewcontroller = nil;
 }
 
 - (IBAction)adviceBtnAction:(id)sender {

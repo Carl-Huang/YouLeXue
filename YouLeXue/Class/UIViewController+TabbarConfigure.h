@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UIViewController (TabbarConfigure)
-
+- (void) setBackItem:(SEL)action withImage:(NSString *)imageName;
 @end

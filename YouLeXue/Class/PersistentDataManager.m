@@ -105,6 +105,28 @@
     }
 }
 
+-(id)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass
+{
+    NSString * sqlStr = [NSString stringWithFormat:@"select * from %@",tableName];
+
+    id info = [[objClass alloc] init];
+    FMResultSet *rs = [db executeQuery:sqlStr];
+    while ([rs next]) {
+        unsigned int varCount;
+        Ivar *vars = class_copyIvarList(objClass, &varCount);
+        for (int i = 0; i < varCount; i++) {
+            Ivar var = vars[i];
+            const char* name = ivar_getName(var);
+            NSString *valueKey = [NSString stringWithUTF8String:name];
+            valueKey = [valueKey substringFromIndex:1];
+            NSLog(@"%@",[rs stringForColumn:valueKey]);
+            [info setValue:[rs stringForColumn:valueKey] forKeyPath:valueKey];
+        }
+        free(vars);
+         return info;
+    }
+    return nil;
+}
 
 
 
