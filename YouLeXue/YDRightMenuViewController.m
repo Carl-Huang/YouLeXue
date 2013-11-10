@@ -52,9 +52,24 @@
     [self.afterLoginView setHidden:YES];
     [self.beforeLoginView setHidden:YES];
     descriptionArray = @[@"如何成为手机版用户？",@"忘记了用户名或者密码怎么办？",@"使用手机号来登陆手机端？",@"上进版服务说明？",@"版权和免责声明！"];
-    
-    
+
+    self.userNameTextField.tag = UserNameTextFieldTag;
+    self.passwordTextField.tag = PassWordTextFieldTag;
+    self.userNameTextField.delegate = self;
+    self.passwordTextField.delegate = self;
+    self.userNameTextField.returnKeyType = UIReturnKeyNext;
+    self.passwordTextField.returnKeyType = UIReturnKeyDone;
+    self.userNameTextField.text = @"";
+    self.passwordTextField.text = @"";
+    [self refreshStatus];
+}
+
+-(void)refreshStatus
+{
     userInfo = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    myDeleate.userInfo = userInfo;
+    
     if (userInfo == nil) {
         [self.beforeLoginView setHidden:NO];
     }else
@@ -92,15 +107,6 @@
         self.userDesclabel.text = [NSString stringWithFormat:@"你报考的专业是：%@",[userInfo valueForKey:@"GroupName"]];
     }
 
-    
-    self.userNameTextField.tag = UserNameTextFieldTag;
-    self.passwordTextField.tag = PassWordTextFieldTag;
-    self.userNameTextField.delegate = self;
-    self.passwordTextField.delegate = self;
-    self.userNameTextField.returnKeyType = UIReturnKeyNext;
-    self.passwordTextField.returnKeyType = UIReturnKeyDone;
-    self.userNameTextField.text = @"";
-    self.passwordTextField.text = @"";
 }
 
 - (void)didReceiveMemoryWarning
@@ -233,6 +239,7 @@
         if (item) {
             userInfo = (UserLoginInfo *)item;
             [weakSelf saveDataTolocal];
+            [weakSelf refreshStatus];
         }
         [weakSelf.afterLoginView setHidden:NO];
         [weakSelf.beforeLoginView setHidden:YES];
@@ -246,19 +253,21 @@
     RightPhontNotiViewController * viewcontroller = [[RightPhontNotiViewController alloc]initWithNibName:@"RightPhontNotiViewController" bundle:nil];
     [myDelegate.containerViewController presentModalViewController:viewcontroller animated:YES];
     viewcontroller = nil;
-//    RightPhontNotiViewController * viewcontroller = [[RightPhontNotiViewController alloc]initWithNibName:@"RightPhontNotiViewController" bundle:nil];
-//    [self addChildViewController:viewcontroller];
-//    [self.view addSubview:viewcontroller.view];
-    
-
-    viewcontroller = nil;
 }
 
 - (IBAction)adviceBtnAction:(id)sender {
-    
+    NSString * str = [NSString stringWithFormat:@"http://www.55280.com/shoujijianyi.html/username=%@",[userInfo valueForKey:@"UserName"]];
+    NSURL * url = [NSURL URLWithString:str];
+     [[UIApplication sharedApplication] openURL:url];
 }
 
 - (IBAction)reloadQuesBankAction:(id)sender {
+    [HttpHelper getGroupExamListWithId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
+
+        //保存数据数据库
+        [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+    }];
+
 }
 
 - (IBAction)userInfoAction:(id)sender {

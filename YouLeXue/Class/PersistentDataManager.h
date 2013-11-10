@@ -15,7 +15,9 @@
 
 
 -(void)createUserLoginInfoTable:(UserLoginInfo *)info;
--(id)readDataWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue withTableName:(NSString *)tableName withObj:(id)obj;
+-(void)readDataWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue withTableName:(NSString *)tableName withObj:(id)obj;
+
 
 -(id)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass;
+-(void)createPaperListTable:(NSArray *)array;
 @end

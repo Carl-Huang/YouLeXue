@@ -38,6 +38,10 @@
 		4E3DF38D182BDEF80056493A /* Student_Center_Icon_Password_Normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF389182BDED90056493A /* Student_Center_Icon_Password_Normal@2x.png */; };
 		4E3DF38E182BDEF80056493A /* Student_Center_Icon_UserName_H@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF38A182BDEE40056493A /* Student_Center_Icon_UserName_H@2x.png */; };
 		4E3DF38F182BDEF80056493A /* Unfold_Right_Icon_Logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF38B182BDEED0056493A /* Unfold_Right_Icon_Logo@2x.png */; };
+		4E4CE3BB182F9A24003257C0 /* DetailPhoneNotiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CE3B9182F9A24003257C0 /* DetailPhoneNotiViewController.m */; };
+		4E4CE3BC182F9A24003257C0 /* DetailPhoneNotiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E4CE3BA182F9A24003257C0 /* DetailPhoneNotiViewController.xib */; };
+		4E4CE3C5182FC2D5003257C0 /* UserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CE3C3182FC2D5003257C0 /* UserInfoViewController.m */; };
+		4E4CE3C6182FC2D5003257C0 /* UserInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */; };
 		4E691C4E182C7AF400EB73EA /* HttpHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E691C4D182C7AF400EB73EA /* HttpHelper.m */; };
 		4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */; };
 		4E8A8DF9182F45CC00A73F71 /* RightPhontNotiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */; };
@@ -302,6 +306,12 @@
 		4E3DF389182BDED90056493A /* Student_Center_Icon_Password_Normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Student_Center_Icon_Password_Normal@2x.png"; sourceTree = "<group>"; };
 		4E3DF38A182BDEE40056493A /* Student_Center_Icon_UserName_H@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Student_Center_Icon_UserName_H@2x.png"; sourceTree = "<group>"; };
 		4E3DF38B182BDEED0056493A /* Unfold_Right_Icon_Logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Unfold_Right_Icon_Logo@2x.png"; sourceTree = "<group>"; };
+		4E4CE3B8182F9A24003257C0 /* DetailPhoneNotiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailPhoneNotiViewController.h; sourceTree = "<group>"; };
+		4E4CE3B9182F9A24003257C0 /* DetailPhoneNotiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailPhoneNotiViewController.m; sourceTree = "<group>"; };
+		4E4CE3BA182F9A24003257C0 /* DetailPhoneNotiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailPhoneNotiViewController.xib; sourceTree = "<group>"; };
+		4E4CE3C2182FC2D5003257C0 /* UserInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoViewController.h; sourceTree = "<group>"; };
+		4E4CE3C3182FC2D5003257C0 /* UserInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoViewController.m; sourceTree = "<group>"; };
+		4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoViewController.xib; sourceTree = "<group>"; };
 		4E691C4C182C7AF400EB73EA /* HttpHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHelper.h; sourceTree = "<group>"; };
 		4E691C4D182C7AF400EB73EA /* HttpHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpHelper.m; sourceTree = "<group>"; };
 		4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightPhontNotiViewController.h; sourceTree = "<group>"; };
@@ -635,6 +645,12 @@
 				4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */,
 				4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */,
 				4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */,
+				4E4CE3B8182F9A24003257C0 /* DetailPhoneNotiViewController.h */,
+				4E4CE3B9182F9A24003257C0 /* DetailPhoneNotiViewController.m */,
+				4E4CE3BA182F9A24003257C0 /* DetailPhoneNotiViewController.xib */,
+				4E4CE3C2182FC2D5003257C0 /* UserInfoViewController.h */,
+				4E4CE3C3182FC2D5003257C0 /* UserInfoViewController.m */,
+				4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */,
 			);
 			path = Right;
 			sourceTree = "<group>";
@@ -1360,6 +1376,8 @@
 				4E3DF38E182BDEF80056493A /* Student_Center_Icon_UserName_H@2x.png in Resources */,
 				4E3DF38F182BDEF80056493A /* Unfold_Right_Icon_Logo@2x.png in Resources */,
 				4E8A8DF9182F45CC00A73F71 /* RightPhontNotiViewController.xib in Resources */,
+				4E4CE3BC182F9A24003257C0 /* DetailPhoneNotiViewController.xib in Resources */,
+				4E4CE3C6182FC2D5003257C0 /* UserInfoViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1422,6 +1440,8 @@
 				4E1306DB182D34370099B6CC /* FMResultSet.m in Sources */,
 				4E1306DE182D34A50099B6CC /* PersistentDataManager.m in Sources */,
 				4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */,
+				4E4CE3BB182F9A24003257C0 /* DetailPhoneNotiViewController.m in Sources */,
+				4E4CE3C5182FC2D5003257C0 /* UserInfoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,7 @@
 #import "YDRightMenuViewController.h"
 #import "YDLeftMenuViewController.h"
 #import "YDSlideMenuContainerViewController.h"
-@class UserLoginInfo;
+#import "UserLoginInfo.h"
 @class AKTabBarController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,YDSlideMenuContainerViewControllerDelegate>
