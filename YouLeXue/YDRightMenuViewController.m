@@ -20,6 +20,7 @@
 #import "PersistentDataManager.h"
 #import "UIImageView+AFNetworking.h"
 #import "RightPhontNotiViewController.h"
+#import "UserInfoViewController.h"
 #import "AppDelegate.h"
 @interface YDRightMenuViewController ()
 {
@@ -271,6 +272,9 @@
 }
 
 - (IBAction)userInfoAction:(id)sender {
+    UserInfoViewController * viewcontroller = [[UserInfoViewController alloc]initWithNibName:@"UserInfoViewController" bundle:nil];
+    [self presentModalViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
 }
 
 - (IBAction)updatePaperAction:(id)sender {
