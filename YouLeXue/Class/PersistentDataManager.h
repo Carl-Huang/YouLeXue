@@ -20,4 +20,7 @@
 
 -(id)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass;
 -(void)createPaperListTable:(NSArray *)array;
+-(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName;
+-(void)createExampleListTable:(NSArray *)array;
+-(void)createOtherInformationTable:(NSArray *)array;
 @end

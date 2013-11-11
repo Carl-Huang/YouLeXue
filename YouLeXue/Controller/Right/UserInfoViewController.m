@@ -5,11 +5,13 @@
 //  Created by vedon on 10/11/13.
 //  Copyright (c) 2013 Carl. All rights reserved.
 //
+#define TableViewOffsetY 50;
 
 #import "UserInfoViewController.h"
 #import "AppDelegate.h"
 #import "UIImageView+AFNetworking.h"
 #import "HttpHelper.h"
+#import "PersistentDataManager.h"
 @interface UserInfoViewController ()<UITableViewDelegate>
 {
     AppDelegate * myDelegate;
@@ -22,6 +24,7 @@
 @end
 
 @implementation UserInfoViewController
+@synthesize isShouldShowLoginView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -47,7 +50,7 @@
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         ;
     }];
-    [self.backScrollView setContentSize:CGSizeMake(320, 480)];
+    [self.backScrollView setContentSize:CGSizeMake(320, 600)];
     
     [self.alertUserInfo setUserInteractionEnabled:YES];
     UITapGestureRecognizer *tapGesture1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(alterUserInfoAction)];
@@ -83,12 +86,53 @@
     [self setAlertUserInfo:nil];
     [self setLogoutAction:nil];
     [self setMyService:nil];
+    [self setBtnBackGround:nil];
     [super viewDidUnload];
+}
+-(void)cancelAlter
+{
+    [self.btnBackGround setHidden:NO];
+    self.btnBackGround.alpha = 0.1;
+    CGRect rect = self.userInfoTable.frame;
+    rect.size.height -=TableViewOffsetY;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.userInfoTable.frame = rect;
+        self.btnBackGround.alpha = 1.0;
+    }];
+    isEditingTableView = NO;
+    [self.userInfoTable reloadData];
+    
+}
+
+-(void)confirmAlter
+{
+    //更新用户个人信息
+    [HttpHelper updateUserInfoWithUserId:[myDelegate.userInfo valueForKey:@"UserID"] realName:userNameTextField.text qqNum:qqTextField.text mobile:mobileTextField.text email:emailTextField.text completedBlock:^(id item, NSError *error) {
+        ;
+    }];
+    [self.btnBackGround setHidden:NO];
+    self.btnBackGround.alpha = 0.1;
+    CGRect rect = self.userInfoTable.frame;
+    rect.size.height -=TableViewOffsetY;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.userInfoTable.frame = rect;
+        self.btnBackGround.alpha = 1.0;
+    }];
+    isEditingTableView = NO;
+    [self.userInfoTable reloadData];
 }
 
 -(void)alterUserInfoAction
 {
     NSLog(@"%s",__func__);
+    CGRect rect = self.userInfoTable.frame;
+    rect.size.height +=TableViewOffsetY;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.userInfoTable.frame = rect;
+        self.btnBackGround.alpha = 0.0;
+        [self.btnBackGround setHidden:YES];
+    }];
+    
     isEditingTableView = YES;
     [self.userInfoTable reloadData];
 }
@@ -96,6 +140,9 @@
 -(void)logout
 {
     NSLog(@"%s",__func__);
+    [[PersistentDataManager sharePersistenDataManager]deleteRecordWithPrimaryKey:@"UserID" keyValue:[myDelegate.userInfo valueForKey:@"UserID"] tableName:@"UserLoginInfoTable"];
+    self.isShouldShowLoginView = YES;
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 -(void)myServiceAction
@@ -123,7 +170,7 @@
     qqTextField.font = [UIFont systemFontOfSize:14];
     emailTextField.font = [UIFont systemFontOfSize:14];
     
-    [mobileTextField setBorderStyle:UITextBorderStyleLine];
+    [mobileTextField setBorderStyle:UITextBorderStyleRoundedRect];
     [userNameTextField setBorderStyle:UITextBorderStyleRoundedRect];
     [qqTextField setBorderStyle:UITextBorderStyleRoundedRect];
     [emailTextField setBorderStyle:UITextBorderStyleRoundedRect];
@@ -134,20 +181,6 @@
     [emailTextField setHidden: !isEditingTableView];
 }
 
--(void)cancelAlter
-{
-    
-}
-
--(void)confirmAlter
-{
-//更新用户个人信息
-    [HttpHelper updateUserInfoWithUserId:[myDelegate.userInfo valueForKey:@"UserID"] realName:userNameTextField.text qqNum:qqTextField.text mobile:mobileTextField.text email:emailTextField.text completedBlock:^(id item, NSError *error) {
-        ;
-    }];
-    isEditingTableView = NO;
-    [self.userInfoTable reloadData];
-}
 #pragma mark -
 #pragma mark UITableViewDataSource
 
@@ -168,11 +201,17 @@
     if (cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
     }
+   
+    [self cleanSubViewInCell:cell];
+    cell = [self configureCellInterface:cell withIndex:indexPath];
+    
+    return cell;
+}
+
+-(UITableViewCell *)configureCellInterface:(UITableViewCell *)cell withIndex:(NSIndexPath*)indexPath
+{
     UILabel * descriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, 120, 25)];
     UILabel * detailDescriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(125, 5, 130, 25)];
-    [self cleanSubViewInCell:cell];
-    
-    
     if (indexPath.row == 0) {
         detailDescriptionLabel.text = [myDelegate.userInfo valueForKey:@"UserName"];
         descriptionLabel.text = [NSString stringWithFormat:@"用户名: "];
@@ -188,7 +227,6 @@
         {
             userNameTextField.text = str;
             [userNameTextField setHidden:!isEditingTableView];
-            [self cleanSubViewInCell:cell];
             [cell.contentView addSubview:userNameTextField];
         }
     }else if(indexPath.row == 2)
@@ -225,7 +263,6 @@
         {
             qqTextField.text = str;
             [qqTextField setHidden:!isEditingTableView];
-            [self cleanSubViewInCell:cell];
             [cell.contentView addSubview:qqTextField];
         }
     }else if(indexPath.row == 5)
@@ -239,7 +276,6 @@
         {
             mobileTextField.text = str;
             [mobileTextField setHidden:!isEditingTableView];
-            [self cleanSubViewInCell:cell];
             [cell.contentView addSubview:mobileTextField];
         }
     }else if(indexPath.row == 6)
@@ -253,14 +289,14 @@
         {
             emailTextField.text = str;
             [emailTextField setHidden:!isEditingTableView];
-            [self cleanSubViewInCell:cell];
             [cell.contentView addSubview:emailTextField];
         }
     }else if(indexPath.row == 7)
     {
-        UIView *view = [[UIView alloc]initWithFrame:cell.frame];
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 273, 35)];
         UIButton * sureBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [sureBtn setBackgroundImage:[UIImage imageNamed:@"User Edit_Button_Confirm"] forState:UIControlStateNormal];
+        [sureBtn setBackgroundImage:[UIImage imageNamed:@"User_Edit_Button_Confirm"] forState:UIControlStateNormal];
+        
         [sureBtn addTarget:self action:@selector(confirmAlter) forControlEvents:UIControlEventTouchUpInside];
         [sureBtn setFrame:CGRectMake(30, 5, 100, 30)];
         [sureBtn setTitle:@"确定" forState:UIControlStateNormal];
@@ -281,17 +317,17 @@
         view = nil;
     }
     
-
-    
-    descriptionLabel.textAlignment = NSTextAlignmentRight;
-    descriptionLabel.font = [UIFont systemFontOfSize:14];
-    detailDescriptionLabel.textAlignment = NSTextAlignmentLeft;
-    detailDescriptionLabel.font = [UIFont systemFontOfSize:14];
-    [cell.contentView addSubview:descriptionLabel];
-    cell.imageView.image = [UIImage imageNamed:@"User Settings_Icon_Point"];
+    if (indexPath.row !=7) {
+        descriptionLabel.textAlignment = NSTextAlignmentRight;
+        descriptionLabel.font = [UIFont systemFontOfSize:14];
+        detailDescriptionLabel.textAlignment = NSTextAlignmentLeft;
+        detailDescriptionLabel.font = [UIFont systemFontOfSize:14];
+        [cell.contentView addSubview:descriptionLabel];
+        cell.imageView.image = [UIImage imageNamed:@"User Settings_Icon_Point"];
+        descriptionLabel = nil;
+        detailDescriptionLabel = nil;
+    }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    descriptionLabel = nil;
-    detailDescriptionLabel = nil;
     return cell;
 }
 
@@ -330,5 +366,13 @@
 {
     UIImageView * footerView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"User Settings_Frame03"]];
     return footerView;
+}
+- (IBAction)backAction:(id)sender {
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+-(void)dealloc
+{
+    [self removeObserver:self.proxy forKeyPath:@"isShouldShowLoginView"];
 }
 @end

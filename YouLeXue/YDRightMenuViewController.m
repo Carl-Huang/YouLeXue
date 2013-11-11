@@ -22,10 +22,11 @@
 #import "RightPhontNotiViewController.h"
 #import "UserInfoViewController.h"
 #import "AppDelegate.h"
+
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
-    
+    NSArray * dataSource;
 }
 @end
 
@@ -63,53 +64,81 @@
     self.userNameTextField.text = @"";
     self.passwordTextField.text = @"";
     [self refreshStatus];
+    
+    
+    __weak YDRightMenuViewController *weakSelf = self;
+    [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
+    {
+        if ([item count]) {
+            [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
+            dataSource  = item;
+            [weakSelf.rightTable reloadData];
+        }
+     if (error) {
+         NSLog(@"%@",error);
+     }
+    }];
 }
+
 
 -(void)refreshStatus
 {
-    userInfo = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
-    AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    myDeleate.userInfo = userInfo;
-    
-    if (userInfo == nil) {
-        [self.beforeLoginView setHidden:NO];
-    }else
-    {
-        [self.afterLoginView setHidden:NO];
-        NSString * imageStr = [userInfo valueForKey:@"UserFace"];
-        imageStr = [imageStr stringByReplacingOccurrencesOfString:@"3g" withString:@"www"];
-        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageStr] cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
-        __weak UIImageView *weakImageview = self.userImage;
-        [self.userImage setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-            [weakImageview setImage:image];
-        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-            ;
-        }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        userInfo = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+        AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        myDeleate.userInfo = userInfo;
         
-        //用户名
-        self.userNamelabel.text = [userInfo valueForKey:@"RealName"];
-        
-        
-        //判断证件的有效期
-        NSString * beginData = [userInfo valueForKey:@"BeginDate"];
-        beginData = [beginData stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        beginData = [beginData substringToIndex:8];
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyyMMdd"];
-        NSDate *date = [dateFormat dateFromString:beginData];
-        NSString * validateDays = [userInfo valueForKey:@"EDays"];
-        int daysToAdd = [validateDays integerValue];
-        NSDate *newDate1 = [date dateByAddingTimeInterval:60*60*24*daysToAdd];
-        NSDateFormatter* fmt = [[NSDateFormatter alloc] init];
-        fmt.dateStyle = kCFDateFormatterLongStyle;
-        fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
-        NSString* dateString = [fmt stringFromDate:newDate1];
-        self.userDetailDescLabel.text = [NSString stringWithFormat:@"软件有效期：%@",dateString];
-        self.userDesclabel.text = [NSString stringWithFormat:@"你报考的专业是：%@",[userInfo valueForKey:@"GroupName"]];
-    }
+        if (userInfo == nil) {
+            [self.beforeLoginView setHidden:NO];
+        }else
+        {
 
+            [self.afterLoginView setHidden:NO];
+            NSString * imageStr = [userInfo valueForKey:@"UserFace"];
+            imageStr = [imageStr stringByReplacingOccurrencesOfString:@"3g" withString:@"www"];
+            NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageStr] cachePolicy:NSURLCacheStorageAllowed timeoutInterval:30.0];
+            __weak UIImageView *weakImageview = self.userImage;
+            [self.userImage setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                [weakImageview setImage:image];
+            } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                ;
+            }];
+            
+            //用户名
+            self.userNamelabel.text = [userInfo valueForKey:@"RealName"];
+            
+            
+            //判断证件的有效期
+            NSString * beginData = [userInfo valueForKey:@"BeginDate"];
+            NSDate * beginDate = [self dateFromString:beginData];
+
+            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"yyyyMMdd"];
+
+            NSString * validateDays = [userInfo valueForKey:@"EDays"];
+            int daysToAdd = [validateDays integerValue];
+            NSDate *newDate1 = [beginDate dateByAddingTimeInterval:60*60*24*daysToAdd];
+            
+            NSDateFormatter* fmt = [[NSDateFormatter alloc] init];
+            fmt.dateStyle = kCFDateFormatterLongStyle;
+            fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
+            NSString* dateString = [fmt stringFromDate:newDate1];
+            
+            self.userDetailDescLabel.text = [NSString stringWithFormat:@"软件有效期：%@",dateString];
+            self.userDesclabel.text = [NSString stringWithFormat:@"你报考的专业是：%@",[userInfo valueForKey:@"GroupName"]];
+
+        }
+    });
 }
 
+
+- (NSDate *)dateFromString:(NSString *)dateString{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+    NSDate *destDate= [dateFormatter dateFromString:dateString];
+    return destDate;
+    
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -241,9 +270,10 @@
             userInfo = (UserLoginInfo *)item;
             [weakSelf saveDataTolocal];
             [weakSelf refreshStatus];
+            [weakSelf.afterLoginView setHidden:NO];
+            [weakSelf.beforeLoginView setHidden:YES];
         }
-        [weakSelf.afterLoginView setHidden:NO];
-        [weakSelf.beforeLoginView setHidden:YES];
+       
     }];
     
     
@@ -273,13 +303,36 @@
 
 - (IBAction)userInfoAction:(id)sender {
     UserInfoViewController * viewcontroller = [[UserInfoViewController alloc]initWithNibName:@"UserInfoViewController" bundle:nil];
+    [viewcontroller addObserver:self forKeyPath:@"isShouldShowLoginView" options:NSKeyValueObservingOptionNew context:NULL];
+    viewcontroller.proxy =self;
     [self presentModalViewController:viewcontroller animated:YES];
     viewcontroller = nil;
 }
 
 - (IBAction)updatePaperAction:(id)sender {
+//案例题目列表
+    [HttpHelper getExampleListWithGroupId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
+        if ([item count]) {
+            [[PersistentDataManager sharePersistenDataManager]createExampleListTable:(NSArray *)item];
+        }
+        if (error) {
+            NSLog(@"%@",[error description]);
+        }
+    }];
+
 }
 
 - (IBAction)logoutAction:(id)sender {
+    [[PersistentDataManager sharePersistenDataManager]deleteRecordWithPrimaryKey:@"UserID" keyValue:[userInfo valueForKey:@"UserID"] tableName:@"UserLoginInfoTable"];
+    [self.afterLoginView setHidden:YES];
+    [self.beforeLoginView setHidden:NO];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqual:@"isShouldShowLoginView"]) {
+        //登陆
+        [self refreshStatus];
+    }
 }
 @end

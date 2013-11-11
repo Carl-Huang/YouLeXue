@@ -11,6 +11,8 @@
 #import <objc/runtime.h>
 #import "UserLoginInfo.h"
 #import "ExamInfo.h"
+#import "ExamplePaperInfo.h"
+#import "FetchDataInfo.h"
 @implementation PersistentDataManager
 @synthesize db;
 
@@ -93,11 +95,66 @@
     [db close];
 }
 
+//创建案例的表
+-(void)createExampleListTable:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"ExampleListTable"]) {
+        NSLog(@"数据表已经存在");
+        for (ExamplePaperInfo * info in array) {
+            [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+        }
+    }else
+    {
+        NSLog(@"数据表不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExampleListTable %@",[self enumerateObjectConverToStr:[ExamplePaperInfo class] withPrimarykey:@"TID"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create table successfully");
+            for (ExamplePaperInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+            }
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+
+}
+
+//创建其他信息表
+-(void)createOtherInformationTable:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"OtherInformationTable"]) {
+        NSLog(@"数据表已经存在");
+        for (FetchDataInfo * info in array) {
+            [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"ID"];
+        }
+    }else
+    {
+        NSLog(@"数据表不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"ID"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create table successfully");
+            for (FetchDataInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"ID"];
+            }
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+
+}
+
 
 //插入数据到表
 -(void)insertValueToExistedTableWithTableName:(NSString *)tableName Arguments:(id )obj primaryKey:(NSString *)key
 {
-    [db open];
     [db beginTransaction];
     NSMutableArray * objectValueArray = [NSMutableArray array];
     unsigned int varCount;
@@ -128,12 +185,10 @@
         
     }
     [db commit];
-    [db close];
 }
 
 -(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName
 {
-    [db open];
     NSLog(@"删除key:%@  的记录",key);
     NSString *sqlStr = [NSString stringWithFormat:@"delete from %@ where %@=%@",tableName,key,keyValue];
     if ([db executeUpdate:sqlStr]) {
@@ -142,7 +197,6 @@
     {
         NSLog(@"Failer to update value to table,Error: %@",[db lastError]);
     }
-    [db close];
 }
 
 
@@ -186,8 +240,9 @@
             [info setValue:[rs stringForColumn:valueKey] forKeyPath:valueKey];
         }
         free(vars);
-         return info;
+        return info;
     }
+    //TODO:关闭问题
     [rs close];
     [db close];
     return nil;
@@ -278,5 +333,8 @@
     return filePath;
 }
 
-
+-(void)dealloc
+{
+    
+}
 @end
