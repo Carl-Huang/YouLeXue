@@ -47,6 +47,15 @@
 		4E4CE3C5182FC2D5003257C0 /* UserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CE3C3182FC2D5003257C0 /* UserInfoViewController.m */; };
 		4E4CE3C6182FC2D5003257C0 /* UserInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */; };
 		4E691C4E182C7AF400EB73EA /* HttpHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E691C4D182C7AF400EB73EA /* HttpHelper.m */; };
+		4E7823F91831392A00DD396F /* VDAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7823EF1831392A00DD396F /* VDAlertView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4E7823FA1831392A00DD396F /* VDAlertViewBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F01831392A00DD396F /* VDAlertViewBackground.png */; };
+		4E7823FB1831392A00DD396F /* VDAlertViewBackground2.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F11831392A00DD396F /* VDAlertViewBackground2.png */; };
+		4E7823FC1831392A00DD396F /* VDAlertViewButtonBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F21831392A00DD396F /* VDAlertViewButtonBackground.png */; };
+		4E7823FD1831392A00DD396F /* VDAlertViewButtonBackground_Highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F31831392A00DD396F /* VDAlertViewButtonBackground_Highlighted.png */; };
+		4E7823FE1831392A00DD396F /* VDAlertViewCancelButtonBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F41831392A00DD396F /* VDAlertViewCancelButtonBackground.png */; };
+		4E7823FF1831392A00DD396F /* VDAlertViewIOS7Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F51831392A00DD396F /* VDAlertViewIOS7Background.png */; };
+		4E7824001831392A00DD396F /* VDAlertViewMessageListViewShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F61831392A00DD396F /* VDAlertViewMessageListViewShadow.png */; };
+		4E7824011831392A00DD396F /* VDProcessingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7823F81831392A00DD396F /* VDProcessingView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */; };
 		4E8A8DF9182F45CC00A73F71 /* RightPhontNotiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */; };
 		4EC621E2182CC09F001266A6 /* ExamInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E1182CC09F001266A6 /* ExamInfo.m */; };
@@ -71,8 +80,7 @@
 		4EC62296182CD87D001266A6 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC6228F182CD87D001266A6 /* UIWebView+AFNetworking.m */; };
 		4EC62299182CDF1B001266A6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EC62298182CDF1B001266A6 /* Security.framework */; };
 		4EC6229B182CDF28001266A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EC6229A182CDF28001266A6 /* SystemConfiguration.framework */; };
-		4EE60560182BBEC2003CDDDE /* UserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE6055F182BBEC2003CDDDE /* UserInfoCell.m */; };
-		4EE60562182BBED1003CDDDE /* UserInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EE60561182BBED1003CDDDE /* UserInfoCell.xib */; };
+		4ED6187318313A3F00D8400C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ED6187218313A3F00D8400C /* Default-568h@2x.png */; };
 		4EF1863F182A8B3800E5EEA8 /* home-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862D182A8B3800E5EEA8 /* home-icon.png */; };
 		4EF18640182A8B3800E5EEA8 /* reveal-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862E182A8B3800E5EEA8 /* reveal-icon.png */; };
 		4EF18641182A8B3800E5EEA8 /* reveal-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862F182A8B3800E5EEA8 /* reveal-icon@2x.png */; };
@@ -318,6 +326,17 @@
 		4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoViewController.xib; sourceTree = "<group>"; };
 		4E691C4C182C7AF400EB73EA /* HttpHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHelper.h; sourceTree = "<group>"; };
 		4E691C4D182C7AF400EB73EA /* HttpHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpHelper.m; sourceTree = "<group>"; };
+		4E7823EE1831392A00DD396F /* VDAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDAlertView.h; sourceTree = "<group>"; };
+		4E7823EF1831392A00DD396F /* VDAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VDAlertView.m; sourceTree = "<group>"; };
+		4E7823F01831392A00DD396F /* VDAlertViewBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewBackground.png; sourceTree = "<group>"; };
+		4E7823F11831392A00DD396F /* VDAlertViewBackground2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewBackground2.png; sourceTree = "<group>"; };
+		4E7823F21831392A00DD396F /* VDAlertViewButtonBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewButtonBackground.png; sourceTree = "<group>"; };
+		4E7823F31831392A00DD396F /* VDAlertViewButtonBackground_Highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewButtonBackground_Highlighted.png; sourceTree = "<group>"; };
+		4E7823F41831392A00DD396F /* VDAlertViewCancelButtonBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewCancelButtonBackground.png; sourceTree = "<group>"; };
+		4E7823F51831392A00DD396F /* VDAlertViewIOS7Background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewIOS7Background.png; sourceTree = "<group>"; };
+		4E7823F61831392A00DD396F /* VDAlertViewMessageListViewShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VDAlertViewMessageListViewShadow.png; sourceTree = "<group>"; };
+		4E7823F71831392A00DD396F /* VDProcessingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDProcessingView.h; sourceTree = "<group>"; };
+		4E7823F81831392A00DD396F /* VDProcessingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VDProcessingView.m; sourceTree = "<group>"; };
 		4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightPhontNotiViewController.h; sourceTree = "<group>"; };
 		4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightPhontNotiViewController.m; sourceTree = "<group>"; };
 		4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RightPhontNotiViewController.xib; sourceTree = "<group>"; };
@@ -366,9 +385,7 @@
 		4EC62297182CDD23001266A6 /* Constant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constant.h; sourceTree = "<group>"; };
 		4EC62298182CDF1B001266A6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		4EC6229A182CDF28001266A6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		4EE6055E182BBEC2003CDDDE /* UserInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoCell.h; sourceTree = "<group>"; };
-		4EE6055F182BBEC2003CDDDE /* UserInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoCell.m; sourceTree = "<group>"; };
-		4EE60561182BBED1003CDDDE /* UserInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoCell.xib; sourceTree = "<group>"; };
+		4ED6187218313A3F00D8400C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4EF1862D182A8B3800E5EEA8 /* home-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home-icon.png"; sourceTree = "<group>"; };
 		4EF1862E182A8B3800E5EEA8 /* reveal-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reveal-icon.png"; sourceTree = "<group>"; };
 		4EF1862F182A8B3800E5EEA8 /* reveal-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reveal-icon@2x.png"; sourceTree = "<group>"; };
@@ -639,6 +656,24 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		4E7823ED1831392A00DD396F /* VDAlertView */ = {
+			isa = PBXGroup;
+			children = (
+				4E7823EE1831392A00DD396F /* VDAlertView.h */,
+				4E7823EF1831392A00DD396F /* VDAlertView.m */,
+				4E7823F01831392A00DD396F /* VDAlertViewBackground.png */,
+				4E7823F11831392A00DD396F /* VDAlertViewBackground2.png */,
+				4E7823F21831392A00DD396F /* VDAlertViewButtonBackground.png */,
+				4E7823F31831392A00DD396F /* VDAlertViewButtonBackground_Highlighted.png */,
+				4E7823F41831392A00DD396F /* VDAlertViewCancelButtonBackground.png */,
+				4E7823F51831392A00DD396F /* VDAlertViewIOS7Background.png */,
+				4E7823F61831392A00DD396F /* VDAlertViewMessageListViewShadow.png */,
+				4E7823F71831392A00DD396F /* VDProcessingView.h */,
+				4E7823F81831392A00DD396F /* VDProcessingView.m */,
+			);
+			path = VDAlertView;
+			sourceTree = "<group>";
+		};
 		4E8A8DF4182F45CC00A73F71 /* Right */ = {
 			isa = PBXGroup;
 			children = (
@@ -704,9 +739,7 @@
 		4EE60558182BBAFC003CDDDE /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4EE6055E182BBEC2003CDDDE /* UserInfoCell.h */,
-				4EE6055F182BBEC2003CDDDE /* UserInfoCell.m */,
-				4EE60561182BBED1003CDDDE /* UserInfoCell.xib */,
+				4E7823ED1831392A00DD396F /* VDAlertView */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1064,6 +1097,7 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
+				4ED6187218313A3F00D8400C /* Default-568h@2x.png */,
 				4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
@@ -1362,7 +1396,6 @@
 				4E09FDB8182B6A5A00AE023C /* Case_List_Bg01@2x.png in Resources */,
 				4E09FDB9182B6A5A00AE023C /* Case_List_Bg02@2x.png in Resources */,
 				4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */,
-				4EE60562182BBED1003CDDDE /* UserInfoCell.xib in Resources */,
 				4E3DF384182BDEC80056493A /* Bottom_Bar01.png in Resources */,
 				4E3DF385182BDEC80056493A /* Student_Center_Icon_Password_Normal.png in Resources */,
 				4E3DF386182BDEC80056493A /* Student_Center_Icon_UserName_H.png in Resources */,
@@ -1378,6 +1411,14 @@
 				4E117DBA1830FFBE00690CDD /* User_Edit_Frame_Highlight@2x.png in Resources */,
 				4E117DBD1830FFD100690CDD /* User_Edit_Button_Confirm.png in Resources */,
 				4E117DBE1830FFD100690CDD /* User_Edit_Frame_Highlight.png in Resources */,
+				4E7823FA1831392A00DD396F /* VDAlertViewBackground.png in Resources */,
+				4E7823FB1831392A00DD396F /* VDAlertViewBackground2.png in Resources */,
+				4E7823FC1831392A00DD396F /* VDAlertViewButtonBackground.png in Resources */,
+				4E7823FD1831392A00DD396F /* VDAlertViewButtonBackground_Highlighted.png in Resources */,
+				4E7823FE1831392A00DD396F /* VDAlertViewCancelButtonBackground.png in Resources */,
+				4E7823FF1831392A00DD396F /* VDAlertViewIOS7Background.png in Resources */,
+				4E7824001831392A00DD396F /* VDAlertViewMessageListViewShadow.png in Resources */,
+				4ED6187318313A3F00D8400C /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1410,7 +1451,6 @@
 				C32C215E1828912200FBF75C /* main.m in Sources */,
 				4EF18661182A8BA400E5EEA8 /* MBProgressHUD.m in Sources */,
 				4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */,
-				4EE60560182BBEC2003CDDDE /* UserInfoCell.m in Sources */,
 				4E691C4E182C7AF400EB73EA /* HttpHelper.m in Sources */,
 				4E317C10182C940D0009FEC3 /* UserLoginInfo.m in Sources */,
 				4EC621E2182CC09F001266A6 /* ExamInfo.m in Sources */,
@@ -1442,6 +1482,8 @@
 				4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */,
 				4E4CE3BB182F9A24003257C0 /* DetailPhoneNotiViewController.m in Sources */,
 				4E4CE3C5182FC2D5003257C0 /* UserInfoViewController.m in Sources */,
+				4E7823F91831392A00DD396F /* VDAlertView.m in Sources */,
+				4E7824011831392A00DD396F /* VDProcessingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

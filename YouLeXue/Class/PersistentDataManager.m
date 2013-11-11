@@ -130,16 +130,16 @@
     if ([self isTableOK:@"OtherInformationTable"]) {
         NSLog(@"数据表已经存在");
         for (FetchDataInfo * info in array) {
-            [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"ID"];
+            [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
         }
     }else
     {
         NSLog(@"数据表不存在");
-        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"ID"]];
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"KS_phoneSeq"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create table successfully");
             for (FetchDataInfo * info in array) {
-                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"ID"];
+                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
             }
         }else
         {
@@ -163,7 +163,7 @@
         Ivar var = vars[i];
         const char* name = ivar_getName(var);
         NSString *valueKey = [NSString stringWithUTF8String:name];
-        NSLog(@"%@",valueKey);
+//        NSLog(@"%@",valueKey);
         [objectValueArray addObject:[obj valueForKey:valueKey]];
     }
     free(vars);
@@ -221,14 +221,15 @@
     [db close];
 }
 
--(id)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass
+-(NSArray *)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass
 {
     [db open];
     NSString * sqlStr = [NSString stringWithFormat:@"select * from %@",tableName];
-
-    id info = [[objClass alloc] init];
+    
     FMResultSet *rs = [db executeQuery:sqlStr];
+    NSMutableArray * array = [NSMutableArray array];
     while ([rs next]) {
+        id info = [[objClass alloc] init];
         unsigned int varCount;
         Ivar *vars = class_copyIvarList(objClass, &varCount);
         for (int i = 0; i < varCount; i++) {
@@ -240,11 +241,14 @@
             [info setValue:[rs stringForColumn:valueKey] forKeyPath:valueKey];
         }
         free(vars);
-        return info;
+        [array addObject:info];
     }
-    //TODO:关闭问题
     [rs close];
     [db close];
+    if ([array count]) {
+        return array;
+    }
+    
     return nil;
 }
 

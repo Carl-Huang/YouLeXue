@@ -18,6 +18,7 @@
 #import "SettingViewController.h"
 
 
+
 @implementation AppDelegate
 @synthesize akTabBarController;
 @synthesize userInfo;

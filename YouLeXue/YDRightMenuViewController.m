@@ -22,7 +22,7 @@
 #import "RightPhontNotiViewController.h"
 #import "UserInfoViewController.h"
 #import "AppDelegate.h"
-
+#import "FetchDataInfo.h"
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
@@ -65,7 +65,8 @@
     self.passwordTextField.text = @"";
     [self refreshStatus];
     
-    
+    dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
+
     __weak YDRightMenuViewController *weakSelf = self;
     [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
     {
@@ -84,7 +85,10 @@
 -(void)refreshStatus
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        userInfo = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+        NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+        //因为用户始终有一个，所以只读取第零个元素
+        userInfo = [array objectAtIndex:0];
+
         AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         myDeleate.userInfo = userInfo;
         
@@ -199,7 +203,17 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    for (FetchDataInfo * obj in dataSource) {
+        
+        if ([obj.KS_phoneSeq isKindOfClass:[NSNumber class]]) {
+            if (obj.KS_phoneSeq.integerValue == indexPath.row+1) {
+                UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:obj.Title message:obj.ArticleContent delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alertView show];
+                alertView = nil;
+//                NSLog(@"%@",obj.ArticleContent);
+            }
+        }
+    }
 }
 
 #pragma mark - TextField Delegate
