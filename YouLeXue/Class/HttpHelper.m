@@ -11,12 +11,14 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
+
 #import "UserLoginInfo.h"
 #import "ExamInfo.h"
 #import "ExamPaperInfo.h"
 #import "ExamplePaperInfo.h"
 #import "FetchDataInfo.h"
 #import "FetchUserMessageInfo.h"
+
 
 @implementation HttpHelper
 +(void)userLoginWithName:(NSString *)name pwd:(NSString *)password completedBlock:(void (^)(id item,NSError * error))block
@@ -130,13 +132,30 @@
 {
     NSString * cmdStr = [NSString stringWithFormat:@"updateUser.asp?UserID=%@&realnam=%@&qq=%@&mobile=%@&email=%@",userId,realName,qqNum,mobile,email];
     cmdStr = [Server_URL stringByAppendingString:cmdStr];
-    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
-    [manager POST:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@",responseObject);
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        block(nil,error);
-    }];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:cmdStr]];
+    [request setHTTPMethod:@"GET"];
+    [request setTimeoutInterval:10.0];
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:queue
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error){
+                               if (error) {
+                                   NSLog(@"Httperror:%@%d", error.localizedDescription,error.code);
+                                    block(nil,error);
+                               }else{
+                                   
+                                   NSInteger responseCode = [(NSHTTPURLResponse *)response statusCode];
+                                   
+                                   NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                   
+                                   NSLog(@"HttpResponseCode:%d", responseCode);
+                                   NSLog(@"HttpResponseBody %@",responseString);
+                                   block(responseString,nil);
+                               }
+                           }];
+
 }
 
 //***********************************************************************

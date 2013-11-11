@@ -46,6 +46,7 @@
 //创建登陆的表
 -(void)createUserLoginInfoTable:(UserLoginInfo *)info
 {
+    [db open];
     if ([self isTableOK:@"UserLoginInfoTable"]) {
         NSLog(@"数据表已经存在");
         [self insertValueToExistedTableWithTableName:@"UserLoginInfoTable" Arguments:info primaryKey:@"UserID"];
@@ -62,6 +63,7 @@
         }
 
     }
+    [db close];
 }
 
 //创建考试列表的表
@@ -131,6 +133,7 @@
 
 -(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName
 {
+    [db open];
     NSLog(@"删除key:%@  的记录",key);
     NSString *sqlStr = [NSString stringWithFormat:@"delete from %@ where %@=%@",tableName,key,keyValue];
     if ([db executeUpdate:sqlStr]) {
@@ -139,7 +142,7 @@
     {
         NSLog(@"Failer to update value to table,Error: %@",[db lastError]);
     }
-
+    [db close];
 }
 
 
