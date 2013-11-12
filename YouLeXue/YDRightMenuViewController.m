@@ -106,14 +106,9 @@
 -(void)refreshStatus
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
-        //因为用户始终有一个，所以只读取第零个元素
-        if ([array count]) {
-            userInfo = [array objectAtIndex:0];
-            AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-            myDeleate.userInfo = userInfo;
-        }
-
+   
+        AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        userInfo = myDeleate.userInfo;
         if (userInfo == nil) {
             [self.beforeLoginView setHidden:NO];
         }else

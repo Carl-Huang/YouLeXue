@@ -16,7 +16,7 @@
 #import "CaseAnalysisViewController.h"
 #import "WrongBookViewController.h"
 #import "SettingViewController.h"
-
+#import "PersistentDataManager.h"
 #import "VDAlertView.h"
 
 @implementation AppDelegate
@@ -25,6 +25,17 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //读取数据库数据
+    NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    //因为用户始终有一个，所以只读取第零个元素
+    if ([array count]) {
+        self.userInfo = [array objectAtIndex:0];
+    }else
+    {
+        self.userInfo  = nil;
+    }
+    
+    
      self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self customUI];
     // Override point for customization after application launch.
