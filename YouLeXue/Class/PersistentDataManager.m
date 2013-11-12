@@ -13,6 +13,7 @@
 #import "ExamInfo.h"
 #import "ExamplePaperInfo.h"
 #import "FetchDataInfo.h"
+#import "ExamPaperInfo.h"
 
 @implementation PersistentDataManager
 @synthesize db;
@@ -98,6 +99,41 @@
     [db close];
 }
 
+//创建对应考试列表的试卷
+-(void)createExamPaperTable:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"ExamPaperTable"]) {
+        NSLog(@"数据表已经存在");
+        [self eraseTableData:@"ExamPaperTable"];
+        for (NSArray * specificArray in array) {
+            for (ExamPaperInfo * info in specificArray) {
+                [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
+            }
+        }
+
+    }else
+    {
+        NSLog(@"数据表不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExamPaperTable %@",[self enumerateObjectConverToStr:[ExamPaperInfo class] withPrimarykey:@"id"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create table successfully");
+            for (NSArray * specificArray in array) {
+                for (ExamPaperInfo * info in specificArray) {
+                    [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
+                }
+            }
+        
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+}
+
+
 //创建案例的表
 -(void)createExampleListTable:(NSArray *)array
 {
@@ -180,7 +216,13 @@
         const char* name = ivar_getName(var);
         NSString *valueKey = [NSString stringWithUTF8String:name];
 //        NSLog(@"%@",valueKey);
-        [objectValueArray addObject:[obj valueForKey:valueKey]];
+        if ([obj valueForKey:valueKey] == nil) {
+            [objectValueArray addObject:@"NULL"];
+        }else
+        {
+           [objectValueArray addObject:[obj valueForKey:valueKey]];
+        }
+        
     }
     free(vars);
     NSString *sqlInsertStr = [NSString stringWithFormat:@"insert into %@ %@",tableName,[self insertKeyStringWithkeyNum:varCount]];
@@ -189,7 +231,7 @@
         NSLog(@"插入key: %@ 的记录",[obj valueForKey:key]);
     }else
     {
-        NSLog(@"Failer to insert value to table,Error: %d",[db lastErrorCode]);
+        NSLog(@"Failer to insert value to table,Error: %@",[db lastError]);
         //19 插入重复主键错误
         if ([db lastErrorCode]==19) {
             //主键重复，则更新已存在的主键信息

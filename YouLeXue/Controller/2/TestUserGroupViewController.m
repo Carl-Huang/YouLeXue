@@ -35,15 +35,21 @@ static NSString *identifier = @"Cell";
     NSMutableArray * thirdDataSource;
     NSMutableArray * fourthDataSource;
     
+    //试卷id 对应的试卷信息
+    NSMutableDictionary * paper;
     
     //标志哪个cell被选择
     NSInteger selectedRow;
     NSInteger preSelectedRow;
+    
+    
+    
 }
-
+@property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
 
 @implementation TestUserGroupViewController
+@synthesize  downloadedPaperCount;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -88,6 +94,26 @@ static NSString *identifier = @"Cell";
     //标记选中的项
     selectedRow = -1;
     preSelectedRow = -1;
+    
+    //
+    paper = [NSMutableDictionary dictionary];
+    [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
+    
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"downloadedPaperCount"]) {
+        NSLog(@"%d",self.downloadedPaperCount);
+        if (downloadedPaperCount == 0) {
+            //保存数据到数据库
+            NSMutableArray * tempArray = [NSMutableArray array];
+            NSArray *tempPaperArr = [paper allValues];
+            [tempArray addObjectsFromArray:tempPaperArr];
+
+            [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
+        }
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -111,12 +137,25 @@ static NSString *identifier = @"Cell";
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
     if ([array count]) {
         for (ExamInfo * examInfo in array) {
+            downloadedPaperCount = [array count];
             NSLog(@"%@",examInfo.KS_leixing);
             if ([examInfo.KS_leixing isEqualToString:@"1"]) {
                 [firstDataSource addObject:examInfo];
+                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+                    NSArray * arr = (NSArray *)item;
+                    [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
+                    self.downloadedPaperCount --;
+                }];
             }else if([examInfo.KS_leixing isEqualToString:@"2"])
             {
                 [secondDataSource addObject:examInfo];
+                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+                    NSArray * arr = (NSArray *)item;
+                    [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
+                    self.downloadedPaperCount --;
+                }];
+                
+
             }else if([examInfo.KS_leixing isEqualToString:@"3"])
             {
                 [thirdDataSource addObject:examInfo];
@@ -126,20 +165,18 @@ static NSString *identifier = @"Cell";
             }
         }
     }
-    
-    //    [HttpHelper getExamPaperListWithExamId: completedBlock:^(id item, NSError *error) {
-    //        ;
-    //    }];
-    //
 }
 
 -(void)settingPullRefreshAction
 {
+    __weak TestUserGroupViewController *weakSelf = self;
+    
     __weak UITableView *weakFirstTable = self.firstTable;
     self.firstTable.tag = FirTableTag;
     [self.firstTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         //执行下啦时候的操作
+        [weakSelf pullToUpdate];
         [weakFirstTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
     
@@ -148,6 +185,7 @@ static NSString *identifier = @"Cell";
     self.secondTable.tag = SecTableTag;
     [self.secondTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
+        [weakSelf pullToUpdate];
         [weakSecondTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
     
@@ -155,6 +193,7 @@ static NSString *identifier = @"Cell";
     self.thirdTable.tag = ThiTableTag;
     [self.thirdTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
+          [weakSelf pullToUpdate];
         [weakThirdTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
     
@@ -162,9 +201,32 @@ static NSString *identifier = @"Cell";
     self.fourthTable.tag = FouTableTag;
     [self.fourthTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
+          [weakSelf pullToUpdate];
         [weakFourthTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }];
 
+}
+
+-(void)pullToUpdate
+{
+    __weak TestUserGroupViewController *weakSelf = self;
+    if (info) {
+        [HttpHelper getGroupExamListWithId:[info valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
+            
+            //保存数据数据库
+            [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+            [weakSelf reloadAllTable];
+        }];
+    }
+
+}
+
+-(void)reloadAllTable
+{
+    [self.firstTable reloadData];
+    [self.secondTable reloadData];
+    [self.thirdTable reloadData];
+    [self.fourthTable reloadData];
 }
 
 -(void)configureCell:(UITableViewCell *)cell withTable:(UITableView *)tableView  indexPath:(NSIndexPath *)indexPath
@@ -208,21 +270,26 @@ static NSString *identifier = @"Cell";
         default:
             break;
     }
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if (selectedRow == indexPath.row) {
+    if (selectedRow == indexPath.row&&selectedRow !=preSelectedRow) {
+        preSelectedRow = indexPath.row;
         NSLog(@"do somethinghere");
-        SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(50, 0, 250, 40)];
+        __block SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(70, 0, 250, 40)];
         popView.alpha = 0.1;
         [UIView animateWithDuration:0.3 animations:^{
             popView.alpha = 1.0;
             [cell.contentView addSubview:popView];
+            popView = nil;
         }];
-        
+        cell.accessoryType = UITableViewCellAccessoryNone;
     }else
     {
         NSArray * subviewAry = cell.contentView.subviews;
         for (UIView * view in subviewAry) {
             if ([view isKindOfClass:[SelectedPaperPopupView class]]) {
+                preSelectedRow =-1;
                 [UIView animateWithDuration:0.3 animations:^{
                     view.alpha = 0.1;
                     [view removeFromSuperview];
@@ -308,8 +375,7 @@ static NSString *identifier = @"Cell";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
 
     [self configureCell:cell withTable:tableView indexPath:indexPath];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     return cell;
 }
 

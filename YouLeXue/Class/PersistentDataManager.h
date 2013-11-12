@@ -23,4 +23,5 @@
 -(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName;
 -(void)createExampleListTable:(NSArray *)array;
 -(void)createOtherInformationTable:(NSArray *)array;
+-(void)createExamPaperTable:(NSArray *)array;
 @end
