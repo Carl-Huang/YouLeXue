@@ -8,8 +8,13 @@
 
 #import "MainViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UserLoginInfo.h"
+#import "AppDelegate.h"
+#import "PersistentDataManager.h"
 @interface MainViewController ()
-
+{
+    UserLoginInfo * info;
+}
 @end
 
 @implementation MainViewController
@@ -29,7 +34,49 @@
     [super viewDidLoad];
     [self animation];
     [self.afterLoginView setHidden:YES];
-    // Do any additional setup after loading the view from its nib.
+    info = nil;
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        info = [array objectAtIndex:0];
+    }
+    
+    if (info) {
+        [self.NotLoignLabel setHidden:YES];
+        [self.afterLoginView setHidden:NO];
+        
+        NSDate * date = [self dateFromString:[info valueForKey:@"examTime"]];
+        NSDate * currentDate = [NSDate date];
+        
+        NSInteger lastDate = [self daysWithinEraFromDate:currentDate toDate:date];
+        if (lastDate <0) {
+            lastDate = 0;
+        }
+        NSString * timeText = [NSString stringWithFormat:@"离考试时间还有%d天",lastDate];
+
+        NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
+        self.countTimeLabel.text = timeText;
+        self.messageCountLabel.text = messageText;
+    }
+
+}
+
+- (NSDate *)dateFromString:(NSString *)dateString{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat: @"yyyy-MM-dd"];
+    NSDate *destDate= [dateFormatter dateFromString:dateString];
+    return destDate;
+    
+}
+
+-(NSInteger)daysWithinEraFromDate:(NSDate *) startDate toDate:(NSDate *) endDate
+{
+
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorianCalendar components:NSDayCalendarUnit
+                                                        fromDate:startDate
+                                                          toDate:endDate
+                                                        options:0];
+    return components.day;
 }
 
 -(void)animation
@@ -71,6 +118,9 @@
     [self setLeftImage:nil];
     [self setRightImage:nil];
     [self setAfterLoginView:nil];
+    [self setCountTimeLabel:nil];
+    [self setMessageCountLabel:nil];
+    [self setNotLoignLabel:nil];
     [super viewDidUnload];
 }
 @end
