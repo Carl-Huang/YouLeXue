@@ -219,7 +219,7 @@
                 [contentView loadHTMLString:obj.ArticleContent baseURL:nil];
                 contentView.backgroundColor = [UIColor clearColor];
 //                contentView.scrollView.scrollEnabled = NO;
-//                contentView.scrollView.bounces = NO;
+                contentView.scrollView.bounces = NO;
                 [contentView setOpaque:NO];
                 
                 VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"hell" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -301,6 +301,10 @@
             [weakSelf saveDataTolocal];
             [weakSelf refreshStatus];
             [weakSelf.afterLoginView setHidden:NO];
+            [UIView animateWithDuration:0.3 animations:^{
+                weakSelf.beforeLoginView.alpha = 0.1;
+                weakSelf.afterLoginView.alpha = 1.0;
+            }];
             [weakSelf.beforeLoginView setHidden:YES];
         }
        
@@ -354,6 +358,11 @@
 
 - (IBAction)logoutAction:(id)sender {
     [[PersistentDataManager sharePersistenDataManager]deleteRecordWithPrimaryKey:@"UserID" keyValue:[userInfo valueForKey:@"UserID"] tableName:@"UserLoginInfoTable"];
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.afterLoginView.alpha = 0.1;
+        self.beforeLoginView.alpha = 1.0;
+    }];
     [self.afterLoginView setHidden:YES];
     [self.beforeLoginView setHidden:NO];
 }

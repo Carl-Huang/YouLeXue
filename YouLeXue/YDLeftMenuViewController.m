@@ -26,6 +26,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if (IS_SCREEN_4_INCH) {
+        CGRect rect = self.leftTable.frame;
+        rect.size.height +=88;
+        self.leftTable.frame = rect;
+    }
     // Do any additional setup after loading the view from its nib.
 }
 

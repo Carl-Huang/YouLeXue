@@ -13,6 +13,7 @@
 #import "ExamInfo.h"
 #import "ExamplePaperInfo.h"
 #import "FetchDataInfo.h"
+
 @implementation PersistentDataManager
 @synthesize db;
 
@@ -51,6 +52,7 @@
     [db open];
     if ([self isTableOK:@"UserLoginInfoTable"]) {
         NSLog(@"数据表已经存在");
+        [self eraseTableData:@"UserLoginInfoTable"];
         [self insertValueToExistedTableWithTableName:@"UserLoginInfoTable" Arguments:info primaryKey:@"UserID"];
     }else
     {
@@ -74,6 +76,7 @@
     [db open];
     if ([self isTableOK:@"PaperListTable"]) {
         NSLog(@"数据表已经存在");
+        [self eraseTableData:@"PaperListTable"];
         for (ExamInfo * info in array) {
             [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
         }
@@ -101,6 +104,7 @@
     [db open];
     if ([self isTableOK:@"ExampleListTable"]) {
         NSLog(@"数据表已经存在");
+        [self eraseTableData:@"ExampleListTable"];
         for (ExamplePaperInfo * info in array) {
             [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
         }
@@ -129,6 +133,7 @@
     [db open];
     if ([self isTableOK:@"OtherInformationTable"]) {
         NSLog(@"数据表已经存在");
+        [self eraseTableData:@"OtherInformationTable"];
         for (FetchDataInfo * info in array) {
             [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
         }
@@ -149,6 +154,17 @@
     }
     [db close];
 
+}
+
+//清除表的所有信息
+-(BOOL)eraseTableData:(NSString *)tableName
+{
+    NSString *sqlstr = [NSString stringWithFormat:@"DELETE FROM %@", tableName];
+    if (![db executeUpdate:sqlstr])
+    {
+        return NO;
+    }
+    return YES;
 }
 
 
