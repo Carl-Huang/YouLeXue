@@ -36,6 +36,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *userDesclabel;
 @property (weak, nonatomic) IBOutlet UILabel *userDetailDescLabel;
 
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
 
 
 @property (strong ,nonatomic) UserLoginInfo * userInfo;

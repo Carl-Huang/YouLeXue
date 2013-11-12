@@ -46,6 +46,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //屏幕适配
+    if (IS_SCREEN_4_INCH) {
+        CGRect rect1 = self.rightTable.frame;
+        rect1.size.height +=44;
+        self.rightTable.frame = rect1;
+        
+        CGRect rect2 = self.bottomView.frame;
+        rect2.origin.y += 44;
+        rect2.size.height +=44;
+        self.bottomView.frame = rect2;
+    }
+    
     UIButton * leftBtn  = [UIButton buttonWithType:UIButtonTypeCustom];
     [leftBtn setFrame:CGRectMake(0, 0, 30, 30)];
     [leftBtn setBackgroundImage:[UIImage imageNamed:@"Unfold_Right_Button_Student_Center"] forState:UIControlStateNormal];
@@ -175,6 +188,7 @@
     [self setUserNamelabel:nil];
     [self setUserDesclabel:nil];
     [self setUserDetailDescLabel:nil];
+    [self setBottomView:nil];
     [super viewDidUnload];
 }
 
