@@ -110,8 +110,10 @@ static NSString *identifier = @"Cell";
             NSMutableArray * tempArray = [NSMutableArray array];
             NSArray *tempPaperArr = [paper allValues];
             [tempArray addObjectsFromArray:tempPaperArr];
-
-            [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
+            });
+            
         }
     }
 }
