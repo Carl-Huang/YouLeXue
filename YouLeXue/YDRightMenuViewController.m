@@ -23,6 +23,7 @@
 #import "UserInfoViewController.h"
 #import "AppDelegate.h"
 #import "FetchDataInfo.h"
+#import "VDAlertView.h"
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
@@ -63,25 +64,32 @@
     self.passwordTextField.returnKeyType = UIReturnKeyDone;
     self.userNameTextField.text = @"";
     self.passwordTextField.text = @"";
-    [self refreshStatus];
     
-    dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
-
-    __weak YDRightMenuViewController *weakSelf = self;
-    [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
-    {
-        if ([item count]) {
-            [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
-            dataSource  = item;
-            [weakSelf.rightTable reloadData];
-        }
-     if (error) {
-         NSLog(@"%@",error);
-     }
-    }];
+    
+    [self fillData];
+    [self refreshStatus];
 }
 
-
+-(void)fillData
+{
+    dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        __weak YDRightMenuViewController *weakSelf = self;
+        [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
+         {
+             if ([item count]) {
+                 [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
+                 dataSource  = item;
+                 [weakSelf.rightTable reloadData];
+             }
+             if (error) {
+                 NSLog(@"%@",error);
+             }
+         }];
+        
+    });
+}
 -(void)refreshStatus
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -207,9 +215,17 @@
         
         if ([obj.KS_phoneSeq isKindOfClass:[NSNumber class]]) {
             if (obj.KS_phoneSeq.integerValue == indexPath.row+1) {
-                UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:obj.Title message:obj.ArticleContent delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                [alertView show];
-                alertView = nil;
+                UIWebView * contentView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, 280, 150)];
+                [contentView loadHTMLString:obj.ArticleContent baseURL:nil];
+                contentView.backgroundColor = [UIColor clearColor];
+//                contentView.scrollView.scrollEnabled = NO;
+//                contentView.scrollView.bounces = NO;
+                [contentView setOpaque:NO];
+                
+                VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"hell" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                [alert setCustomSubview:contentView];
+                [alert show];
+
 //                NSLog(@"%@",obj.ArticleContent);
             }
         }

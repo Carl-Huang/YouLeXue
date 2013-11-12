@@ -17,7 +17,7 @@
 #import "WrongBookViewController.h"
 #import "SettingViewController.h"
 
-
+#import "VDAlertView.h"
 
 @implementation AppDelegate
 @synthesize akTabBarController;
@@ -62,6 +62,8 @@
                       leftMenuViewController:self.leftMenuViewController
                       rightMenuViewController:self.rightMenuViewController];
     self.window.rootViewController = self.containerViewController;
+    
+        
     self.containerViewController.delegate=self;
     [self.window makeKeyAndVisible];
     return YES;

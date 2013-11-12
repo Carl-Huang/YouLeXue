@@ -237,7 +237,7 @@
             const char* name = ivar_getName(var);
             NSString *valueKey = [NSString stringWithUTF8String:name];
             valueKey = [valueKey substringFromIndex:1];
-            NSLog(@"%@",[rs stringForColumn:valueKey]);
+//            NSLog(@"%@",[rs stringForColumn:valueKey]);
             [info setValue:[rs stringForColumn:valueKey] forKeyPath:valueKey];
         }
         free(vars);

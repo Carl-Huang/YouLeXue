@@ -37,26 +37,25 @@
 
 - (void) drawRect: (CGRect) rect
 {
-	// render the radial gradient behind the alertview
-	
-	CGFloat width			= self.frame.size.width;
-	CGFloat height			= self.frame.size.height;
-	CGFloat locations[3]	= { 0.0, 0.5, 1.0 	};
-	CGFloat components[12]	= {	1, 1, 1, 0.5,
-		0, 0, 0, 0.5,
-		0, 0, 0, 0.7	};
-	
-	CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-	CGGradientRef backgroundGradient = CGGradientCreateWithColorComponents(colorspace, components, locations, 3);
-	CGColorSpaceRelease(colorspace);
-	
-	CGContextDrawRadialGradient(UIGraphicsGetCurrentContext(),
-								backgroundGradient,
-								CGPointMake(width/2, height/2), 0,
-								CGPointMake(width/2, height/2), width,
-								0);
-	
-	CGGradientRelease(backgroundGradient);
+//在考试的 app中不需要渐变背景
+//	CGFloat width			= self.frame.size.width;
+//	CGFloat height			= self.frame.size.height;
+//	CGFloat locations[3]	= { 0.0, 0.5, 1.0 	};
+//	CGFloat components[12]	= {	1, 1, 1, 0.5,
+//		0, 0, 0, 0.5,
+//		0, 0, 0, 0.7	};
+//	
+//	CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+//	CGGradientRef backgroundGradient = CGGradientCreateWithColorComponents(colorspace, components, locations, 3);
+//	CGColorSpaceRelease(colorspace);
+//	
+//	CGContextDrawRadialGradient(UIGraphicsGetCurrentContext(),
+//								backgroundGradient,
+//								CGPointMake(width/2, height/2), 0,
+//								CGPointMake(width/2, height/2), width,
+//								0);
+//	
+//	CGGradientRelease(backgroundGradient);
 }
 
 - (void) dealloc
@@ -466,10 +465,10 @@ const CGFloat kTSAlertView_ColumnMargin = 10.0;
 	if ( _backgroundImage == nil )
 	{
         if ([self CurrentVersionIsIOS7]) {
-            self.backgroundImage = [[UIImage imageNamed: @"VDAlertViewIOS7Background.png"] stretchableImageWithLeftCapWidth: 15 topCapHeight: 30];
+            self.backgroundImage = [[UIImage imageNamed: @"VDAlertViewBackground2.png"] stretchableImageWithLeftCapWidth: 15 topCapHeight: 150];
         }else
         {
-            self.backgroundImage = [[UIImage imageNamed: @"VDAlertViewBackground2.png"] stretchableImageWithLeftCapWidth: 15 topCapHeight: 30];
+            self.backgroundImage = [[UIImage imageNamed: @"VDAlertViewBackground2.png"] stretchableImageWithLeftCapWidth: 15 topCapHeight: 150];
         }
 		
 	}
@@ -781,9 +780,16 @@ const CGFloat kTSAlertView_ColumnMargin = 10.0;
             if ( stacked )
             {
                 CGFloat buttonWidth = maxWidth;
+                NSInteger leftMargin = kTSAlertView_LeftMargin;
+                if ([self.buttons count]==1) {
+                    buttonWidth = 120;
+                    leftMargin = 90;
+                }
+                
+                
                 for ( UIButton* b in self.buttons )
                 {
-                    b.frame = CGRectMake( kTSAlertView_LeftMargin, y, buttonWidth, buttonHeight );
+                    b.frame = CGRectMake( leftMargin, y, buttonWidth, buttonHeight );
                     y += buttonHeight + kTSAlertView_RowMargin;
                 }
             }
