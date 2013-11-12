@@ -114,7 +114,6 @@
 						<int key="NSvFlags">274</int>
 						<string key="NSFrame">{{960, 45}, {320, 320}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<reference key="IBUIBackgroundColor" ref="116706646"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -138,7 +137,7 @@
 								<reference key="NSSuperview" ref="861428621"/>
 								<reference key="NSNextKeyView" ref="1018534208"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
-								<object class="NSColor" key="IBUIBackgroundColor" id="678900740">
+								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">2</int>
 									<bytes key="NSRGB">MC4yNTg4MjM1Mjk0IDAuNzE3NjQ3MDU4OCAwLjc4ODIzNTI5NDEAA</bytes>
 								</object>
@@ -151,7 +150,10 @@
 									<int key="NSColorSpace">2</int>
 									<bytes key="NSRGB">MC4wMzUyOTQxMTkyNyAwLjk0MTE3NjUzMzcgMC45MzcyNTQ5NjUzAA</bytes>
 								</object>
-								<reference key="IBUISelectedTitleColor" ref="678900740"/>
+								<object class="NSColor" key="IBUISelectedTitleColor">
+									<int key="NSColorSpace">2</int>
+									<bytes key="NSRGB">MC4yNTg4MjM1Mjk0IDAuNzE3NjQ3MDU4OCAwLjc4ODIzNTI5NDEAA</bytes>
+								</object>
 								<object class="NSColor" key="IBUINormalTitleColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
@@ -618,7 +620,96 @@
 			<nil key="sourceID"/>
 			<int key="maxID">42</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">TestUserGroupViewController</string>
+					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="firstBtnAction:">id</string>
+						<string key="fourthBtnAction:">id</string>
+						<string key="secondBtnAction:">id</string>
+						<string key="thirdBtnAction:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="firstBtnAction:">
+							<string key="name">firstBtnAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="fourthBtnAction:">
+							<string key="name">fourthBtnAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="secondBtnAction:">
+							<string key="name">secondBtnAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="thirdBtnAction:">
+							<string key="name">thirdBtnAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="contentScrollview">UIScrollView</string>
+						<string key="firstBtn">UIButton</string>
+						<string key="firstTable">UITableView</string>
+						<string key="fourthBtn">UIButton</string>
+						<string key="fourthTable">UITableView</string>
+						<string key="secBtn">UIButton</string>
+						<string key="secondTable">UITableView</string>
+						<string key="thirdBtn">UIButton</string>
+						<string key="thirdTable">UITableView</string>
+						<string key="topScrollview">UIScrollView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="contentScrollview">
+							<string key="name">contentScrollview</string>
+							<string key="candidateClassName">UIScrollView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="firstBtn">
+							<string key="name">firstBtn</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="firstTable">
+							<string key="name">firstTable</string>
+							<string key="candidateClassName">UITableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="fourthBtn">
+							<string key="name">fourthBtn</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="fourthTable">
+							<string key="name">fourthTable</string>
+							<string key="candidateClassName">UITableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="secBtn">
+							<string key="name">secBtn</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="secondTable">
+							<string key="name">secondTable</string>
+							<string key="candidateClassName">UITableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="thirdBtn">
+							<string key="name">thirdBtn</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="thirdTable">
+							<string key="name">thirdTable</string>
+							<string key="candidateClassName">UITableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="topScrollview">
+							<string key="name">topScrollview</string>
+							<string key="candidateClassName">UIScrollView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/TestUserGroupViewController.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>

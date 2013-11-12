@@ -20,7 +20,9 @@
 #import "PersistentDataManager.h"
 #import "ExamPaperInfo.h"
 #import "ExamInfo.h"
+#import "SelectedPaperPopupView.h"
 
+static NSString *identifier = @"Cell";
 @interface TestUserGroupViewController ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 {
     NSInteger currentPage;
@@ -32,6 +34,11 @@
     NSMutableArray * secondDataSource;
     NSMutableArray * thirdDataSource;
     NSMutableArray * fourthDataSource;
+    
+    
+    //标志哪个cell被选择
+    NSInteger selectedRow;
+    NSInteger preSelectedRow;
 }
 
 @end
@@ -75,8 +82,12 @@
     currentPage = 1;
     [self.firstBtn setSelected:YES];
     [self settingPullRefreshAction];
-    
     [self dataSourceSetting];
+    
+    
+    //标记选中的项
+    selectedRow = -1;
+    preSelectedRow = -1;
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -197,6 +208,29 @@
         default:
             break;
     }
+    
+    if (selectedRow == indexPath.row) {
+        NSLog(@"do somethinghere");
+        SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(50, 0, 250, 40)];
+        popView.alpha = 0.1;
+        [UIView animateWithDuration:0.3 animations:^{
+            popView.alpha = 1.0;
+            [cell.contentView addSubview:popView];
+        }];
+        
+    }else
+    {
+        NSArray * subviewAry = cell.contentView.subviews;
+        for (UIView * view in subviewAry) {
+            if ([view isKindOfClass:[SelectedPaperPopupView class]]) {
+                [UIView animateWithDuration:0.3 animations:^{
+                    view.alpha = 0.1;
+                    [view removeFromSuperview];
+                }];
+                
+            }
+        }
+    }
 }
 -(NSString *)getDetailDateStr:(ExamInfo *)tempExamInfo
 {
@@ -268,7 +302,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"Cell";
+   
     UITableViewCell *cell = [self.firstTable dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
@@ -281,7 +315,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    selectedRow = tableView.indexPathForSelectedRow.row;
+    [tableView reloadData];
+
 }
 
 #pragma  mark - UIScrollView Delegate
