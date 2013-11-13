@@ -11,4 +11,10 @@
 @interface PaperViewController : UIViewController
 @property (strong ,nonatomic) NSArray * questionDataSource;
 @property (strong ,nonatomic) NSString * titleStr;
+@property (weak, nonatomic) IBOutlet UIButton *preQueBtn;
+@property (weak, nonatomic) IBOutlet UIButton *nextQuesBtn;
+@property (weak, nonatomic) IBOutlet UIScrollView *quesScrollView;
+@property (weak, nonatomic) IBOutlet UIButton *wrongTextBookBtn;
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (weak, nonatomic) IBOutlet UITableView *popUpTable;
 @end
