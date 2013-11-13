@@ -78,9 +78,10 @@
     self.userNameTextField.text = @"";
     self.passwordTextField.text = @"";
     
-    
     [self fillData];
     [self refreshStatus];
+    
+
 }
 
 -(void)fillData
@@ -311,11 +312,14 @@
             [weakSelf saveDataTolocal];
             [weakSelf refreshStatus];
             [weakSelf.afterLoginView setHidden:NO];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"LoginNotification" object:nil];
+            
             [UIView animateWithDuration:0.3 animations:^{
-                weakSelf.beforeLoginView.alpha = 0.1;
+                weakSelf.beforeLoginView.alpha = 0.0;
                 weakSelf.afterLoginView.alpha = 1.0;
+                [weakSelf.beforeLoginView setHidden:YES];
             }];
-            [weakSelf.beforeLoginView setHidden:YES];
+            
         }
        
     }];
@@ -368,7 +372,11 @@
 
 - (IBAction)logoutAction:(id)sender {
     [[PersistentDataManager sharePersistenDataManager]deleteRecordWithPrimaryKey:@"UserID" keyValue:[userInfo valueForKey:@"UserID"] tableName:@"UserLoginInfoTable"];
-    
+    self.userInfo = nil;
+    AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    myDeleate.userInfo = nil;
+
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"LogoutNotification" object:nil];
     [UIView animateWithDuration:0.3 animations:^{
         self.afterLoginView.alpha = 0.1;
         self.beforeLoginView.alpha = 1.0;

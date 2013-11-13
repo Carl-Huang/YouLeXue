@@ -24,4 +24,6 @@
 -(void)createExampleListTable:(NSArray *)array;
 -(void)createOtherInformationTable:(NSArray *)array;
 -(void)createExamPaperTable:(NSArray *)array;
+
+-(NSMutableDictionary *)readExamPaperToDic;
 @end

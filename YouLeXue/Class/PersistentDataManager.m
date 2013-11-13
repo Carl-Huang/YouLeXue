@@ -111,7 +111,6 @@
                 [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
             }
         }
-
     }else
     {
         NSLog(@"数据表不存在");
@@ -132,6 +131,59 @@
     }
     [db close];
 }
+
+//读取试卷，每一份试卷为一个对象，并返回一个dictionary
+-(NSMutableDictionary *)readExamPaperToDic
+{
+    NSMutableDictionary * tempDic = [NSMutableDictionary dictionary];
+
+    NSArray * keyArr = [self readDistinctObjWithKey:@"kid" tableName:@"ExamPaperTable"];
+    if ([keyArr count]) {
+        [db open];
+        for (NSString * key in keyArr) {
+            NSString * sqlStr = [NSString stringWithFormat:@"select * from ExamPaperTable where kid='%@'",key];
+            
+            FMResultSet *rs = [db executeQuery:sqlStr];
+            NSMutableArray * array = [NSMutableArray array];
+            while ([rs next]) {
+                id info = [[ExamPaperInfo alloc] init];
+                unsigned int varCount;
+                Ivar *vars = class_copyIvarList([ExamPaperInfo class], &varCount);
+                for (int i = 0; i < varCount; i++) {
+                    Ivar var = vars[i];
+                    const char* name = ivar_getName(var);
+                    NSString *valueKey = [NSString stringWithUTF8String:name];
+                    valueKey = [valueKey substringFromIndex:1];
+                    [info setValue:[rs stringForColumn:valueKey] forKeyPath:valueKey];
+                }
+                free(vars);
+                [array addObject:info];
+            }
+            [tempDic setObject:array forKey:key];
+            array = nil;
+        }
+        [db close];
+    }
+    
+    return tempDic;
+}
+
+-(NSArray *)readDistinctObjWithKey:(NSString *)key tableName:(NSString *)tableName
+{
+    [db open];
+    NSString * sqlStr = [NSString stringWithFormat:@"select distinct %@ from %@",key,tableName];
+    FMResultSet *rs = [db executeQuery:sqlStr];
+    NSMutableArray * tempArray = [NSMutableArray array];
+    while ([rs next]) {
+        [tempArray addObject:[rs stringForColumn:@"kid"]];
+//        NSLog(@"%@",[rs stringForColumn:@"kid"]);
+    }
+    
+    [rs close];
+    [db close];
+    return tempArray;
+}
+
 
 
 //创建案例的表
@@ -207,7 +259,6 @@
 //插入数据到表
 -(void)insertValueToExistedTableWithTableName:(NSString *)tableName Arguments:(id )obj primaryKey:(NSString *)key
 {
-    [db beginTransaction];
     NSMutableArray * objectValueArray = [NSMutableArray array];
     unsigned int varCount;
     Ivar *vars = class_copyIvarList([obj class], &varCount);
@@ -242,12 +293,13 @@
         
         
     }
-    [db commit];
 }
 
 -(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName
 {
-    NSLog(@"删除key:%@  的记录",key);
+    [db open];
+    [db beginTransaction];
+    NSLog(@"删除key:%@  的记录",keyValue);
     NSString *sqlStr = [NSString stringWithFormat:@"delete from %@ where %@=%@",tableName,key,keyValue];
     if ([db executeUpdate:sqlStr]) {
         NSLog(@"update value successfully");
@@ -255,7 +307,9 @@
     {
         NSLog(@"Failer to update value to table,Error: %@",[db lastError]);
     }
+    [db commit];
 }
+
 
 
 -(void)readDataWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue withTableName:(NSString *)tableName withObj:(id)obj

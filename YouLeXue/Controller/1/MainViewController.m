@@ -34,6 +34,13 @@
     [super viewDidLoad];
     [self animation];
     [self.afterLoginView setHidden:YES];
+    [self updateInterface];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LogoutNotification" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LoginNotification" object:nil];
+}
+
+-(void)updateInterface
+{
     info = nil;
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
     if ([array count]) {
@@ -52,13 +59,18 @@
             lastDate = 0;
         }
         NSString * timeText = [NSString stringWithFormat:@"离考试时间还有%d天",lastDate];
-
+        
         NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
         self.countTimeLabel.text = timeText;
         self.messageCountLabel.text = messageText;
+    }else
+    {
+        [self.afterLoginView setHidden:YES];
+        [self.NotLoignLabel setHidden:NO];
     }
 
 }
+
 
 - (NSDate *)dateFromString:(NSString *)dateString{
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -122,5 +134,10 @@
     [self setMessageCountLabel:nil];
     [self setNotLoignLabel:nil];
     [super viewDidUnload];
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 @end

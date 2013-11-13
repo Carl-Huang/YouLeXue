@@ -39,9 +39,15 @@ static NSString *identifier = @"Cell";
     NSMutableDictionary * paper;
     
     //标志哪个cell被选择
-    NSInteger selectedRow;
-    NSInteger preSelectedRow;
+    NSInteger selectedRow1;
+    NSInteger selectedRow2;
+    NSInteger selectedRow3;
+    NSInteger selectedRow4;
     
+    NSInteger preSelectedRow1;
+    NSInteger preSelectedRow2;
+    NSInteger preSelectedRow3;
+    NSInteger preSelectedRow4;
     
     
 }
@@ -92,11 +98,18 @@ static NSString *identifier = @"Cell";
     
     
     //标记选中的项
-    selectedRow = -1;
-    preSelectedRow = -1;
+    selectedRow1 = -1;
+    selectedRow2 = -1;
+    selectedRow3 = -1;
+    selectedRow4 = -1;
+    preSelectedRow1 = -1;
+    preSelectedRow2 = -1;
+    preSelectedRow3 = -1;
+    preSelectedRow4 = -1;
     
     //
     paper = [NSMutableDictionary dictionary];
+    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
 }
@@ -145,25 +158,51 @@ static NSString *identifier = @"Cell";
                 [firstDataSource addObject:examInfo];
                 [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
                     NSArray * arr = (NSArray *)item;
-                    [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
-                    self.downloadedPaperCount --;
+                    if([arr count])
+                    {
+                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
+                        self.downloadedPaperCount --;
+                    }
+                    
                 }];
             }else if([examInfo.KS_leixing isEqualToString:@"2"])
             {
                 [secondDataSource addObject:examInfo];
                 [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
                     NSArray * arr = (NSArray *)item;
-                    [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
-                    self.downloadedPaperCount --;
+                   
+                    if([arr count])
+                    {
+                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
+                        self.downloadedPaperCount --;
+                    }
                 }];
                 
-
             }else if([examInfo.KS_leixing isEqualToString:@"3"])
             {
                 [thirdDataSource addObject:examInfo];
+                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+                    NSArray * arr = (NSArray *)item;
+                    
+                    if([arr count])
+                    {
+                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
+                        self.downloadedPaperCount --;
+                    }
+                }];
+
             }else if([examInfo.KS_leixing isEqualToString:@"4"])
             {
                 [fourthDataSource addObject:examInfo];
+                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+                    NSArray * arr = (NSArray *)item;
+                    
+                    if([arr count])
+                    {
+                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
+                        self.downloadedPaperCount --;
+                    }
+                }];
             }
         }
     }
@@ -233,6 +272,8 @@ static NSString *identifier = @"Cell";
 
 -(void)configureCell:(UITableViewCell *)cell withTable:(UITableView *)tableView  indexPath:(NSIndexPath *)indexPath
 {
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     switch (tableView.tag) {
         case FirTableTag:
         {
@@ -240,6 +281,7 @@ static NSString *identifier = @"Cell";
             cell.textLabel.text = [tempExamInfo valueForKey:@"title"];
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
+            [self configureSpecificRowPopViewWithRow:selectedRow1 preSelectedRow:&preSelectedRow1 Cell:cell indexPath:indexPath];
         }
             break;
         case SecTableTag:
@@ -248,6 +290,7 @@ static NSString *identifier = @"Cell";
             cell.textLabel.text = [tempExamInfo valueForKey:@"title"];
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
+            [self configureSpecificRowPopViewWithRow:selectedRow2 preSelectedRow:&preSelectedRow2 Cell:cell indexPath:indexPath];
         }
             break;
         case ThiTableTag:
@@ -256,6 +299,7 @@ static NSString *identifier = @"Cell";
             cell.textLabel.text = [tempExamInfo valueForKey:@"title"];
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
+            [self configureSpecificRowPopViewWithRow:selectedRow3 preSelectedRow:&preSelectedRow3 Cell:cell indexPath:indexPath];
         }
 
             break;
@@ -272,13 +316,18 @@ static NSString *identifier = @"Cell";
         default:
             break;
     }
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if (selectedRow == indexPath.row&&selectedRow !=preSelectedRow) {
-        preSelectedRow = indexPath.row;
+}
+
+-(void)configureSpecificRowPopViewWithRow:(NSInteger)selectedRow preSelectedRow:(NSInteger *)preSelectedRow Cell:(UITableViewCell *)cell indexPath:(NSIndexPath*)indexPath
+{
+    if (selectedRow == indexPath.row&&selectedRow !=*preSelectedRow) {
+        *preSelectedRow = indexPath.row;
         NSLog(@"do somethinghere");
         __block SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(70, 0, 250, 40)];
+        [popView setExamBlock:[self configureExamModelBlock]];
+        [popView setPracticeBlock:[self configurePracticeModelBlock]];
+        [popView setMarkBlock:[self configureMarkModelBlock]];
         popView.alpha = 0.1;
         [UIView animateWithDuration:0.3 animations:^{
             popView.alpha = 1.0;
@@ -291,7 +340,7 @@ static NSString *identifier = @"Cell";
         NSArray * subviewAry = cell.contentView.subviews;
         for (UIView * view in subviewAry) {
             if ([view isKindOfClass:[SelectedPaperPopupView class]]) {
-                preSelectedRow =-1;
+                *preSelectedRow =-1;
                 [UIView animateWithDuration:0.3 animations:^{
                     view.alpha = 0.1;
                     [view removeFromSuperview];
@@ -301,6 +350,35 @@ static NSString *identifier = @"Cell";
         }
     }
 }
+
+#pragma mark - SelectedPopView Block
+-(ExamModelBlock )configureExamModelBlock
+{
+    ExamModelBlock  block = ^()
+    {
+        NSLog(@"%s",__func__);
+    };
+    return  block;
+}
+
+-(PracticeModelBlock )configurePracticeModelBlock
+{
+    PracticeModelBlock  block = ^()
+    {
+        NSLog(@"%s",__func__);
+    };
+    return  block;
+}
+
+-(MarkModelBlock )configureMarkModelBlock
+{
+    MarkModelBlock  block = ^()
+    {
+        NSLog(@"%s",__func__);
+    };
+    return  block;
+}
+
 -(NSString *)getDetailDateStr:(ExamInfo *)tempExamInfo
 {
     NSDateFormatter * dateFormat = [[NSDateFormatter alloc]init];
@@ -372,10 +450,11 @@ static NSString *identifier = @"Cell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
    
-    UITableViewCell *cell = [self.firstTable dequeueReusableCellWithIdentifier:identifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
 
+    
     [self configureCell:cell withTable:tableView indexPath:indexPath];
 
     return cell;
@@ -383,7 +462,25 @@ static NSString *identifier = @"Cell";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    selectedRow = tableView.indexPathForSelectedRow.row;
+    
+    switch (tableView.tag) {
+        case FirTableTag:
+            
+            selectedRow1 = indexPath.row;
+            break;
+        case SecTableTag:
+            selectedRow2 = indexPath.row;
+            break;
+        case ThiTableTag:
+            selectedRow3 = indexPath.row;
+            break;
+        case FouTableTag:
+            selectedRow4 = indexPath.row;
+            break;
+        default:
+            break;
+    }
+//    selectedRow = tableView.indexPathForSelectedRow.row;
     [tableView reloadData];
 
 }
@@ -467,5 +564,10 @@ static NSString *identifier = @"Cell";
     frame.origin.y = 0;
     [self.contentScrollview scrollRectToVisible:frame animated:YES];
 
+}
+
+-(void)dealloc
+{
+    [self removeObserver:self forKeyPath:@"downloadedPaperCount"];
 }
 @end

@@ -72,17 +72,17 @@
 
 -(void)examModelAction
 {
-    
+    self.examBlock();
 }
 
 -(void)practiceModelAction
 {
-    
+    self.practiceBlock();
 }
 
 -(void)markModelAction
 {
-    
+    self.markBlock();
 }
 /*
 // Only override drawRect: if you perform custom drawing.
