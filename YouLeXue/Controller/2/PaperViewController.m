@@ -16,6 +16,8 @@
 #import "PaperViewController.h"
 #import "UIViewController+TabbarConfigure.h"
 #import "ExamPaperInfo.h"
+#import "ExamInfo.h"
+#import "QuestionView.h"
 @interface PaperViewController ()
 {
     NSArray * questTypes;
@@ -23,6 +25,9 @@
     //标志是否显示popTableview
     BOOL isShouldShowTable;
     CGRect originTableRect;
+    
+    //考试时间
+    CGFloat examTime;
 }
 
 @end
@@ -61,6 +66,17 @@
     
     
     //倒计时
+    [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
+    examTime = [[self.examInfo valueForKey:@"kssj"]floatValue]*60;
+    
+    
+    //content View
+    [self.quesScrollView setContentSize:CGSizeMake([questionDataSource count]*320+10, self.quesScrollView.frame.size.height)];
+    QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(0, 0, 320, 250)];
+    NSString * str = [NSString stringWithFormat:@"%@%@",[[questionDataSource objectAtIndex:1]valueForKey:@"title"],[[questionDataSource objectAtIndex:1]valueForKey:@"tmnr"]];
+    [quesView.quesTextView loadHTMLString:str baseURL:nil];
+    [self.quesScrollView addSubview:quesView];
+    [self.view bringSubviewToFront:self.popUpTable];
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,6 +95,19 @@
     [super viewDidUnload];
 }
 
+-(void)descreaseTime
+{
+    [self translateTimeToStr:examTime --];
+}
+
+-(void)translateTimeToStr:(NSInteger)time
+{
+    int minute = floor(time / 60.0);
+    int second = time % 60;
+//    NSLog(@"%d,%d",minute,second);
+    self.timeLabel.text = [NSString stringWithFormat:@"剩余:%d分%d秒",minute,second];
+    
+}
 #pragma mark -
 #pragma mark UITableViewDataSource
 
@@ -97,7 +126,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    
+    NSArray *array = [cell.contentView subviews];
+    [array makeObjectsPerformSelector:@selector(removeFromSuperview)];
     UIImageView * imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"User_Edit_Button_Confirm@2x"]];
     [imageView setFrame:CGRectMake(0, 0, 88, 45)];
     [cell.contentView addSubview:imageView];
@@ -159,7 +189,7 @@
 {
     if (isShouldShowTable) {
         CGRect rect = self.popUpTable.frame;
-        rect.size.height = [questTypes count]*44+rect.size.height;
+        rect.size.height = [questTypes count]*41+rect.size.height;
         
         
         [UIView animateWithDuration:0.3 animations:^{

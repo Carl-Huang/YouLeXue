@@ -50,7 +50,7 @@ static NSString *identifier = @"Cell";
     NSInteger preSelectedRow3;
     NSInteger preSelectedRow4;
     
-    
+    BOOL isShouldDownExamPaper;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -109,8 +109,12 @@ static NSString *identifier = @"Cell";
     preSelectedRow4 = -1;
     
     //
+    isShouldDownExamPaper = NO;
     paper = [NSMutableDictionary dictionary];
     paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+    if ([paper count]==0) {
+        isShouldDownExamPaper = YES;
+    }
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadUserInfo) name:@"LoginNotification" object:nil];
@@ -172,57 +176,38 @@ static NSString *identifier = @"Cell";
             NSLog(@"%@",examInfo.KS_leixing);
             if ([examInfo.KS_leixing isEqualToString:@"1"]) {
                 [firstDataSource addObject:examInfo];
-                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
-                    NSArray * arr = (NSArray *)item;
-                    if([arr count])
-                    {
-                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
-                        self.downloadedPaperCount --;
-                    }
-                    
-                }];
+                [self downPaperListWithExamInfo:examInfo];
             }else if([examInfo.KS_leixing isEqualToString:@"2"])
             {
-                [secondDataSource addObject:examInfo];
-                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
-                    NSArray * arr = (NSArray *)item;
-                    
-                    if([arr count])
-                    {
-                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
-                        self.downloadedPaperCount --;
-                    }
-                }];
-                
+                [self downPaperListWithExamInfo:examInfo];                
             }else if([examInfo.KS_leixing isEqualToString:@"3"])
             {
                 [thirdDataSource addObject:examInfo];
-                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
-                    NSArray * arr = (NSArray *)item;
-                    
-                    if([arr count])
-                    {
-                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
-                        self.downloadedPaperCount --;
-                    }
-                }];
-                
+                [self downPaperListWithExamInfo:examInfo];
             }else if([examInfo.KS_leixing isEqualToString:@"4"])
             {
                 [fourthDataSource addObject:examInfo];
-                [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
-                    NSArray * arr = (NSArray *)item;
-                    
-                    if([arr count])
-                    {
-                        [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
-                        self.downloadedPaperCount --;
-                    }
-                }];
+                [self downPaperListWithExamInfo:examInfo];
             }
         }
     }
 
+}
+
+-(void)downPaperListWithExamInfo:(ExamInfo *)tempExamInfo
+{
+    if (isShouldDownExamPaper) {
+        [HttpHelper getExamPaperListWithExamId:[tempExamInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+            NSArray * arr = (NSArray *)item;
+            
+            if([arr count])
+            {
+                [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
+                self.downloadedPaperCount --;
+            }
+        }];
+
+    }
 }
 
 -(void)settingPullRefreshAction
@@ -273,6 +258,7 @@ static NSString *identifier = @"Cell";
             
             //保存数据数据库
             [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+            [self fillData];
             [weakSelf reloadAllTable];
         }];
     }
@@ -281,7 +267,6 @@ static NSString *identifier = @"Cell";
 
 -(void)reloadAllTable
 {
-    [self fillData];
     [self.firstTable reloadData];
     [self.secondTable reloadData];
     [self.thirdTable reloadData];
@@ -381,12 +366,13 @@ static NSString *identifier = @"Cell";
                 NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"id"]];
                 PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
                 [viewcontroller setQuestionDataSource:paperList];
+                [viewcontroller setExamInfo:selectedInfo];
                 viewcontroller.title = @"测试用户组的试卷";
                 [self.navigationController pushViewController:viewcontroller animated:YES];
                 viewcontroller = nil;
                 
             }
-                break;
+            break;
                 
             default:
                 break;

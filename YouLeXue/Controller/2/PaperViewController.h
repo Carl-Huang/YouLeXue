@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class ExamInfo;
 @interface PaperViewController : UIViewController
 @property (strong ,nonatomic) NSArray * questionDataSource;
+@property (strong ,nonatomic) ExamInfo * examInfo;
+
 @property (strong ,nonatomic) NSString * titleStr;
 @property (weak, nonatomic) IBOutlet UIButton *preQueBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextQuesBtn;

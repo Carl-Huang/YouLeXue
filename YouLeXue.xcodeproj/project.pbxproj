@@ -269,6 +269,7 @@
 		4EF187F4182AA70500E5EEA8 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */; };
 		4EFF03AC18339C3B005B13BA /* PaperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF03AA18339C3B005B13BA /* PaperViewController.m */; };
 		4EFF03AD18339C3B005B13BA /* PaperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EFF03AB18339C3B005B13BA /* PaperViewController.xib */; };
+		4EFF03B31833C129005B13BA /* QuestionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF03B21833C129005B13BA /* QuestionView.m */; };
 		C32C21521828912200FBF75C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C32C21511828912200FBF75C /* Foundation.framework */; };
 		C32C21541828912200FBF75C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C32C21531828912200FBF75C /* CoreGraphics.framework */; };
 		C32C21561828912200FBF75C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C32C21551828912200FBF75C /* UIKit.framework */; };
@@ -598,6 +599,8 @@
 		4EFF03A918339C3B005B13BA /* PaperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperViewController.h; sourceTree = "<group>"; };
 		4EFF03AA18339C3B005B13BA /* PaperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperViewController.m; sourceTree = "<group>"; };
 		4EFF03AB18339C3B005B13BA /* PaperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaperViewController.xib; sourceTree = "<group>"; };
+		4EFF03B11833C129005B13BA /* QuestionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionView.h; sourceTree = "<group>"; };
+		4EFF03B21833C129005B13BA /* QuestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionView.m; sourceTree = "<group>"; };
 		C32C214E1828912200FBF75C /* YouLeXue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouLeXue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C32C21511828912200FBF75C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C32C21531828912200FBF75C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -750,6 +753,8 @@
 				4E7823ED1831392A00DD396F /* VDAlertView */,
 				4EDDB5FE183232D500C1AD09 /* SelectedPaperPopupView.h */,
 				4EDDB5FF183232D500C1AD09 /* SelectedPaperPopupView.m */,
+				4EFF03B11833C129005B13BA /* QuestionView.h */,
+				4EFF03B21833C129005B13BA /* QuestionView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1500,6 +1505,7 @@
 				4E7824011831392A00DD396F /* VDProcessingView.m in Sources */,
 				4EDDB600183232D500C1AD09 /* SelectedPaperPopupView.m in Sources */,
 				4EFF03AC18339C3B005B13BA /* PaperViewController.m in Sources */,
+				4EFF03B31833C129005B13BA /* QuestionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
