@@ -21,6 +21,7 @@
 #import "ExamPaperInfo.h"
 #import "ExamInfo.h"
 #import "SelectedPaperPopupView.h"
+#import "PaperViewController.h"
 
 static NSString *identifier = @"Cell";
 @interface TestUserGroupViewController ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
@@ -112,6 +113,16 @@ static NSString *identifier = @"Cell";
     paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadUserInfo) name:@"LoginNotification" object:nil];
+    
+}
+
+-(void)reloadUserInfo
+{
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        info = [array objectAtIndex:0];
+    }
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -149,6 +160,11 @@ static NSString *identifier = @"Cell";
     fourthDataSource    = [NSMutableArray array];
     
     //试卷题目列表
+    [self fillData];
+}
+
+-(void)fillData
+{
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
     if ([array count]) {
         for (ExamInfo * examInfo in array) {
@@ -170,7 +186,7 @@ static NSString *identifier = @"Cell";
                 [secondDataSource addObject:examInfo];
                 [HttpHelper getExamPaperListWithExamId:[examInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
                     NSArray * arr = (NSArray *)item;
-                   
+                    
                     if([arr count])
                     {
                         [paper setObject:arr forKey:[examInfo valueForKey:@"id"]];
@@ -190,7 +206,7 @@ static NSString *identifier = @"Cell";
                         self.downloadedPaperCount --;
                     }
                 }];
-
+                
             }else if([examInfo.KS_leixing isEqualToString:@"4"])
             {
                 [fourthDataSource addObject:examInfo];
@@ -206,6 +222,7 @@ static NSString *identifier = @"Cell";
             }
         }
     }
+
 }
 
 -(void)settingPullRefreshAction
@@ -264,6 +281,7 @@ static NSString *identifier = @"Cell";
 
 -(void)reloadAllTable
 {
+    [self fillData];
     [self.firstTable reloadData];
     [self.secondTable reloadData];
     [self.thirdTable reloadData];
@@ -356,6 +374,23 @@ static NSString *identifier = @"Cell";
 {
     ExamModelBlock  block = ^()
     {
+        switch (currentPage) {
+            case 1:
+            {
+                ExamInfo * selectedInfo = [firstDataSource objectAtIndex:selectedRow1];
+                NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"id"]];
+                PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
+                [viewcontroller setQuestionDataSource:paperList];
+                viewcontroller.title = @"测试用户组的试卷";
+                [self.navigationController pushViewController:viewcontroller animated:YES];
+                viewcontroller = nil;
+                
+            }
+                break;
+                
+            default:
+                break;
+        }
         NSLog(@"%s",__func__);
     };
     return  block;
@@ -465,7 +500,6 @@ static NSString *identifier = @"Cell";
     
     switch (tableView.tag) {
         case FirTableTag:
-            
             selectedRow1 = indexPath.row;
             break;
         case SecTableTag:
@@ -493,6 +527,7 @@ static NSString *identifier = @"Cell";
         CGFloat pageWidth = scrollView.frame.size.width;
         float fractionalPage = scrollView.contentOffset.x / pageWidth;
         NSInteger page = lround(fractionalPage)+1;
+        currentPage = page;
         [self updateBtnStatusWithIndex:page];
     }
 }
@@ -569,5 +604,6 @@ static NSString *identifier = @"Cell";
 -(void)dealloc
 {
     [self removeObserver:self forKeyPath:@"downloadedPaperCount"];
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 @end
