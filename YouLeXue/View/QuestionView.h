@@ -18,5 +18,5 @@
 
 @property (strong ,nonatomic) NSString * textViewText;
 
--(void)initWebView:(NSString *)str;
+//-(void)initWebView:(NSString *)str;
 @end

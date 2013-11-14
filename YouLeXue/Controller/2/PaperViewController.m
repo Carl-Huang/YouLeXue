@@ -5,6 +5,7 @@
 //  Created by vedon on 13/11/13.
 //  Copyright (c) 2013 Carl. All rights reserved.
 //
+//#define LogoutFunctionName
 
 typedef NS_ENUM(NSInteger, PanDirection)
 {
@@ -44,10 +45,16 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSInteger shouldDeletedPageL;
     NSInteger shouldDeletedPageR;
     NSInteger preOffsetX;
+    NSInteger previousPage;
     PanDirection panDirectioin;
+    PanDirection prePanDirection;
     NSMutableArray * currentDisplayItems; //保存着相对currPage，前一个数据，和后一个数据
     NSInteger totalPage;
     NSMutableArray * questionStrArray;    //所有试题的描述
+    
+    
+    //QuestionView height
+    NSInteger questionViewHeight;
 }
 
 @end
@@ -68,7 +75,15 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     [super viewDidLoad];
     [self setBackItem:nil withImage:@"Bottom_Icon_Back"];
-    
+    if (IS_SCREEN_4_INCH) {
+        questionViewHeight = 340;
+        CGRect rect= self.quesScrollView.frame;
+        rect.size.height +=88;
+        self.quesScrollView.frame = rect;
+    }else
+    {
+        questionViewHeight = 250;
+    }
     
     //获取试卷分类
     NSMutableSet * set = [NSMutableSet set];
@@ -130,6 +145,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }else
         {
              descriptionStr = [NSString stringWithFormat:@"%@%@%@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"]];
+//             descriptionStr = [NSString stringWithFormat:@"%@",[tempPaperInfo valueForKey:@"num"]];
         }
         [questionStrArray addObject:descriptionStr];
     }
@@ -137,13 +153,15 @@ typedef NS_ENUM(NSInteger, PanDirection)
     totalPage = [questionDataSource count];
     currPage = 2;
     panDirectioin = PanDirectionNone;
+    prePanDirection= PanDirectionNone;
+    preOffsetX = 0.0;
     isEndScrolling = YES;
-//    QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(0, 0, 320, 250)];
-//   
-//    [quesView.quesTextView loadHTMLString:[questionStrArray objectAtIndex:0] baseURL:nil];
-//    [self.quesScrollView addSubview:quesView];
+    previousPage = 1;
     [self refreshScrollViewWithDirection:panDirectioin];
     [self.view bringSubviewToFront:self.popUpTable];
+    
+    
+   
 }
 
 - (void)didReceiveMemoryWarning
@@ -279,7 +297,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 
 - (void)getDisplayImagesWithCurpage:(int)page direction:(PanDirection)direction{
+#ifdef LogoutFunctionName
     NSLog(@"%s",__func__);
+#endif
+
 
     shouldDeletedPageL = page -2;
     prePage = page -1;
@@ -287,12 +308,20 @@ typedef NS_ENUM(NSInteger, PanDirection)
     shouldDeletedPageR = page +2;
     
     if (direction == PanDirectionLeft) {
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:prePage]];
-        [currentDisplayItems removeObjectAtIndex:4];
+        [currentDisplayItems removeLastObject];
+        NSMutableArray * tempArray = [NSMutableArray array];
+        [tempArray addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
+        [tempArray addObjectsFromArray:currentDisplayItems];
+        [currentDisplayItems removeAllObjects];
+        [currentDisplayItems  addObjectsFromArray:tempArray];
+//        NSLog(@"减少了%@",[questionStrArray objectAtIndex:shouldDeletedPageL]);
+        
     }else if(direction == PanDirectionRight)
     {
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:nextPage]];
         [currentDisplayItems removeObjectAtIndex:0];
+        [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
+//        NSLog(@"减少%@",[questionStrArray objectAtIndex:shouldDeletedPageR]);
+
     }else
     {
         [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
@@ -305,47 +334,56 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 
 - (void)refreshScrollViewWithDirection:(PanDirection)direction {
+#ifdef LogoutFunctionName
     NSLog(@"%s",__func__);
+#endif
 
-    [self getDisplayImagesWithCurpage:currPage direction:direction];
+    prePanDirection = direction;
     [self removeTheOppositeQuestionViewWithDirection:direction];
+    [self getDisplayImagesWithCurpage:currPage direction:direction];
+    
     if (direction == PanDirectionLeft) {
         NSString * tempStr = [currentDisplayItems objectAtIndex:0];
-        QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*prePage, 0, 320, 250)];
+//        NSLog(@"增加了：%@",tempStr);
+        QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight)];
         [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
         [self.quesScrollView addSubview:quesView];
     }else if (direction == PanDirectionRight)
     {
-        NSString * tempStr = [currentDisplayItems objectAtIndex:2];
-        QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*nextPage, 0, 320, 250)];
+        NSString * tempStr = [currentDisplayItems objectAtIndex:4];
+//        NSLog(@"增加了：%@",tempStr);
+        QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight)];
         [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
         [self.quesScrollView addSubview:quesView];
     }else
     {
-//        for (int i = 0; i < 5; i++) {
-//            NSString * tempStr = [currentDisplayItems objectAtIndex:i];
-//            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, 250)];
-//            [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
-//            [self.quesScrollView addSubview:quesView];
-//        }
-        
-        //够屌丝，一次加载全部
-        for (int i = 0; i < [questionStrArray count]; i++) {
-            NSString * tempStr = [questionStrArray objectAtIndex:i];
-            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, 250)];
-            NSError * error = nil;
-            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<a href=\"[^\"]+\">([^<]+)</a>" options:NSRegularExpressionCaseInsensitive error:&error];
-            NSString *modifiedString = [regex stringByReplacingMatchesInString:tempStr options:0 range:NSMakeRange(0, [tempStr length]) withTemplate:@"$1"];
-            [quesView.quesTextView loadHTMLString:modifiedString baseURL:nil];
+        for (int i = 0; i < 5; i++) {
+            NSString * tempStr = [currentDisplayItems objectAtIndex:i];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, questionViewHeight)];
+            [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
             [self.quesScrollView addSubview:quesView];
         }
+        
+        //够屌丝，一次加载全部
+//        for (int i = 0; i < [questionStrArray count]; i++) {
+//            NSString * tempStr = [questionStrArray objectAtIndex:i];
+//            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, 250)];
+//            NSError * error = nil;
+//            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<a href=\"[^\"]+\">([^<]+)</a>" options:NSRegularExpressionCaseInsensitive error:&error];
+//            NSString *modifiedString = [regex stringByReplacingMatchesInString:tempStr options:0 range:NSMakeRange(0, [tempStr length]) withTemplate:@"$1"];
+//            [quesView.quesTextView loadHTMLString:modifiedString baseURL:nil];
+//            [self.quesScrollView addSubview:quesView];
+//        }
 
     }
 }
 
 -(void)removeTheOppositeQuestionViewWithDirection:(PanDirection)direction
 {
+#ifdef LogoutFunctionName
     NSLog(@"%s",__func__);
+#endif
+
     NSArray *subViews = [self.quesScrollView subviews];
     if ([subViews count]) {
         if (direction == PanDirectionLeft) {
@@ -354,6 +392,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
             for (UIView * view in subViews) {
                 if ([view isKindOfClass:[QuestionView class]]&&CGRectEqualToRect(view.frame, tempRect) ) {
                     [view removeFromSuperview];
+                    NSLog(@"removeFromSuperview");
                 }
             }
         }else if(direction == PanDirectionRight)
@@ -362,8 +401,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
             CGRect tempRect = CGRectMake(shouldDeletedPageL *320, 0, 320, 250);
             for (UIView * view in subViews) {
                 if ([view isKindOfClass:[QuestionView class]]&&CGRectEqualToRect(view.frame, tempRect) ) {
-                    
                     [view removeFromSuperview];
+                    NSLog(@"removeFromSuperview");
                 }
             }
             
@@ -374,53 +413,65 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+
+    CGFloat pageWidth = scrollView.frame.size.width;
+    float fractionalPage = scrollView.contentOffset.x / pageWidth;
+    NSInteger page = lround(fractionalPage);
+//    NSLog(@"当前页:%d",page);
+    if (page >2) {
+        currPage = page;
+        if (isEndScrolling) {
+            if(currPage ==nextPage) {
+                isEndScrolling = NO;
+                panDirectioin = PanDirectionRight;
+                [self refreshScrollViewWithDirection:panDirectioin];
+            }
+            if(currPage ==prePage) {
+                isEndScrolling = NO;
+                panDirectioin = PanDirectionLeft;
+                [self refreshScrollViewWithDirection:panDirectioin];
+            }
+        }
+    }
+   
+    
+    
+    
 //    CGFloat offsetX = scrollView.contentOffset.x;
-    
-    
-//    NSLog(@"%f",offsetX);
-//    if (offsetX > 50) {
-//        CGFloat pageWidth = scrollView.frame.size.width;
-//        float fractionalPage = scrollView.contentOffset.x / pageWidth;
-//        NSInteger page = lround(fractionalPage)+1;
-//        currPage = page;
-//        if (isEndScrolling) {
-//            if(currPage == nextPage) {
-//                isEndScrolling = NO;
-//                panDirectioin = PanDirectionRight;
-//                [self refreshScrollViewWithDirection:panDirectioin];
-//            }
-//            if(currPage == prePage) {
-//                isEndScrolling = NO;
-//                panDirectioin = PanDirectionLeft;
-//                [self refreshScrollViewWithDirection:panDirectioin];
-//            }
-//        }
-//    }
-    
-    
+//    //    NSLog(@"%f",offsetX);
 //    CGFloat pageWidth = scrollView.frame.size.width;
 //    float fractionalPage = scrollView.contentOffset.x / pageWidth;
-//    NSInteger page = lround(fractionalPage)+1;
-//    currPage = page;
-//    NSInteger  offset = (currPage-1)*self.quesScrollView.frame.size.width;
-//    if (offsetX >offset&&isEndScrolling) {
-//        NSLog(@"下一页");
-//        isEndScrolling = NO;
-//        preOffsetX = offsetX;
-//        panDirectioin = PanDirectionRight;
-//        [self refreshScrollViewWithDirection:panDirectioin];
-//    }else if (offsetX < preOffsetX&&isEndScrolling){
-//        NSLog(@"上一页");
-//        isEndScrolling = NO;
-//        preOffsetX = offsetX;
-//        panDirectioin = PanDirectionLeft;
-//        [self refreshScrollViewWithDirection:panDirectioin];
+//    NSInteger page = lround(fractionalPage);
+//       if (page >2) {
+//        currPage = page;
+//        NSLog(@"当前页:%d",page);
+//        NSInteger  offset = page*self.quesScrollView.frame.size.width;
+//        NSLog(@"offsetX:%f",offsetX);
+//        NSLog(@"offset:%d",offset);
+//        NSLog(@"preOffset:%d",preOffsetX);
+//        preOffsetX = currPage * 320;
+//        if (offsetX >=offset&&isEndScrolling&&offsetX>preOffsetX) {
+//            NSLog(@"*************下一页");
+//            isEndScrolling = NO;            
+//            panDirectioin = PanDirectionRight;
+//            [self refreshScrollViewWithDirection:panDirectioin];
+//        }else if (offsetX < preOffsetX&&isEndScrolling){
+//            NSLog(@"**************上一页");
+//            isEndScrolling = NO;
+//            panDirectioin = PanDirectionLeft;
+//            [self refreshScrollViewWithDirection:panDirectioin];
+//        }
+//
 //    }
 }
 
+
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+#ifdef LogoutFunctionName
     NSLog(@"%s",__func__);
+#endif
+    
     isEndScrolling = YES;
 }
 @end
