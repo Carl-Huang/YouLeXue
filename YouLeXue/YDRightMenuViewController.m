@@ -108,13 +108,10 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
    
-        AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-        userInfo = myDeleate.userInfo;
-        if (userInfo == nil) {
-            [self.beforeLoginView setHidden:NO];
-        }else
-        {
-
+        NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+        //因为用户始终有一个，所以只读取第零个元素
+        if ([array count]) {
+            self.userInfo = [array objectAtIndex:0];
             [self.afterLoginView setHidden:NO];
             NSString * imageStr = [userInfo valueForKey:@"UserFace"];
             imageStr = [imageStr stringByReplacingOccurrencesOfString:@"3g" withString:@"www"];
@@ -133,10 +130,10 @@
             //判断证件的有效期
             NSString * beginData = [userInfo valueForKey:@"BeginDate"];
             NSDate * beginDate = [self dateFromString:beginData];
-
+            
             NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
             [dateFormat setDateFormat:@"yyyyMMdd"];
-
+            
             NSString * validateDays = [userInfo valueForKey:@"EDays"];
             int daysToAdd = [validateDays integerValue];
             NSDate *newDate1 = [beginDate dateByAddingTimeInterval:60*60*24*daysToAdd];
@@ -148,8 +145,12 @@
             
             self.userDetailDescLabel.text = [NSString stringWithFormat:@"软件有效期：%@",dateString];
             self.userDesclabel.text = [NSString stringWithFormat:@"你报考的专业是：%@",[userInfo valueForKey:@"GroupName"]];
-
+        }else
+        {
+            self.userInfo  = nil;
+            [self.beforeLoginView setHidden:NO];
         }
+
     });
 }
 

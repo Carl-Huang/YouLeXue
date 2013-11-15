@@ -22,6 +22,7 @@ typedef void (^ButtonConfigrationBlock) (NSString *str,NSInteger itemIndex);
     BOOL buttonCState;
     BOOL buttonDState;
     NSArray * buttonArray;
+    NSArray * alphabetAry;
 }
 @property (strong ,nonatomic) UIWebView * quesTextView;
 @property (strong ,nonatomic) NSString * answerStr;
@@ -29,4 +30,7 @@ typedef void (^ButtonConfigrationBlock) (NSString *str,NSInteger itemIndex);
 @property (assign ,nonatomic) NSInteger itemIndex;
 @property (assign ,nonatomic) PaperType paperType;
 - (id)initWithFrame:(CGRect)frame ItemIndex:(NSInteger)index PaperType:(PaperType)type isTitle:(BOOL)isTitle;
+
+-(void)setSelectButonStatus:(NSString *)str;
+
 @end

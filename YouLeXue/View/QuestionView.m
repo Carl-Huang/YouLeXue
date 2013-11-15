@@ -21,6 +21,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        alphabetAry = @[@"A",@"B",@"C",@"D"];
         originRect = frame;
         rect = frame;
         rect.origin.x = 0;
@@ -164,6 +165,21 @@
     [self addSubview:containerView];
     containerView = nil;
 }
+
+-(void)setSelectButonStatus:(NSString *)str
+{
+    for (int i =0;i< [alphabetAry count];i++) {
+        NSString *tempStr  = [alphabetAry objectAtIndex:i];
+        if ([tempStr isEqualToString:str]) {
+            for (UIButton *btn in buttonArray) {
+                if (btn.tag == i) {
+                    [btn setSelected:YES];
+                }
+            }
+        }
+    }
+}
+
 
 -(void)buttonAAction:(id)sender
 {

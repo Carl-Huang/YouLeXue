@@ -331,32 +331,34 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSLog(@"%s",__func__);
 #endif
 
-
-    shouldDeletedPageL = page -2;
-    prePage = page -1;
-    nextPage = page +1;
-    shouldDeletedPageR = page +2;
-    
-    if (direction == PanDirectionLeft) {
-        [currentDisplayItems removeLastObject];
-        NSMutableArray * tempArray = [NSMutableArray array];
-        [tempArray addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
-        [tempArray addObjectsFromArray:currentDisplayItems];
-        [currentDisplayItems removeAllObjects];
-        [currentDisplayItems  addObjectsFromArray:tempArray];
+    if (shouldDeletedPageR < [questionDataSource count]-1) {
+        shouldDeletedPageL = page -2;
+        prePage = page -1;
+        nextPage = page +1;
+        shouldDeletedPageR = page +2;
         
-    }else if(direction == PanDirectionRight)
-    {
-        [currentDisplayItems removeObjectAtIndex:0];
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
-    }else
-    {
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:prePage]];
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:criticalPage]];
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:nextPage]];
-        [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
+        if (direction == PanDirectionLeft) {
+            [currentDisplayItems removeLastObject];
+            NSMutableArray * tempArray = [NSMutableArray array];
+            [tempArray addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
+            [tempArray addObjectsFromArray:currentDisplayItems];
+            [currentDisplayItems removeAllObjects];
+            [currentDisplayItems  addObjectsFromArray:tempArray];
+            
+        }else if(direction == PanDirectionRight)
+        {
+            [currentDisplayItems removeObjectAtIndex:0];
+            [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
+        }else
+        {
+            [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
+            [currentDisplayItems addObject:[questionStrArray objectAtIndex:prePage]];
+            [currentDisplayItems addObject:[questionStrArray objectAtIndex:criticalPage]];
+            [currentDisplayItems addObject:[questionStrArray objectAtIndex:nextPage]];
+            [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
+        }
     }
+    
 }
 
 
@@ -368,32 +370,47 @@ typedef NS_ENUM(NSInteger, PanDirection)
     prePanDirection = direction;
     [self removeTheOppositeQuestionViewWithDirection:direction];
     [self getDisplayImagesWithCurpage:criticalPage direction:direction];
-    
-    if (direction == PanDirectionLeft) {
-        NSString * tempStr = [currentDisplayItems objectAtIndex:0];
-        QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageL PaperType:PaperTypeChoose isTitle:[self isExamTitle:shouldDeletedPageL]];
-        [quesView setBlock:[self buttonBlock]];
-        [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
-        [self.quesScrollView addSubview:quesView];
-    }else if (direction == PanDirectionRight)
-    {
-        NSString * tempStr = [currentDisplayItems objectAtIndex:4];
-        QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageR PaperType:PaperTypeChoose isTitle:[self isExamTitle:shouldDeletedPageR]];
-        [quesView setBlock:[self buttonBlock]];
-        [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
-        [self.quesScrollView addSubview:quesView];
-    }else
-    {
-        for (int i = 0; i < 5; i++) {
-            NSString * tempStr = [currentDisplayItems objectAtIndex:i];
-            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, questionViewHeight) ItemIndex:i PaperType:PaperTypeChoose isTitle:[self isExamTitle:i]];
+    if (criticalPage < [questionDataSource count]-2) {
+        if (direction == PanDirectionLeft) {
+            NSString * tempStr = [currentDisplayItems objectAtIndex:0];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageL PaperType:PaperTypeChoose isTitle:[self isExamTitle:shouldDeletedPageL]];
+            
+            //判断是否已经选择了，有就设置相应的选项
+            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
+            if (tempAlphabet) {
+                [quesView setSelectButonStatus:tempAlphabet];
+            }
             [quesView setBlock:[self buttonBlock]];
             [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
-            
             [self.quesScrollView addSubview:quesView];
+        }else if (direction == PanDirectionRight)
+        {
+            NSLog(@"增加一夜");
+            NSString * tempStr = [currentDisplayItems objectAtIndex:4];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageR PaperType:PaperTypeChoose isTitle:[self isExamTitle:shouldDeletedPageR]];
+            
+            //判断是否已经选择了，有就设置相应的选项
+            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
+            if (tempAlphabet) {
+                [quesView setSelectButonStatus:tempAlphabet];
+            }
+            [quesView setBlock:[self buttonBlock]];
+            [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+            [self.quesScrollView addSubview:quesView];
+        }else
+        {
+            for (int i = 0; i < 5; i++) {
+                NSString * tempStr = [currentDisplayItems objectAtIndex:i];
+                QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, questionViewHeight) ItemIndex:i PaperType:PaperTypeChoose isTitle:[self isExamTitle:i]];
+                [quesView setBlock:[self buttonBlock]];
+                [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+                
+                [self.quesScrollView addSubview:quesView];
+            }
+            
         }
-
     }
+    
 }
 
 -(void)removeTheOppositeQuestionViewWithDirection:(PanDirection)direction
@@ -432,56 +449,59 @@ typedef NS_ENUM(NSInteger, PanDirection)
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 
-//    CGFloat pageWidth = scrollView.frame.size.width;
-//    float fractionalPage = scrollView.contentOffset.x / pageWidth;
-//    NSInteger page = lround(fractionalPage);
-////    NSLog(@"当前页:%d",page);
-//    if (page >2) {
-//        criticalPage = page;
-//        if (isEndScrolling) {
-//            if(criticalPage ==nextPage) {
-//                isEndScrolling = NO;
-//                panDirectioin = PanDirectionRight;
-//                [self refreshScrollViewWithDirection:panDirectioin];
-//            }
-//            if(criticalPage ==prePage) {
-//                isEndScrolling = NO;
-//                panDirectioin = PanDirectionLeft;
-//                [self refreshScrollViewWithDirection:panDirectioin];
-//            }
-//        }
-//    }
+    CGFloat pageWidth = scrollView.frame.size.width;
+    float fractionalPage = scrollView.contentOffset.x / pageWidth;
+    NSInteger page = lround(fractionalPage);
+//    NSLog(@"当前页:%d",page);
+    if (page >2) {
+        currentPage = page;
+        criticalPage = page;
+        if (isEndScrolling) {
+            if(criticalPage ==nextPage) {
+                NSLog(@"下一页");
+                isEndScrolling = NO;
+                panDirectioin = PanDirectionRight;
+                [self refreshScrollViewWithDirection:panDirectioin];
+            }
+            if(criticalPage ==prePage) {
+                NSLog(@"上一页");
+                isEndScrolling = NO;
+                panDirectioin = PanDirectionLeft;
+                [self refreshScrollViewWithDirection:panDirectioin];
+            }
+        }
+    }
    
     
     
     
-    CGFloat offsetX = scrollView.contentOffset.x;
-    //    NSLog(@"%f",offsetX);
-    CGFloat pageWidth = scrollView.frame.size.width;
-    float fractionalPage = scrollView.contentOffset.x / pageWidth;
-    NSInteger page = lround(fractionalPage);
-       if (page >2) {
-        currentPage = page;
-        criticalPage = page;
-//        NSLog(@"当前页:%d",page);
-        NSInteger  offset = page*self.quesScrollView.frame.size.width;
-//        NSLog(@"offsetX:%f",offsetX);
-//        NSLog(@"offset:%d",offset);
-//        NSLog(@"preOffset:%d",preOffsetX);
-        preOffsetX = criticalPage * 320;
-        if (offsetX >=offset&&isEndScrolling&&offsetX>preOffsetX) {
-            NSLog(@"*************下一页");
-            isEndScrolling = NO;            
-            panDirectioin = PanDirectionRight;
-            [self refreshScrollViewWithDirection:panDirectioin];
-        }else if (offsetX < preOffsetX&&isEndScrolling){
-            NSLog(@"**************上一页");
-            isEndScrolling = NO;
-            panDirectioin = PanDirectionLeft;
-            [self refreshScrollViewWithDirection:panDirectioin];
-        }
-
-    }
+//    CGFloat offsetX = scrollView.contentOffset.x;
+//    //    NSLog(@"%f",offsetX);
+//    CGFloat pageWidth = scrollView.frame.size.width;
+//    float fractionalPage = scrollView.contentOffset.x / pageWidth;
+//    NSInteger page = lround(fractionalPage);
+//       if (page >2) {
+//        currentPage = page;
+//        criticalPage = page;
+////        NSLog(@"当前页:%d",page);
+//        NSInteger  offset = page*self.quesScrollView.frame.size.width;
+////        NSLog(@"offsetX:%f",offsetX);
+////        NSLog(@"offset:%d",offset);
+////        NSLog(@"preOffset:%d",preOffsetX);
+//        preOffsetX = criticalPage * 320;
+//        if (offsetX >=offset&&isEndScrolling&&offsetX>preOffsetX) {
+//            NSLog(@"*************下一页");
+//            isEndScrolling = NO;
+//            panDirectioin = PanDirectionRight;
+//            [self refreshScrollViewWithDirection:panDirectioin];
+//        }else if (offsetX < preOffsetX&&isEndScrolling){
+//            NSLog(@"**************上一页");
+//            isEndScrolling = NO;
+//            panDirectioin = PanDirectionLeft;
+//            [self refreshScrollViewWithDirection:panDirectioin];
+//        }
+//
+//    }
 }
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView

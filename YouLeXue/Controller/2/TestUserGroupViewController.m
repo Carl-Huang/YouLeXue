@@ -51,6 +51,10 @@ static NSString *identifier = @"Cell";
     NSInteger preSelectedRow4;
     
     BOOL isShouldDownExamPaper;
+    
+    
+    //current reload tableview
+    UITableView * currentTableview;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -94,8 +98,9 @@ static NSString *identifier = @"Cell";
     //默认选中第一页
     currentPage = 1;
     [self.firstBtn setSelected:YES];
-    [self settingPullRefreshAction];
     [self dataSourceSetting];
+    [self settingPullRefreshAction];
+    
     
     
     //标记选中的项
@@ -118,10 +123,20 @@ static NSString *identifier = @"Cell";
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadUserInfo) name:@"LoginNotification" object:nil];
-    
+
+    AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    info = myDeleate.userInfo;
 }
 
 -(void)reloadUserInfo
+{
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        info = [array objectAtIndex:0];
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated
 {
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
     if ([array count]) {
@@ -138,12 +153,19 @@ static NSString *identifier = @"Cell";
             NSMutableArray * tempArray = [NSMutableArray array];
             NSArray *tempPaperArr = [paper allValues];
             [tempArray addObjectsFromArray:tempPaperArr];
+            __weak TestUserGroupViewController * weakSelf = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [weakSelf stopReloadData];
+                });
             });
-            
         }
     }
+}
+-(void)stopReloadData
+{
+     [currentTableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -171,6 +193,7 @@ static NSString *identifier = @"Cell";
 {
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
     if ([array count]) {
+        [self cleanDataSource];
         for (ExamInfo * examInfo in array) {
             downloadedPaperCount = [array count];
             NSLog(@"%@",examInfo.KS_leixing);
@@ -179,6 +202,7 @@ static NSString *identifier = @"Cell";
                 [self downPaperListWithExamInfo:examInfo];
             }else if([examInfo.KS_leixing isEqualToString:@"2"])
             {
+                [secondDataSource addObject:examInfo];
                 [self downPaperListWithExamInfo:examInfo];                
             }else if([examInfo.KS_leixing isEqualToString:@"3"])
             {
@@ -192,6 +216,14 @@ static NSString *identifier = @"Cell";
         }
     }
 
+}
+
+-(void)cleanDataSource
+{
+    [firstDataSource removeAllObjects];
+    [secondDataSource removeAllObjects];
+    [thirdDataSource removeAllObjects];
+    [fourthDataSource removeAllObjects];
 }
 
 -(void)downPaperListWithExamInfo:(ExamInfo *)tempExamInfo
@@ -219,8 +251,7 @@ static NSString *identifier = @"Cell";
     [self.firstTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         //执行下啦时候的操作
-        [weakSelf pullToUpdate];
-        [weakFirstTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [weakSelf pullToUpdateWithTable:weakFirstTable];
     }];
     
     
@@ -228,29 +259,26 @@ static NSString *identifier = @"Cell";
     self.secondTable.tag = SecTableTag;
     [self.secondTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-        [weakSelf pullToUpdate];
-        [weakSecondTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [weakSelf pullToUpdateWithTable:weakSecondTable];
     }];
     
     __weak UITableView *weakThirdTable = self.thirdTable;
     self.thirdTable.tag = ThiTableTag;
     [self.thirdTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-          [weakSelf pullToUpdate];
-        [weakThirdTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [weakSelf pullToUpdateWithTable:weakThirdTable];
     }];
     
     __weak UITableView *weakFourthTable = self.fourthTable;
     self.fourthTable.tag = FouTableTag;
     [self.fourthTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
-          [weakSelf pullToUpdate];
-        [weakFourthTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
-    }];
+          [weakSelf pullToUpdateWithTable:weakFourthTable];
+            }];
 
 }
 
--(void)pullToUpdate
+-(void)pullToUpdateWithTable:(UITableView *)tableview
 {
     __weak TestUserGroupViewController *weakSelf = self;
     if (info) {
@@ -259,6 +287,12 @@ static NSString *identifier = @"Cell";
             //保存数据数据库
             [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
             [self fillData];
+            if (isShouldDownExamPaper) {
+                currentTableview = tableview;
+            }else
+            {
+                [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+            }
             [weakSelf reloadAllTable];
         }];
     }
@@ -364,16 +398,18 @@ static NSString *identifier = @"Cell";
             {
                 ExamInfo * selectedInfo = [firstDataSource objectAtIndex:selectedRow1];
                 NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"id"]];
-                PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
-                [viewcontroller setQuestionDataSource:paperList];
-                [viewcontroller setExamInfo:selectedInfo];
-                viewcontroller.title = @"测试用户组的试卷";
-                [self.navigationController pushViewController:viewcontroller animated:YES];
-                viewcontroller = nil;
-                
+                if ([paperList count]) {
+                    PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
+                    [viewcontroller setQuestionDataSource:paperList];
+                    [viewcontroller setExamInfo:selectedInfo];
+                    viewcontroller.title = @"测试用户组的试卷";
+                    [self.navigationController pushViewController:viewcontroller animated:YES];
+                    viewcontroller = nil;
+
+                }
             }
             break;
-                
+            
             default:
                 break;
         }
