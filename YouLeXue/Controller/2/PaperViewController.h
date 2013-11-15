@@ -19,4 +19,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *wrongTextBookBtn;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UITableView *popUpTable;
+- (IBAction)preQuestionAction:(id)sender;
+- (IBAction)nextQuestionAction:(id)sender;
+
+
 @end

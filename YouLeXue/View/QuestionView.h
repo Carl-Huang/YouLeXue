@@ -7,16 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
-
+typedef NS_ENUM(NSInteger, PaperType)
+{
+    PaperTypeChoose = 1,
+    PaperTypeOpinion = 2,
+};
+typedef void (^ButtonConfigrationBlock) (NSString *str,NSInteger itemIndex);
 @interface QuestionView : UIView<UIWebViewDelegate>
 {
     CGRect rect;
+    CGRect originRect;
+    BOOL buttonAState;
+    BOOL buttonBState;
+    BOOL buttonCState;
+    BOOL buttonDState;
+    NSArray * buttonArray;
 }
 @property (strong ,nonatomic) UIWebView * quesTextView;
 @property (strong ,nonatomic) NSString * answerStr;
-
-
-@property (strong ,nonatomic) NSString * textViewText;
-
-//-(void)initWebView:(NSString *)str;
+@property (strong ,nonatomic) ButtonConfigrationBlock block;
+@property (assign ,nonatomic) NSInteger itemIndex;
+@property (assign ,nonatomic) PaperType paperType;
+- (id)initWithFrame:(CGRect)frame ItemIndex:(NSInteger)index PaperType:(PaperType)type isTitle:(BOOL)isTitle;
 @end
