@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //滚动scrollview相关变量
     BOOL isEndScrolling;
-    NSInteger criticalPage;                     //默认为第一页
+     
     NSInteger prePage;
     NSInteger nextPage;
     NSInteger shouldDeletedPageL;
@@ -60,12 +60,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //保存每一个问题的答案
     NSMutableDictionary * answerDictionary;
 }
-
+@property (assign ,nonatomic) NSInteger criticalPage;
 @end
 
 @implementation PaperViewController
 @synthesize questionDataSource;
-@synthesize  titleStr;
+@synthesize  titleStr,criticalPage;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -156,6 +156,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
         
     }
     currentDisplayItems = [NSMutableArray array];
+    
+    [self addObserver:self forKeyPath:@"criticalPage" options:NSKeyValueObservingOptionNew context:NULL];
     criticalPage = 2;
     panDirectioin = PanDirectionNone;
     prePanDirection= PanDirectionNone;
@@ -186,6 +188,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [super viewDidUnload];
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"criticalPage"]) {
+        ;
+    }
+}
+
 -(void)descreaseTime
 {
     [self translateTimeToStr:examTime --];
@@ -205,7 +214,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     ButtonConfigrationBlock block = ^(NSString *str,NSInteger itemIndex)
     {
-        if (![self isExamTitle:itemIndex]) {
+        if (![self isExamTitle:itemIndex]&&str) {
             [answerDictionary setObject:str forKey:[NSString stringWithFormat:@"%d",itemIndex]];
             NSLog(@"%@",answerDictionary);
         }
@@ -221,6 +230,46 @@ typedef NS_ENUM(NSInteger, PanDirection)
         return  YES;
     }
     return  NO;
+}
+
+-(PaperType)paperType:(NSInteger)index
+{
+    ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:index];
+    NSInteger tType= [[tempPaperInfo valueForKey:@"Tmtype"]integerValue];
+    
+    /*
+     2:代表单选题
+     3：A-D 多选
+     4：判断题
+     5：A-F 多选
+     6：A-E 多选
+     
+     */
+    switch (tType) {
+        case 2:
+            return PaperTypeChoose;
+            break;
+        case 3:
+            return PaperTypeMutiChooseAD;
+            break;
+
+        case 4:
+            return PaperTypeOpinion;
+            break;
+
+        case 5:
+            return PaperTypeMutiChooseAF;
+            break;
+
+        case 6:
+            return PaperTypeMutiChooseAE;
+            break;
+
+        default:
+            break;
+    }
+    return  NO;
+
 }
 
 #pragma mark -
@@ -347,6 +396,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
             
         }else if(direction == PanDirectionRight)
         {
+            NSLog(@"4");
             [currentDisplayItems removeObjectAtIndex:0];
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
         }else
@@ -373,11 +423,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
     if (criticalPage < [questionDataSource count]-2) {
         if (direction == PanDirectionLeft) {
             NSString * tempStr = [currentDisplayItems objectAtIndex:0];
-            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageL PaperType:PaperTypeChoose isTitle:[self isExamTitle:shouldDeletedPageL]];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageL PaperType:[self paperType:shouldDeletedPageL] isTitle:[self isExamTitle:shouldDeletedPageL]];
             
             //判断是否已经选择了，有就设置相应的选项
             NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
-            if (tempAlphabet) {
+            if ([tempAlphabet length]) {
                 [quesView setSelectButonStatus:tempAlphabet];
             }
             [quesView setBlock:[self buttonBlock]];
@@ -385,13 +435,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [self.quesScrollView addSubview:quesView];
         }else if (direction == PanDirectionRight)
         {
-            NSLog(@"增加一夜");
+            NSLog(@"5");
             NSString * tempStr = [currentDisplayItems objectAtIndex:4];
-            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageR PaperType:PaperTypeChoose isTitle:[self isExamTitle:shouldDeletedPageR]];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageR PaperType:[self paperType:shouldDeletedPageR] isTitle:[self isExamTitle:shouldDeletedPageR]];
             
             //判断是否已经选择了，有就设置相应的选项
-            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
-            if (tempAlphabet) {
+            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageR]];
+            if ([tempAlphabet length]) {
                 [quesView setSelectButonStatus:tempAlphabet];
             }
             [quesView setBlock:[self buttonBlock]];
@@ -401,7 +451,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         {
             for (int i = 0; i < 5; i++) {
                 NSString * tempStr = [currentDisplayItems objectAtIndex:i];
-                QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, questionViewHeight) ItemIndex:i PaperType:PaperTypeChoose isTitle:[self isExamTitle:i]];
+                QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, questionViewHeight) ItemIndex:i PaperType:[self paperType:i] isTitle:[self isExamTitle:i]];
                 [quesView setBlock:[self buttonBlock]];
                 [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
                 
@@ -433,6 +483,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }else if(direction == PanDirectionRight)
         {
             //清除第一个obj
+            NSLog(@"3");
             CGRect tempRect = CGRectMake(shouldDeletedPageL *320, 0, 320, 250);
             for (UIView * view in subViews) {
                 if ([view isKindOfClass:[QuestionView class]]&&CGRectEqualToRect(view.frame, tempRect) ) {
@@ -456,9 +507,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
     if (page >2) {
         currentPage = page;
         criticalPage = page;
+        
         if (isEndScrolling) {
+            
             if(criticalPage ==nextPage) {
-                NSLog(@"下一页");
+                NSLog(@"2");
                 isEndScrolling = NO;
                 panDirectioin = PanDirectionRight;
                 [self refreshScrollViewWithDirection:panDirectioin];
@@ -469,6 +522,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 panDirectioin = PanDirectionLeft;
                 [self refreshScrollViewWithDirection:panDirectioin];
             }
+            
         }
     }
    
@@ -506,7 +560,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    NSLog(@"begin draging");
+    NSLog(@"1");
    isEndScrolling = YES;
 }
 

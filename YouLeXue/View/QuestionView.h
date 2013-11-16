@@ -9,8 +9,12 @@
 #import <UIKit/UIKit.h>
 typedef NS_ENUM(NSInteger, PaperType)
 {
-    PaperTypeChoose = 1,
-    PaperTypeOpinion = 2,
+    PaperTypeChoose = 2,
+    PaperTypeMutiChooseAD = 3,
+    PaperTypeMutiChooseAF = 5,
+    PaperTypeMutiChooseAE = 6,
+    PaperTypeOpinion = 4,
+    
 };
 typedef void (^ButtonConfigrationBlock) (NSString *str,NSInteger itemIndex);
 @interface QuestionView : UIView<UIWebViewDelegate>
@@ -22,7 +26,17 @@ typedef void (^ButtonConfigrationBlock) (NSString *str,NSInteger itemIndex);
     BOOL buttonCState;
     BOOL buttonDState;
     NSArray * buttonArray;
-    NSArray * alphabetAry;
+    NSArray * alphabetAryS;
+    NSArray * alphabetAryM;
+    NSInteger ButtonOffsetX;
+    NSInteger ButtonOffsetY;
+    NSInteger ButtonWidth;
+    NSInteger ButtonHeight;
+    NSInteger ButtonGap;
+    
+    
+    //多选题的答案容器
+    NSMutableArray *mutiAnswer;
 }
 @property (strong ,nonatomic) UIWebView * quesTextView;
 @property (strong ,nonatomic) NSString * answerStr;
