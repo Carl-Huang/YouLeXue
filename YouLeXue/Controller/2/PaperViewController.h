@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *popUpTable;
 - (IBAction)preQuestionAction:(id)sender;
 - (IBAction)nextQuestionAction:(id)sender;
+- (IBAction)wrongTextBookAction:(id)sender;
 
 
 @end

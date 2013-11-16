@@ -62,6 +62,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //初始化questionview 开始page
     NSInteger printOnPage;
+    
+    //错题本
+    NSMutableArray * wrongExamPaperInfoArray;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -186,6 +189,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [self refreshScrollViewWithDirection:panDirectioin];
     [self.view bringSubviewToFront:self.popUpTable];
     
+    //初始化错题本
+    wrongExamPaperInfoArray = [NSMutableArray array];
 }
 
 - (void)didReceiveMemoryWarning
@@ -342,6 +347,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [self configurePopupTable];
     }else
     {
+        
         //跳到相应的题目分类
          NSString *tempStartIndexStr = [[questTypes objectAtIndex:indexPath.row-1]objectForKey:@"StartIndex"];
          NSArray *subViews = [self.quesScrollView subviews];
@@ -354,6 +360,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [currentDisplayItems removeAllObjects];
         [self refreshScrollViewWithDirection:PanDirectionNone];
         [self.quesScrollView scrollRectToVisible:CGRectMake(320 *currentPage, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
+        isShouldShowTable = !isShouldShowTable;
+        [self configurePopupTable];
     }
 }
 
@@ -625,5 +633,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
     
     }
+}
+
+- (IBAction)wrongTextBookAction:(id)sender {
+    
 }
 @end
