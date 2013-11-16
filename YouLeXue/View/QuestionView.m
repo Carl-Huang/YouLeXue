@@ -411,7 +411,7 @@
         {
             self.block(@"",self.itemIndex);
         }
-        [btn setSelected:buttonAState];
+        [btn setSelected:!btn.selected];
     }else
     {
         [self resetButtonStatus:btn.tag];
@@ -424,7 +424,6 @@
                 {
                     self.block(@"N",self.itemIndex);
                 }
-                
                 return;
             }
             //选择题

@@ -14,6 +14,7 @@
 #import "ExamplePaperInfo.h"
 #import "FetchDataInfo.h"
 #import "ExamPaperInfo.h"
+#import "ExamPaperInfoTimeStamp.h"
 
 @implementation PersistentDataManager
 @synthesize db;
@@ -52,59 +53,60 @@
 {
     [db open];
     if ([self isTableOK:@"UserLoginInfoTable"]) {
-        NSLog(@"数据表已经存在");
+        NSLog(@"UserLoginInfoTable已经存在");
         [self eraseTableData:@"UserLoginInfoTable"];
         [self insertValueToExistedTableWithTableName:@"UserLoginInfoTable" Arguments:info primaryKey:@"UserID"];
     }else
     {
-        NSLog(@"数据表不存在");
+        NSLog(@"UserLoginInfoTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists UserLoginInfoTable %@",[self enumerateObjectConverToStr:[info  class] withPrimarykey:@"UserID"]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
+            NSLog(@"create UserLoginInfoTable successfully");
             [self insertValueToExistedTableWithTableName:@"UserLoginInfoTable" Arguments:info primaryKey:@"UserID"];
         }else
         {
-            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+            NSLog(@"Failer to create UserLoginInfoTable,Error: %@",[db lastError]);
         }
 
     }
     [db close];
 }
 
-//创建考试列表的表
+#pragma mark - 创建考试列表的表
 -(void)createPaperListTable:(NSArray *)array 
 {
     [db open];
     if ([self isTableOK:@"PaperListTable"]) {
-        NSLog(@"数据表已经存在");
+        NSLog(@"PaperListTable已经存在");
         [self eraseTableData:@"PaperListTable"];
         for (ExamInfo * info in array) {
             [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
         }
     }else
     {
-        NSLog(@"数据表不存在");
+        NSLog(@"PaperListTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists PaperListTable %@",[self enumerateObjectConverToStr:[ExamInfo class] withPrimarykey:@"id"]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
+            NSLog(@"create PaperListTable successfully");
             for (ExamInfo * info in array) {
                  [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
             }
         }else
         {
-            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+            NSLog(@"Failer to create PaperListTable,Error: %@",[db lastError]);
         }
         
     }
     [db close];
 }
 
-//创建对应考试列表的试卷
+#pragma mark - 创建对应考试列表的试卷
+
 -(void)createExamPaperTable:(NSArray *)array
 {
     [db open];
     if ([self isTableOK:@"ExamPaperTable"]) {
-        NSLog(@"数据表已经存在");
+        NSLog(@"ExamPaperTable已经存在");
         [self eraseTableData:@"ExamPaperTable"];
         for (NSArray * specificArray in array) {
             for (ExamPaperInfo * info in specificArray) {
@@ -113,10 +115,10 @@
         }
     }else
     {
-        NSLog(@"数据表不存在");
+        NSLog(@"ExamPaperTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExamPaperTable %@",[self enumerateObjectConverToStr:[ExamPaperInfo class] withPrimarykey:@"id"]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
+            NSLog(@"create ExamPaperTable successfully");
             for (NSArray * specificArray in array) {
                 for (ExamPaperInfo * info in specificArray) {
                     [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
@@ -132,11 +134,96 @@
     [db close];
 }
 
+#pragma mark - 创建错题本
+-(void)createWrongTextBook:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"WrongTextBookTable"]) {
+        NSLog(@"WrongTextBookTable已经存在");
+        [self eraseTableData:@"WrongTextBookTable"];
+            for (ExamPaperInfoTimeStamp * info in array) {
+                [self insertValueToExistedTableWithTableName:@"WrongTextBookTable" Arguments:info primaryKey:@"id"];
+        }
+    }else
+    {
+        NSLog(@"WrongTextBookTable不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists WrongTextBookTable %@",[self enumerateObjectConverToStr:[ExamPaperInfoTimeStamp class] withPrimarykey:@"id"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create WrongTextBookTable successfully");
+                for (ExamPaperInfoTimeStamp * info in array) {
+                    [self insertValueToExistedTableWithTableName:@"WrongTextBookTable" Arguments:info primaryKey:@"id"];
+                }
+        }else
+        {
+            NSLog(@"Failer to create WrongTextBookTable,Error: %@",[db lastError]);
+        }
+    }
+    [db close];
+}
+
+#pragma mark - 创建案例的表
+-(void)createExampleListTable:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"ExampleListTable"]) {
+        NSLog(@"数据表已经存在");
+        [self eraseTableData:@"ExampleListTable"];
+        for (ExamplePaperInfo * info in array) {
+            [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+        }
+    }else
+    {
+        NSLog(@"数据表不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExampleListTable %@",[self enumerateObjectConverToStr:[ExamplePaperInfo class] withPrimarykey:@"TID"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create table successfully");
+            for (ExamplePaperInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+            }
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+
+}
+
+#pragma mark - 创建其他信息表
+-(void)createOtherInformationTable:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"OtherInformationTable"]) {
+        NSLog(@"数据表已经存在");
+        [self eraseTableData:@"OtherInformationTable"];
+        for (FetchDataInfo * info in array) {
+            [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
+        }
+    }else
+    {
+        NSLog(@"数据表不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"KS_phoneSeq"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create table successfully");
+            for (FetchDataInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
+            }
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+
+}
+#pragma mark - 读取试卷，每一份试卷为一个对象，并返回一个dictionary
 //读取试卷，每一份试卷为一个对象，并返回一个dictionary
 -(NSMutableDictionary *)readExamPaperToDic
 {
     NSMutableDictionary * tempDic = [NSMutableDictionary dictionary];
-
+    
     NSArray * keyArr = [self readDistinctObjWithKey:@"kid" tableName:@"ExamPaperTable"];
     if ([keyArr count]) {
         [db open];
@@ -176,7 +263,7 @@
     NSMutableArray * tempArray = [NSMutableArray array];
     while ([rs next]) {
         [tempArray addObject:[rs stringForColumn:@"kid"]];
-//        NSLog(@"%@",[rs stringForColumn:@"kid"]);
+        //        NSLog(@"%@",[rs stringForColumn:@"kid"]);
     }
     
     [rs close];
@@ -185,66 +272,7 @@
 }
 
 
-
-//创建案例的表
--(void)createExampleListTable:(NSArray *)array
-{
-    [db open];
-    if ([self isTableOK:@"ExampleListTable"]) {
-        NSLog(@"数据表已经存在");
-        [self eraseTableData:@"ExampleListTable"];
-        for (ExamplePaperInfo * info in array) {
-            [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
-        }
-    }else
-    {
-        NSLog(@"数据表不存在");
-        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExampleListTable %@",[self enumerateObjectConverToStr:[ExamplePaperInfo class] withPrimarykey:@"TID"]];
-        if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
-            for (ExamplePaperInfo * info in array) {
-                [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
-            }
-        }else
-        {
-            NSLog(@"Failer to create table,Error: %@",[db lastError]);
-        }
-        
-    }
-    [db close];
-
-}
-
-//创建其他信息表
--(void)createOtherInformationTable:(NSArray *)array
-{
-    [db open];
-    if ([self isTableOK:@"OtherInformationTable"]) {
-        NSLog(@"数据表已经存在");
-        [self eraseTableData:@"OtherInformationTable"];
-        for (FetchDataInfo * info in array) {
-            [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
-        }
-    }else
-    {
-        NSLog(@"数据表不存在");
-        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"KS_phoneSeq"]];
-        if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
-            for (FetchDataInfo * info in array) {
-                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
-            }
-        }else
-        {
-            NSLog(@"Failer to create table,Error: %@",[db lastError]);
-        }
-        
-    }
-    [db close];
-
-}
-
-//清除表的所有信息
+#pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {
     NSString *sqlstr = [NSString stringWithFormat:@"DELETE FROM %@", tableName];
@@ -256,7 +284,7 @@
 }
 
 
-//插入数据到表
+#pragma mark - 插入数据到表
 -(void)insertValueToExistedTableWithTableName:(NSString *)tableName Arguments:(id )obj primaryKey:(NSString *)key
 {
     NSMutableArray * objectValueArray = [NSMutableArray array];

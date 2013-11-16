@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface WrongBookViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UITableView *wrongBookTable;
 
 @end

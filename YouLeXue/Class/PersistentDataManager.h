@@ -16,14 +16,12 @@
 
 -(void)createUserLoginInfoTable:(UserLoginInfo *)info;
 -(void)readDataWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue withTableName:(NSString *)tableName withObj:(id)obj;
-
-
 -(id)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass;
 -(void)createPaperListTable:(NSArray *)array;
 -(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName;
 -(void)createExampleListTable:(NSArray *)array;
 -(void)createOtherInformationTable:(NSArray *)array;
 -(void)createExamPaperTable:(NSArray *)array;
-
+-(void)createWrongTextBook:(NSArray *)array;
 -(NSMutableDictionary *)readExamPaperToDic;
 @end

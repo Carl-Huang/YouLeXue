@@ -295,6 +295,9 @@ static NSString *identifier = @"Cell";
             }
             [weakSelf reloadAllTable];
         }];
+    }else
+    {
+        [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }
 
 }

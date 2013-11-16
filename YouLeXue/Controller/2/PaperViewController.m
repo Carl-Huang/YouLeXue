@@ -26,6 +26,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "ExamPaperInfo.h"
 #import "ExamInfo.h"
 #import "QuestionView.h"
+#import "PersistentDataManager.h"
+#import "ExamPaperInfoTimeStamp.h"
+#import <objc/runtime.h>
+
 @interface PaperViewController ()<UIScrollViewDelegate>
 {
     NSArray * questTypes;
@@ -84,7 +88,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setBackItem:nil withImage:@"Bottom_Icon_Back"];
+    [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
+    [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
     if (IS_SCREEN_4_INCH) {
         questionViewHeight = 408;
         CGRect rect= self.quesScrollView.frame;
@@ -99,11 +104,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSMutableSet * set = [NSMutableSet set];
     [questionDataSource enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         ExamPaperInfo * info = obj;
-        NSDictionary * dic = @{@"Tmtype":[info valueForKey:@"Tmtype"],@"StartIndex":[NSString stringWithFormat:@"%d",idx]};
+        NSString * tmtType = [NSString stringWithFormat:@"%@",[info valueForKey:@"Tmtype"]];
+        NSDictionary * dic = @{@"Tmtype":tmtType,@"StartIndex":[NSString stringWithFormat:@"%d",idx]};
         BOOL isCanAddobj = YES;
         if ([set count]) {
             for (NSDictionary *dic in set) {
-                if ([dic[@"Tmtype"] isEqualToString:[info valueForKey:@"Tmtype"]]) {
+                if ([[dic valueForKey:@"Tmtype" ] isEqualToString:[info valueForKey:@"Tmtype"]]) {
                     isCanAddobj = NO;
                 }
             }
@@ -170,6 +176,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }else
         {
              descriptionStr = [NSString stringWithFormat:@"%@%@%@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"]];
+            NSError * error;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<a href=\"[^\"]+\">([^<]+)</a>" options:NSRegularExpressionCaseInsensitive error:&error];
+            descriptionStr = [regex stringByReplacingMatchesInString:descriptionStr options:0 range:NSMakeRange(0, [descriptionStr length]) withTemplate:@"$1"];
             [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
         }
         [questionStrArray addObject:descriptionStr];
@@ -192,6 +201,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //初始化错题本
     wrongExamPaperInfoArray = [NSMutableArray array];
 }
+
+-(void)back
+{
+    NSLog(@"%s",__func__);
+    [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:wrongExamPaperInfoArray];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -434,7 +451,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
             
         }else if(direction == PanDirectionRight)
         {
-            NSLog(@"4");
             [currentDisplayItems removeObjectAtIndex:0];
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
         }else
@@ -474,7 +490,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [self.quesScrollView addSubview:quesView];
         }else if (direction == PanDirectionRight)
         {
-            NSLog(@"5");
             NSString * tempStr = [currentDisplayItems objectAtIndex:4];
             QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageR PaperType:[self paperType:shouldDeletedPageR] isTitle:[self isExamTitle:shouldDeletedPageR]];
             
@@ -525,7 +540,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }else if(direction == PanDirectionRight)
         {
             //清除第一个obj
-            NSLog(@"3");
             CGRect tempRect = CGRectMake(shouldDeletedPageL *320, 0, 320, 250);
             for (UIView * view in subViews) {
                 if ([view isKindOfClass:[QuestionView class]]&&CGRectEqualToRect(view.frame, tempRect) ) {
@@ -546,14 +560,17 @@ typedef NS_ENUM(NSInteger, PanDirection)
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
 //    NSLog(@"当前页:%d",page);
+    currentPage = page;
     if (page >2) {
-        currentPage = page;
         criticalPage = page;
-        
         if (isEndScrolling) {
-            
+            NSLog(@"ciritcalPage:%d   nextPage: %d",criticalPage,nextPage);
+            NSInteger tempInt = criticalPage - nextPage;
+            if (tempInt >1) {
+                criticalPage = nextPage -1;
+                NSLog(@"something wrong");
+            }
             if(criticalPage ==nextPage) {
-                NSLog(@"2");
                 isEndScrolling = NO;
                 panDirectioin = PanDirectionRight;
                 [self refreshScrollViewWithDirection:panDirectioin];
@@ -602,7 +619,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    NSLog(@"1");
    isEndScrolling = YES;
 }
 
@@ -636,6 +652,35 @@ typedef NS_ENUM(NSInteger, PanDirection)
 }
 
 - (IBAction)wrongTextBookAction:(id)sender {
+    
+    ExamPaperInfo * examQuestionInfo = [questionDataSource objectAtIndex:currentPage];
+    if ([[examQuestionInfo valueForKey:@"IsRnd"]integerValue]!=0) {
+        NSLog(@"%@",examQuestionInfo.title);
+        
+        ExamPaperInfoTimeStamp *info = [[ExamPaperInfoTimeStamp alloc] init];
+        unsigned int varCount;
+        Ivar *vars = class_copyIvarList([ExamPaperInfo class], &varCount);
+        for (int i = 0; i < varCount; i++) {
+            Ivar var = vars[i];
+            const char* name = ivar_getName(var);
+            NSString *valueKey = [NSString stringWithUTF8String:name];
+
+            [info setValue:[examQuestionInfo valueForKey:valueKey] forKeyPath:valueKey];
+        }
+//        NSString* aStr;
+//        aStr = [[NSString alloc] initWithData:[NSDate date] encoding:NSASCIIStringEncoding];
+        
+        NSDateFormatter * dateFormat = [[NSDateFormatter alloc]init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd"];
+        NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
+        info.timeStamp = timeStr;
+        timeStr = nil;
+        free(vars);
+
+        
+        [wrongExamPaperInfoArray addObject:info];
+    }
+    
     
 }
 @end

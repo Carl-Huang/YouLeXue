@@ -10,4 +10,5 @@
 
 @interface UIViewController (TabbarConfigure)
 - (void) setBackItem:(SEL)action withImage:(NSString *)imageName;
+- (void) setForwardItem:(SEL)action withImage:(NSString *)imageName;
 @end
