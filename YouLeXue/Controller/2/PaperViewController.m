@@ -59,6 +59,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //保存每一个问题的答案
     NSMutableDictionary * answerDictionary;
+    
+    //初始化questionview 开始page
+    NSInteger printOnPage;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -93,7 +96,21 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSMutableSet * set = [NSMutableSet set];
     [questionDataSource enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         ExamPaperInfo * info = obj;
-        [set addObject:[info valueForKey:@"Tmtype"]];
+        NSDictionary * dic = @{@"Tmtype":[info valueForKey:@"Tmtype"],@"StartIndex":[NSString stringWithFormat:@"%d",idx]};
+        BOOL isCanAddobj = YES;
+        if ([set count]) {
+            for (NSDictionary *dic in set) {
+                if ([dic[@"Tmtype"] isEqualToString:[info valueForKey:@"Tmtype"]]) {
+                    isCanAddobj = NO;
+                }
+            }
+            if (isCanAddobj) {
+                [set addObject:dic];
+            }
+        }else
+        {
+            [set addObject:dic];
+        }
     }];
     questTypes = [set allObjects];
     set = nil;
@@ -165,11 +182,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
     isEndScrolling = YES;
     previousPage = 1;
     currentPage = 0;
+    printOnPage = 0;
     [self refreshScrollViewWithDirection:panDirectioin];
     [self.view bringSubviewToFront:self.popUpTable];
     
-    
-   
 }
 
 - (void)didReceiveMemoryWarning
@@ -309,7 +325,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         textLabel = nil;
     }else
     {
-        NSNumber *type = [questTypes objectAtIndex:indexPath.row-1];
+        NSNumber *type = [[questTypes objectAtIndex:indexPath.row-1]objectForKey:@"Tmtype"];
         [self configureCell:cell withType:[type integerValue]];
     }
     UIImageView * leftImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Case_Button_Change@2x"]];
@@ -324,6 +340,20 @@ typedef NS_ENUM(NSInteger, PanDirection)
     if (indexPath.row == 0) {
         isShouldShowTable = !isShouldShowTable;
         [self configurePopupTable];
+    }else
+    {
+        //跳到相应的题目分类
+         NSString *tempStartIndexStr = [[questTypes objectAtIndex:indexPath.row-1]objectForKey:@"StartIndex"];
+         NSArray *subViews = [self.quesScrollView subviews];
+        [subViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        //重新加载新的题目
+        NSInteger startIndex = [tempStartIndexStr integerValue];
+        printOnPage = startIndex;
+        currentPage = startIndex;
+        criticalPage = startIndex+2;
+        [currentDisplayItems removeAllObjects];
+        [self refreshScrollViewWithDirection:PanDirectionNone];
+        [self.quesScrollView scrollRectToVisible:CGRectMake(320 *currentPage, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
     }
 }
 
@@ -401,6 +431,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
         }else
         {
+            
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:prePage]];
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:criticalPage]];
@@ -451,7 +482,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
         {
             for (int i = 0; i < 5; i++) {
                 NSString * tempStr = [currentDisplayItems objectAtIndex:i];
-                QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*i, 0, 320, questionViewHeight) ItemIndex:i PaperType:[self paperType:i] isTitle:[self isExamTitle:i]];
+                QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*(printOnPage+i), 0, 320, questionViewHeight)
+                                                                   ItemIndex:(printOnPage+i)
+                                                                   PaperType:[self paperType:(printOnPage+i)]
+                                                                     isTitle:[self isExamTitle:(printOnPage+i)]];
                 [quesView setBlock:[self buttonBlock]];
                 [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
                 
