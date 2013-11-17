@@ -3,7 +3,7 @@
 //  YouLeXue
 //
 //  Created by vedon on 10/11/13.
-//  Copyright (c) 2013 Carl. All rights reserved.
+//  Copyright (c) 2013 vedon. All rights reserved.
 //
 
 #import "DetailPhoneNotiViewController.h"

@@ -3,7 +3,7 @@
 //  YouLeXue
 //
 //  Created by vedon on 12/11/13.
-//  Copyright (c) 2013 Carl. All rights reserved.
+//  Copyright (c) 2013 vedon. All rights reserved.
 //
 
 #define ButtonFrameForIcon CGRectMake(10, 10, 20, 20)

@@ -3,7 +3,7 @@
 //  YouLeXue
 //
 //  Created by vedon on 6/11/13.
-//  Copyright (c) 2013 Carl. All rights reserved.
+//  Copyright (c) 2013 vedon. All rights reserved.
 //
 
 #import "YDLeftMenuViewController.h"

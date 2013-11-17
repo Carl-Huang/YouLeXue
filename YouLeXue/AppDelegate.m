@@ -2,8 +2,8 @@
 //  AppDelegate.m
 //  YouLeXue
 //
-//  Created by Carl on 13-11-5.
-//  Copyright (c) 2013年 Carl. All rights reserved.
+//  Created by vedon on 13-11-5.
+//  Copyright (c) 2013年 vedon. All rights reserved.
 //
 
 #import "AppDelegate.h"
