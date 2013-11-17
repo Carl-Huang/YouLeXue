@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface EndExamViewController : UIViewController
+@property (strong ,nonatomic) NSString * timeStamp;
+
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *doneQuestionCount;
 
 @end

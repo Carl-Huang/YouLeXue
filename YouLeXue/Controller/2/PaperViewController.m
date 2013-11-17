@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "PersistentDataManager.h"
 #import "ExamPaperInfoTimeStamp.h"
 #import <objc/runtime.h>
-
+#import "EndExamViewController.h"
 @interface PaperViewController ()<UIScrollViewDelegate>
 {
     NSArray * questTypes;
@@ -39,7 +39,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     CGRect originTableRect;
     
     //考试时间
+    CGFloat examOriginTime;
     CGFloat examTime;
+    NSTimer *countTimer;
     
     //滚动scrollview相关变量
     BOOL isEndScrolling;
@@ -131,9 +133,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     
     //倒计时
-    [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
+    countTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
     examTime = [[self.examInfo valueForKey:@"kssj"]floatValue]*60;
-    
+    examOriginTime = examTime;
     
     //content View
     [self.quesScrollView setContentSize:CGSizeMake([questionDataSource count]*320+10, self.quesScrollView.frame.size.height)];
@@ -200,6 +202,17 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //初始化错题本
     wrongExamPaperInfoArray = [NSMutableArray array];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    if ([countTimer isValid]) {
+        [countTimer fire];
+    }else
+    {
+        countTimer =[NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
+    }
+
 }
 
 -(void)back
@@ -683,4 +696,21 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     
 }
+
+-(void)endExamAction
+{
+    if ([countTimer isValid]) {
+        [countTimer invalidate];
+    }
+    EndExamViewController * viewController = [[EndExamViewController alloc]initWithNibName:@"EndExamViewController" bundle:nil];
+    NSInteger stopTimeStamp = examOriginTime - examTime;
+    int minute = floor(stopTimeStamp / 60.0);
+    int second = stopTimeStamp % 60;
+    NSString * timeStr = [NSString stringWithFormat:@"%d分%d秒",minute,second];
+    [viewController setTimeStamp:timeStr];
+    [self.navigationController pushViewController:viewController animated:YES];
+    viewController =nil;
+    
+}
 @end
+
