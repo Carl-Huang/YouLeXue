@@ -8,13 +8,14 @@
 
 #import "EndExamViewController.h"
 #import "UIViewController+TabbarConfigure.h"
+#import "AppDelegate.h"
 @interface EndExamViewController ()
 
 @end
 
 @implementation EndExamViewController
 @synthesize timeStamp;
-
+@synthesize answerSheetView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -27,9 +28,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    myDelegate.containerViewController.canPan = NO;
+    
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
     self.timeLabel.text = self.timeStamp;
+    NSInteger count = [self.dataSourece count];
+    self.answerSheetView = [[AnswerSheetView alloc]initWithFrame:CGRectMake(0, 122, 320, (count/5.0)*AnswerSheetRowHeight)];
+    [self.answerSheetView setBackgroundColor:[UIColor whiteColor]];
+    self.answerSheetView.answerCount =count;
+    [self.backgroundScrollView addSubview:self.answerSheetView];
+    
+    [self.backgroundScrollView setContentSize:CGSizeMake(320, self.answerSheetView.frame.size.height+400)];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -52,6 +63,9 @@
 - (void)viewDidUnload {
     [self setTimeLabel:nil];
     [self setDoneQuestionCount:nil];
+    [self setBackgroundScrollView:nil];
     [super viewDidUnload];
 }
+
+
 @end

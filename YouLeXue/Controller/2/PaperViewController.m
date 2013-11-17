@@ -708,6 +708,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     int second = stopTimeStamp % 60;
     NSString * timeStr = [NSString stringWithFormat:@"%d分%d秒",minute,second];
     [viewController setTimeStamp:timeStr];
+    [viewController setDataSourece:questionDataSource];
     [self.navigationController pushViewController:viewController animated:YES];
     viewController =nil;
     

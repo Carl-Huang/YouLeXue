@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E023C8D1838564A0030A612 /* AnswerSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E023C8C1838564A0030A612 /* AnswerSheetView.m */; };
 		4E09FC76182B67A200AE023C /* Case_List_Bg01.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E09FC71182B67A200AE023C /* Case_List_Bg01.png */; };
 		4E09FC77182B67A200AE023C /* Case_List_Bg02.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E09FC72182B67A200AE023C /* Case_List_Bg02.png */; };
 		4E09FC78182B67A200AE023C /* Case_List_Button_Next.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E09FC73182B67A200AE023C /* Case_List_Button_Next.png */; };
@@ -283,6 +284,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4E023C8B1838564A0030A612 /* AnswerSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnswerSheetView.h; sourceTree = "<group>"; };
+		4E023C8C1838564A0030A612 /* AnswerSheetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnswerSheetView.m; sourceTree = "<group>"; };
 		4E09FC71182B67A200AE023C /* Case_List_Bg01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Case_List_Bg01.png"; sourceTree = "<group>"; };
 		4E09FC72182B67A200AE023C /* Case_List_Bg02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Case_List_Bg02.png; sourceTree = "<group>"; };
 		4E09FC73182B67A200AE023C /* Case_List_Button_Next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Case_List_Button_Next.png"; sourceTree = "<group>"; };
@@ -770,6 +773,8 @@
 				4EFF03B21833C129005B13BA /* QuestionView.m */,
 				4E98DEF11837B48300D2703A /* WrongTextBookView.h */,
 				4E98DEF21837B48300D2703A /* WrongTextBookView.m */,
+				4E023C8B1838564A0030A612 /* AnswerSheetView.h */,
+				4E023C8C1838564A0030A612 /* AnswerSheetView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1528,6 +1533,7 @@
 				4E98DEF31837B48300D2703A /* WrongTextBookView.m in Sources */,
 				4E98DEF61837BAAD00D2703A /* ExamPaperInfoTimeStamp.m in Sources */,
 				4E98DEFA1837C9F700D2703A /* EndExamViewController.m in Sources */,
+				4E023C8D1838564A0030A612 /* AnswerSheetView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

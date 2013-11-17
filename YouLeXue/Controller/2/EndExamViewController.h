@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "AnswerSheetView.h"
 @interface EndExamViewController : UIViewController
 @property (strong ,nonatomic) NSString * timeStamp;
+@property (strong ,nonatomic) NSArray * dataSourece;
+
 
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *doneQuestionCount;
-
+@property (weak, nonatomic) IBOutlet UIScrollView *backgroundScrollView;
+@property (strong, nonatomic) AnswerSheetView *answerSheetView;
 @end

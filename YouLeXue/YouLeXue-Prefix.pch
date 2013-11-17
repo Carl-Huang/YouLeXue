@@ -4,6 +4,10 @@
 //  The contents of this file are implicitly included at the beginning of every source file.
 //
 #define IS_SCREEN_4_INCH (([[UIScreen mainScreen] bounds].size.height == 568)?YES:NO)
+//答题卡每一项的高度
+#define AnswerSheetRowHeight 30
+
+
 #import <Availability.h>
 
 #ifndef __IPHONE_5_0
