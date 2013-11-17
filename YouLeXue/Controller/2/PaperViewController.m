@@ -709,6 +709,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSString * timeStr = [NSString stringWithFormat:@"%d分%d秒",minute,second];
     [viewController setTimeStamp:timeStr];
     [viewController setDataSourece:questionDataSource];
+    [viewController setAnswerDic:answerDictionary];
     [self.navigationController pushViewController:viewController animated:YES];
     viewController =nil;
     

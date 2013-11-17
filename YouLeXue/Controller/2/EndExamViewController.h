@@ -11,7 +11,7 @@
 @interface EndExamViewController : UIViewController
 @property (strong ,nonatomic) NSString * timeStamp;
 @property (strong ,nonatomic) NSArray * dataSourece;
-
+@property (strong ,nonatomic) NSDictionary * answerDic;
 
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *doneQuestionCount;

@@ -10,4 +10,7 @@
 
 @interface AnswerSheetView : UIView
 @property (assign ,nonatomic) NSInteger answerCount;
+@property (strong ,nonatomic) NSArray * alreadyAnswerTitle;
+@property (strong ,nonatomic) NSArray * titleDataSourece;
+
 @end

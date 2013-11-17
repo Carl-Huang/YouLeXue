@@ -9,6 +9,7 @@
 #import "EndExamViewController.h"
 #import "UIViewController+TabbarConfigure.h"
 #import "AppDelegate.h"
+#import "ExamPaperInfo.h"
 @interface EndExamViewController ()
 
 @end
@@ -16,6 +17,8 @@
 @implementation EndExamViewController
 @synthesize timeStamp;
 @synthesize answerSheetView;
+@synthesize answerDic;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,20 +31,80 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //Interface Setting
     AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     myDelegate.containerViewController.canPan = NO;
-    
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
     self.timeLabel.text = self.timeStamp;
+    
+    
+    //AnswerSheet
     NSInteger count = [self.dataSourece count];
-    self.answerSheetView = [[AnswerSheetView alloc]initWithFrame:CGRectMake(0, 122, 320, (count/5.0)*AnswerSheetRowHeight)];
+    self.answerSheetView = [[AnswerSheetView alloc]initWithFrame:CGRectMake(10, 122, 310, (count/5.0)*AnswerSheetRowHeight)];
     [self.answerSheetView setBackgroundColor:[UIColor whiteColor]];
     self.answerSheetView.answerCount =count;
-    [self.backgroundScrollView addSubview:self.answerSheetView];
+    [self.answerSheetView setAlreadyAnswerTitle:[self getAlreadyAnswerItems]];
+    [self.answerSheetView setTitleDataSourece:[self getTitleWithDataSource]];
     
+    //BackgroundScrollview
+    [self.backgroundScrollView addSubview:self.answerSheetView];
     [self.backgroundScrollView setContentSize:CGSizeMake(320, self.answerSheetView.frame.size.height+400)];
-    // Do any additional setup after loading the view from its nib.
+
+}
+
+-(NSArray *)getAlreadyAnswerItems
+{
+    NSMutableArray * tempArray = [NSMutableArray array];
+    [answerDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (![obj isEqual:@""]) {
+            [tempArray addObject:key];
+        }
+    }];
+    return tempArray;
+}
+
+-(NSArray *)getTitleWithDataSource
+{
+    NSMutableArray * array = [NSMutableArray array];
+    if ([self.dataSourece count]) {
+        for (ExamPaperInfo * info in self.dataSourece) {
+            NSString * tempTitle = nil;
+            if ([[info valueForKey:@"IsRnd"]integerValue]==0) {
+                NSInteger type = [[info valueForKey:@"num"]integerValue];
+                switch (type) {
+                    case 1:
+                        tempTitle = @"一";
+                        break;
+                    case 2:
+                        tempTitle = @"二";
+                        break;
+                    case 3:
+                        tempTitle = @"三";
+                        break;
+                    case 4:
+                        tempTitle = @"四";
+                        break;
+                    case 5:
+                        tempTitle = @"五";
+                        break;
+                    case 6:
+                        tempTitle = @"六";
+                        break;
+                    default:
+                        break;
+                }
+                
+            }else
+            {
+                tempTitle =[info valueForKey:@"num"];
+            }
+            [array addObject:tempTitle];
+        }
+
+    }
+    return array;
 }
 
 -(void)back
