@@ -448,7 +448,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSLog(@"%s",__func__);
 #endif
 
-    if (shouldDeletedPageR < [questionDataSource count]-1) {
+    if (page < [questionDataSource count]-2) {
         shouldDeletedPageL = page -2;
         prePage = page -1;
         nextPage = page +1;
@@ -522,6 +522,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
                                                                    ItemIndex:(printOnPage+i)
                                                                    PaperType:[self paperType:(printOnPage+i)]
                                                                      isTitle:[self isExamTitle:(printOnPage+i)]];
+
+                [quesView setSelectButonStatus:[self getAlreadyChooseItem:i]];
                 [quesView setBlock:[self buttonBlock]];
                 [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
                 
@@ -532,6 +534,32 @@ typedef NS_ENUM(NSInteger, PanDirection)
     }
     
 }
+
+-(NSString *)getAlreadyChooseItem:(NSInteger)index
+{
+    switch (index) {
+        case 0:
+            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
+            break;
+        case 1:
+            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",prePage]];
+            break;
+        case 2:
+            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",criticalPage]];
+            break;
+        case 3:
+            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",nextPage]];
+            break;
+        case 4:
+            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageR]];
+            break;
+
+        default:
+            return nil;
+            break;
+    }
+}
+
 
 -(void)removeTheOppositeQuestionViewWithDirection:(PanDirection)direction
 {
@@ -578,11 +606,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
         criticalPage = page;
         if (isEndScrolling) {
             NSLog(@"ciritcalPage:%d   nextPage: %d",criticalPage,nextPage);
-            NSInteger tempInt = criticalPage - nextPage;
-            if (tempInt >1) {
-                criticalPage = nextPage -1;
-                NSLog(@"something wrong");
-            }
             if(criticalPage ==nextPage) {
                 isEndScrolling = NO;
                 panDirectioin = PanDirectionRight;
@@ -680,17 +703,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
             [info setValue:[examQuestionInfo valueForKey:valueKey] forKeyPath:valueKey];
         }
-//        NSString* aStr;
-//        aStr = [[NSString alloc] initWithData:[NSDate date] encoding:NSASCIIStringEncoding];
-        
         NSDateFormatter * dateFormat = [[NSDateFormatter alloc]init];
         [dateFormat setDateFormat:@"yyyy-MM-dd"];
         NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
         info.timeStamp = timeStr;
         timeStr = nil;
         free(vars);
-
-        
         [wrongExamPaperInfoArray addObject:info];
     }
     
@@ -710,9 +728,39 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [viewController setTimeStamp:timeStr];
     [viewController setDataSourece:questionDataSource];
     [viewController setAnswerDic:answerDictionary];
+    [viewController setBlock:[self configureEndExamBlock]];
+    
     [self.navigationController pushViewController:viewController animated:YES];
     viewController =nil;
     
+}
+
+#pragma  mark  - EndExamBlock
+-(EndExamBlock)configureEndExamBlock
+{
+    EndExamBlock block = ^(NSInteger index)
+    {
+        if (index >=[self.questionDataSource count]-5) {
+            printOnPage = [self.questionDataSource count]-5;
+            currentPage = printOnPage;
+            criticalPage = [[self questionDataSource]count]-3;
+            [self scrollToPage:criticalPage+2];
+        }else
+        {
+            printOnPage = index;
+            currentPage = index;
+            criticalPage = index+2;
+            [self scrollToPage:currentPage];
+        }
+    };
+    return block;
+}
+
+-(void)scrollToPage:(NSInteger)page
+{
+    [currentDisplayItems removeAllObjects];
+    [self refreshScrollViewWithDirection:PanDirectionNone];
+    [self.quesScrollView scrollRectToVisible:CGRectMake(320 *page, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
 }
 @end
 

@@ -292,34 +292,64 @@
 
 -(void)setSelectButonStatus:(NSString *)str
 {
-    if (self.paperType == PaperTypeOpinion) {
-        for (int i =0;i< [alphabetAryM count];i++) {
-            NSString *tempStr  = [alphabetAryM objectAtIndex:i];
-            if ([tempStr isEqualToString:str]) {
-                for (UIButton *btn in buttonArray) {
-                    if (btn.tag == i+1) {
-                        [btn setSelected:YES];
-                    }
-                }
+    if ([str length]) {
+        if (self.paperType == PaperTypeOpinion) {
+            [self paperTypeOpinionStatusConfig:str];
+        }else
+        {
+            switch (self.paperType) {
+                case PaperTypeChoose:
+                    [self paperTypeChooseButtonStatusConfig:str];
+                    break;
+                case PaperTypeMutiChooseAD:
+                    [self paperTypeMutiChooseADButtonStatusConfig:str];
+                    break;
+                default:
+                    break;
             }
         }
-    }else
-    {
-        for (int i =0;i< [alphabetAryS count];i++) {
-            NSString *tempStr  = [alphabetAryS objectAtIndex:i];
-            if ([tempStr isEqualToString:str]) {
-                for (UIButton *btn in buttonArray) {
-                    if (btn.tag == i+1) {
-                        [btn setSelected:YES];
-                    }
-                }
-            }
-        }
-
     }
 }
 
+-(void)paperTypeOpinionStatusConfig:(NSString *)str
+{
+    for (int i =0;i< [alphabetAryM count];i++) {
+        NSString *tempStr  = [alphabetAryM objectAtIndex:i];
+        if ([tempStr isEqualToString:str]) {
+            for (UIButton *btn in buttonArray) {
+                if (btn.tag == i+1) {
+                    [btn setSelected:YES];
+                }
+            }
+        }
+    }
 
+
+}
+
+-(void)paperTypeMutiChooseADButtonStatusConfig:(NSString *)str
+{
+    NSMutableArray * tempAry = [NSMutableArray arrayWithArray:[str componentsSeparatedByString:@","]];
+    
+    [tempAry enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self paperTypeChooseButtonStatusConfig:obj];
+    }];
+}
+
+-(void)paperTypeChooseButtonStatusConfig:(NSString *)str
+{
+    for (int i =0;i< [alphabetAryS count];i++) {
+        NSString *tempStr  = [alphabetAryS objectAtIndex:i];
+        if ([tempStr isEqualToString:str]) {
+            for (UIButton *btn in buttonArray) {
+                if (btn.tag == i+1) {
+                    [btn setSelected:YES];
+                }
+            }
+        }
+    }
+
+}
 -(void)buttonAAction:(id)sender
 {
     UIButton *btn = sender;
@@ -405,12 +435,12 @@
         }
         
         
-        if (buttonAState) {
-            self.block(alphabet,self.itemIndex);
-        }else
-        {
-            self.block(@"",self.itemIndex);
-        }
+//        if (buttonAState) {
+//            self.block(alphabet,self.itemIndex);
+//        }else
+//        {
+//            self.block(@"",self.itemIndex);
+//        }
         [btn setSelected:!btn.selected];
     }else
     {

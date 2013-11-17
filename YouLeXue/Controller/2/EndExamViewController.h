@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AnswerSheetView.h"
+
+typedef void (^EndExamBlock) (NSInteger index);
 @interface EndExamViewController : UIViewController
 @property (strong ,nonatomic) NSString * timeStamp;
 @property (strong ,nonatomic) NSArray * dataSourece;
@@ -17,4 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *doneQuestionCount;
 @property (weak, nonatomic) IBOutlet UIScrollView *backgroundScrollView;
 @property (strong, nonatomic) AnswerSheetView *answerSheetView;
+
+
+@property (strong ,nonatomic) EndExamBlock block;
 @end

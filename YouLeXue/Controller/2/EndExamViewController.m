@@ -47,6 +47,7 @@
     self.answerSheetView.answerCount =count;
     [self.answerSheetView setAlreadyAnswerTitle:[self getAlreadyAnswerItems]];
     [self.answerSheetView setTitleDataSourece:[self getTitleWithDataSource]];
+    [self.answerSheetView setBlock:[self configureAnswerSheetBlock]];
     
     //BackgroundScrollview
     [self.backgroundScrollView addSubview:self.answerSheetView];
@@ -95,12 +96,12 @@
                     default:
                         break;
                 }
-                
+                [array addObject:@{@"Title": tempTitle,@"IsTitle":@"yes"}];
             }else
             {
                 tempTitle =[info valueForKey:@"num"];
+                [array addObject:@{@"Title": tempTitle,@"IsTitle":@"no"}];
             }
-            [array addObject:tempTitle];
         }
 
     }
@@ -130,5 +131,16 @@
     [super viewDidUnload];
 }
 
+#pragma mark - Block for the AnswerSheet
+-(AnswerSheetBlock)configureAnswerSheetBlock
+{
+    __weak EndExamViewController *weakSelf = self;
+    AnswerSheetBlock block = ^(NSInteger index)
+    {
+        self.block(index);
+        [weakSelf.navigationController popViewControllerAnimated:YES];
+    };
+    return  block;
+}
 
 @end

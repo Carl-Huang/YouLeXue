@@ -33,21 +33,20 @@
     [self getGridNumWithX:x Y:y];
 }
 
--(NSInteger)getGridNumWithX:(int)x  Y:(int)y
+-(void)getGridNumWithX:(int)x  Y:(int)y
 {
-    
     NSInteger columnY = y*5;
     NSInteger rowX = (x+1);
-    NSInteger index = columnY + rowX;
+    NSInteger index = columnY + rowX -1;
     NSLog(@"%d",index);
-    return index;
+    self.block(index);
 }
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    
+    self.canDrawBackgroundItem = [NSMutableArray array];
     UITapGestureRecognizer * gesutre = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture:)];
     [self addGestureRecognizer:gesutre];
     gesutre  = nil;
@@ -95,7 +94,7 @@
             //CGContextShowTextAtPoint 不能画中文，所以采用以下方法
             CGContextRef textureContext = UIGraphicsGetCurrentContext();
             UIGraphicsPushContext(textureContext);
-            [[self getTextOnSheetWithX:i Y:j] drawAtPoint:CGPointMake(5+(OffsetX)*(j+1)+(RowOffsetX)*j, (OffsetY+5)+RowHeight*(i)) withFont:[UIFont systemFontOfSize:15]];
+            [[self getTextOnSheetWithX:i Y:j] drawAtPoint:CGPointMake(20+(OffsetX)*(j+1)+(RowOffsetX)*j, (OffsetY+5)+RowHeight*(i)) withFont:[UIFont systemFontOfSize:16]];
             UIGraphicsPopContext();
         }
         CGContextSetLineWidth(context, .1f);
@@ -115,7 +114,7 @@
 {
     int row = ceil(num/5);
     int column = num - (row*5);
-    if (x==row && y+1 == column) {
+    if (x==row && y== column) {
         NSLog(@"%d,%d",row,column);
         return YES;
     }
@@ -124,9 +123,9 @@
 -(NSString *)getTextOnSheetWithX:(NSInteger)x Y:(NSInteger)y
 {
     int row = x;
-    int column = y+1;
+    int column = y;
     NSInteger index = row*5 + column;
-    NSString * str = [self.titleDataSourece objectAtIndex:index-1];
+    NSString * str = [[self.titleDataSourece objectAtIndex:index]objectForKey:@"Title"];
     return str;
 }
 @end
