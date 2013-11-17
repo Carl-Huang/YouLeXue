@@ -166,14 +166,14 @@
 {
     [db open];
     if ([self isTableOK:@"ExampleListTable"]) {
-        NSLog(@"数据表已经存在");
+        NSLog(@"ExampleListTable已经存在");
         [self eraseTableData:@"ExampleListTable"];
         for (ExamplePaperInfo * info in array) {
             [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
         }
     }else
     {
-        NSLog(@"数据表不存在");
+        NSLog(@"ExampleListTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExampleListTable %@",[self enumerateObjectConverToStr:[ExamplePaperInfo class] withPrimarykey:@"TID"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create table successfully");
@@ -195,14 +195,14 @@
 {
     [db open];
     if ([self isTableOK:@"OtherInformationTable"]) {
-        NSLog(@"数据表已经存在");
+        NSLog(@"OtherInformationTable已经存在");
         [self eraseTableData:@"OtherInformationTable"];
         for (FetchDataInfo * info in array) {
             [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
         }
     }else
     {
-        NSLog(@"数据表不存在");
+        NSLog(@"OtherInformationTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"KS_phoneSeq"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create table successfully");

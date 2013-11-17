@@ -297,6 +297,9 @@ static NSString *identifier = @"Cell";
         }];
     }else
     {
+        UIAlertView * alerview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerview show];
+        alerview = nil;
         [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
     }
 

@@ -35,6 +35,8 @@
 		4E317C10182C940D0009FEC3 /* UserLoginInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */; };
 		4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */; };
 		4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */; };
+		4E3D8715183904D20073CD47 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3D8713183904D20073CD47 /* checkmark.png */; };
+		4E3D8716183904D20073CD47 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3D8714183904D20073CD47 /* cross.png */; };
 		4E3DF384182BDEC80056493A /* Bottom_Bar01.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF380182BDEC80056493A /* Bottom_Bar01.png */; };
 		4E3DF385182BDEC80056493A /* Student_Center_Icon_Password_Normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF381182BDEC80056493A /* Student_Center_Icon_Password_Normal.png */; };
 		4E3DF386182BDEC80056493A /* Student_Center_Icon_UserName_H.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3DF382182BDEC80056493A /* Student_Center_Icon_UserName_H.png */; };
@@ -321,6 +323,8 @@
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
 		4E34D8AA182B8A7200965E55 /* CaseAnalysisViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaseAnalysisViewController.h; sourceTree = "<group>"; };
 		4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaseAnalysisViewController.m; sourceTree = "<group>"; };
+		4E3D8713183904D20073CD47 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
+		4E3D8714183904D20073CD47 /* cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cross.png; sourceTree = "<group>"; };
 		4E3DF380182BDEC80056493A /* Bottom_Bar01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Bottom_Bar01.png; sourceTree = "<group>"; };
 		4E3DF381182BDEC80056493A /* Student_Center_Icon_Password_Normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Student_Center_Icon_Password_Normal.png; sourceTree = "<group>"; };
 		4E3DF382182BDEC80056493A /* Student_Center_Icon_UserName_H.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Student_Center_Icon_UserName_H.png; sourceTree = "<group>"; };
@@ -683,6 +687,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		4E3D8712183904D20073CD47 /* OtherImages */ = {
+			isa = PBXGroup;
+			children = (
+				4E3D8713183904D20073CD47 /* checkmark.png */,
+				4E3D8714183904D20073CD47 /* cross.png */,
+			);
+			path = OtherImages;
+			sourceTree = "<group>";
+		};
 		4E7823ED1831392A00DD396F /* VDAlertView */ = {
 			isa = PBXGroup;
 			children = (
@@ -915,6 +928,7 @@
 		4EF18697182A9A0F00E5EEA8 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				4E3D8712183904D20073CD47 /* OtherImages */,
 				4EF18698182A9A0F00E5EEA8 /* 1x */,
 				4EF186ED182A9A0F00E5EEA8 /* 2x */,
 			);
@@ -1462,6 +1476,8 @@
 				4ED6187318313A3F00D8400C /* Default-568h@2x.png in Resources */,
 				4EFF03AD18339C3B005B13BA /* PaperViewController.xib in Resources */,
 				4E98DEFB1837C9F700D2703A /* EndExamViewController.xib in Resources */,
+				4E3D8715183904D20073CD47 /* checkmark.png in Resources */,
+				4E3D8716183904D20073CD47 /* cross.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

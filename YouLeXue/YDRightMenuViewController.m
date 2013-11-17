@@ -88,21 +88,24 @@
 {
     dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        __weak YDRightMenuViewController *weakSelf = self;
-        [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
-         {
-             if ([item count]) {
-                 [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
-                 dataSource  = item;
-                 [weakSelf.rightTable reloadData];
-             }
-             if (error) {
-                 NSLog(@"%@",error);
-             }
-         }];
-        
-    });
+    if ([dataSource count] == 0) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            __weak YDRightMenuViewController *weakSelf = self;
+            [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
+             {
+                 if ([item count]) {
+                     [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
+                     dataSource  = item;
+                     [weakSelf.rightTable reloadData];
+                 }
+                 if (error) {
+                     NSLog(@"%@",error);
+                 }
+             }];
+            
+        });
+    }
+   
 }
 -(void)refreshStatus
 {
