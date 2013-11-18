@@ -61,8 +61,7 @@
     regulationStr = @"1";
     
     //设置这个页面，不能左右滑动。
-    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    myDelegate.containerViewController.canPan = NO;
+   
     
     //创建用户设置的表
     UserSetting * settingData =[[PersistentDataManager sharePersistenDataManager]readUserSettingData];
@@ -83,6 +82,12 @@
    
     }
 
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    myDelegate.containerViewController.canPan = NO;
 }
 -(void)viewDidDisappear:(BOOL)animated
 {

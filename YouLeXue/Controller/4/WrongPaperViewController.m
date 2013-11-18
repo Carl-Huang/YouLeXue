@@ -63,6 +63,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.title = titleStr;
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
     if (IS_SCREEN_4_INCH) {

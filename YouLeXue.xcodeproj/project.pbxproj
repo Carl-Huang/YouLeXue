@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4E023C8D1838564A0030A612 /* AnswerSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E023C8C1838564A0030A612 /* AnswerSheetView.m */; };
+		4E034F52183A5715008588D2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E034F51183A5715008588D2 /* MessageUI.framework */; };
 		4E09FC76182B67A200AE023C /* Case_List_Bg01.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E09FC71182B67A200AE023C /* Case_List_Bg01.png */; };
 		4E09FC77182B67A200AE023C /* Case_List_Bg02.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E09FC72182B67A200AE023C /* Case_List_Bg02.png */; };
 		4E09FC78182B67A200AE023C /* Case_List_Button_Next.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E09FC73182B67A200AE023C /* Case_List_Button_Next.png */; };
@@ -292,6 +293,7 @@
 /* Begin PBXFileReference section */
 		4E023C8B1838564A0030A612 /* AnswerSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnswerSheetView.h; sourceTree = "<group>"; };
 		4E023C8C1838564A0030A612 /* AnswerSheetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnswerSheetView.m; sourceTree = "<group>"; };
+		4E034F51183A5715008588D2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		4E09FC71182B67A200AE023C /* Case_List_Bg01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Case_List_Bg01.png"; sourceTree = "<group>"; };
 		4E09FC72182B67A200AE023C /* Case_List_Bg02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Case_List_Bg02.png; sourceTree = "<group>"; };
 		4E09FC73182B67A200AE023C /* Case_List_Button_Next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Case_List_Button_Next.png"; sourceTree = "<group>"; };
@@ -647,9 +649,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EC62299182CDF1B001266A6 /* Security.framework in Frameworks */,
+				4E034F52183A5715008588D2 /* MessageUI.framework in Frameworks */,
 				4E1306E0182D3A090099B6CC /* libsqlite3.0.dylib in Frameworks */,
 				4EC6229B182CDF28001266A6 /* SystemConfiguration.framework in Frameworks */,
-				4EC62299182CDF1B001266A6 /* Security.framework in Frameworks */,
 				4EF18684182A925500E5EEA8 /* QuartzCore.framework in Frameworks */,
 				C32C21541828912200FBF75C /* CoreGraphics.framework in Frameworks */,
 				C32C21561828912200FBF75C /* UIKit.framework in Frameworks */,
@@ -1170,6 +1173,7 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
+				4E034F51183A5715008588D2 /* MessageUI.framework */,
 				4ED6187218313A3F00D8400C /* Default-568h@2x.png */,
 				4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */,
 				C32C21571828912200FBF75C /* YouLeXue */,
@@ -1273,6 +1277,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = C32C21451828912200FBF75C;
 			productRefGroup = C32C214F1828912200FBF75C /* Products */;

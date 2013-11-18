@@ -24,6 +24,7 @@
 #import "AppDelegate.h"
 #import "FetchDataInfo.h"
 #import "VDAlertView.h"
+#import "ExamInfo.h"
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
@@ -346,12 +347,19 @@
 
 - (IBAction)reloadQuesBankAction:(id)sender {
     [HttpHelper getGroupExamListWithId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
-
-        //保存数据数据库
-        [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
-        
-        //TODO:创建标注的信息表
-        
+        if ([item count]) {
+            //保存数据数据库
+            NSArray * tempArr = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
+            if ([tempArr count]==0) {
+                [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+            }
+            
+            //TODO:创建标注的信息表
+            NSArray * arr = [[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable];
+            if ([arr count]==0) {
+                [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
+            }
+        }
     }];
 
 }

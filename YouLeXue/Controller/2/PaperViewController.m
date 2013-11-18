@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "ExamPaperInfoTimeStamp.h"
 #import <objc/runtime.h>
 #import "EndExamViewController.h"
-@interface PaperViewController ()<UIScrollViewDelegate>
+@interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
     NSArray * questTypes;
     
@@ -240,7 +240,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:wrongExamPaperInfoArray];
     }
    
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    [alertview show];
+    alertview = nil;
 }
 
 
@@ -803,6 +806,23 @@ typedef NS_ENUM(NSInteger, PanDirection)
 - (IBAction)showAnswerAction:(id)sender {
     //练习模式下 ，显示答案
     
+}
+
+
+#pragma mark AlertView Deleaget
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            //退出考试
+            [self.navigationController popViewControllerAnimated:YES];
+            break;
+        case 1:
+            //继续考试
+            break;
+        default:
+            break;
+    }
 }
 @end
 

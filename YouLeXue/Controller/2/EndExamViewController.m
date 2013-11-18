@@ -116,6 +116,9 @@
 -(void)endExamAction
 {
     //交卷
+    UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定交卷吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    [alertview show];
+    alertview = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -142,5 +145,22 @@
     };
     return  block;
 }
+
+#pragma mark AlertView Deleaget
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            //交卷
+            [self.navigationController popViewControllerAnimated:YES];
+            break;
+        case 1:
+            //继续考试
+            break;
+        default:
+            break;
+    }
+}
+
 
 @end

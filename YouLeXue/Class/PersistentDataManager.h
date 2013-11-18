@@ -29,4 +29,8 @@
 -(void)updateUserSettingTableWithkey:(NSString *)key value:(NSString *)value;
 -(UserSetting *)readUserSettingData;
 -(NSMutableDictionary *)readExamPaperToDic;
+
+-(void)createAlreadyMarkPaperTable:(NSArray *)array;
+-(NSArray *)readAlreadyMarkPaperTable;
+-(void)updateAlreadyMarkPaperTableWithKey:(NSString *)key  value:(NSString *)value;
 @end

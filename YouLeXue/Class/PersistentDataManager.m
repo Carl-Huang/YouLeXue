@@ -381,36 +381,58 @@
 #pragma mark - 创建试卷标注表
 -(void)createAlreadyMarkPaperTable:(NSArray *)array
 {
+    [db open];
     NSMutableArray * idArray = [NSMutableArray array];
     for (ExamInfo * info in array) {
         NSString * str = [info valueForKey:@"id"];
         [idArray addObject:str];
     }
-    NSString * keyStr = nil;
-    for (NSString * tempStr in idArray) {
-        if (keyStr ==nil) {
-            keyStr = tempStr;
-        }else
-        {
-            keyStr = [keyStr stringByAppendingString:[NSString stringWithFormat:@",%@",tempStr]];
-        }
-    }
     
-    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists AlreadyMarkPaperTable %@",[self enumerateObjectConverToStr:[ExamInfo class] withPrimarykey:@"id"]];
+    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists AlreadyMarkPaperTable (id text primary key,isSelected text)"];
     if ([db executeUpdate:cmdStr]) {
-        NSLog(@"create PaperListTable successfully");
-        if ([array count]) {
-            for (ExamInfo * info in array) {
-                [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
+        NSLog(@"create AlreadyMarkPaperTable successfully");
+        //插入数据
+            for (NSString *str  in idArray) {
+                NSString * cmdStr = [NSString stringWithFormat:@"INSERT INTO AlreadyMarkPaperTable values (?,?)"];
+                [db executeUpdate:cmdStr withArgumentsInArray:@[str,@"No"]];
             }
-        }
-        
+ 
     }else
     {
         NSLog(@"Failer to create PaperListTable,Error: %@",[db lastError]);
     }
+    [db close];
+}
+-(NSArray *)readAlreadyMarkPaperTable
+{
+    [db open];
+    NSString * sqlStr = [NSString stringWithFormat:@"select * from AlreadyMarkPaperTable"];
+    FMResultSet *rs = [db executeQuery:sqlStr];
+    NSMutableArray * tempArray = [NSMutableArray array];
+    while ([rs next]) {
+        NSString * idStr = [rs stringForColumn:@"id"];
+        NSString * isCheckOrnot = [rs stringForColumn:@"isSelected"];
+        NSDictionary * tempDic =@{@"id": idStr,@"isSelected":isCheckOrnot};
+        [tempArray addObject:tempDic];
+        tempDic = nil;
+    }
+    [rs close];
+    [db close];
+    if ([tempArray count]) {
+        return tempArray;
+    }
+    return nil;
 }
 
+-(void)updateAlreadyMarkPaperTableWithKey:(NSString *)key  value:(NSString *)value
+{
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update AlreadyMarkPaperTable set isSelected=? where id=?"];
+    [db executeUpdate:cmdStr,value,key];
+    [db commit];
+    [db close];
+}
 
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
@@ -427,6 +449,7 @@
 #pragma mark - 插入数据到表
 -(void)insertValueToExistedTableWithTableName:(NSString *)tableName Arguments:(id )obj primaryKey:(NSString *)key
 {
+    
     NSMutableArray * objectValueArray = [NSMutableArray array];
     unsigned int varCount;
     Ivar *vars = class_copyIvarList([obj class], &varCount);

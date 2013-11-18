@@ -93,7 +93,7 @@
 //    [dateFormat setDateFormat:@"yyyy-MM-dd"];
 //    NSString * timeStr = [dateFormat stringFromDate:info.timeStamp];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"更新时间: %@",info.timeStamp];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 

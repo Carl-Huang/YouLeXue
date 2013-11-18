@@ -51,10 +51,12 @@ static NSString *identifier = @"Cell";
     NSInteger preSelectedRow4;
     
     BOOL isShouldDownExamPaper;
-    
-    
+
     //current reload tableview
     UITableView * currentTableview;
+    
+    //保存标志
+    NSMutableArray * markArray;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -126,6 +128,9 @@ static NSString *identifier = @"Cell";
 
     AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     info = myDeleate.userInfo;
+    
+    //保存标志
+    markArray = [[[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable]mutableCopy];
 }
 
 -(void)reloadUserInfo
@@ -283,21 +288,28 @@ static NSString *identifier = @"Cell";
     __weak TestUserGroupViewController *weakSelf = self;
     if (info) {
         [HttpHelper getGroupExamListWithId:[info valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
-            
-            //保存数据数据库
-            [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
-            
-            //TODO:创建标注的信息表
-            
-            
-            [self fillData];
-            if (isShouldDownExamPaper) {
-                currentTableview = tableview;
-            }else
-            {
-                [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+            if ([item count]) {
+                NSArray * tempArr = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
+                if ([tempArr count]==0) {
+                    [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+                }
+                
+                //TODO:创建标注的信息表
+                NSArray * arr = [[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable];
+                if ([arr count]==0) {
+                    [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
+                }
+                
+                [self fillData];
+                if (isShouldDownExamPaper) {
+                    currentTableview = tableview;
+                }else
+                {
+                    [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+                }
+                [weakSelf reloadAllTable];
             }
-            [weakSelf reloadAllTable];
+            
         }];
     }else
     {
@@ -319,6 +331,8 @@ static NSString *identifier = @"Cell";
 
 -(void)configureCell:(UITableViewCell *)cell withTable:(UITableView *)tableView  indexPath:(NSIndexPath *)indexPath
 {
+    
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     switch (tableView.tag) {
@@ -329,6 +343,9 @@ static NSString *identifier = @"Cell";
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
             [self configureSpecificRowPopViewWithRow:selectedRow1 preSelectedRow:&preSelectedRow1 Cell:cell indexPath:indexPath];
+            //判断是否标记
+            [self setMarkOrNot:cell info:tempExamInfo];
+            
         }
             break;
         case SecTableTag:
@@ -338,6 +355,7 @@ static NSString *identifier = @"Cell";
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
             [self configureSpecificRowPopViewWithRow:selectedRow2 preSelectedRow:&preSelectedRow2 Cell:cell indexPath:indexPath];
+             [self setMarkOrNot:cell info:tempExamInfo];
         }
             break;
         case ThiTableTag:
@@ -347,23 +365,49 @@ static NSString *identifier = @"Cell";
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
             [self configureSpecificRowPopViewWithRow:selectedRow3 preSelectedRow:&preSelectedRow3 Cell:cell indexPath:indexPath];
+             [self setMarkOrNot:cell info:tempExamInfo];
         }
 
             break;
         case FouTableTag:
-        {
+        {            
             ExamInfo * tempExamInfo = [fourthDataSource objectAtIndex:indexPath.row];
             cell.textLabel.text = [tempExamInfo valueForKey:@"title"];
             NSString * detailStr = [self getDetailDateStr:tempExamInfo];
             cell.detailTextLabel.text = detailStr;
+            [self configureSpecificRowPopViewWithRow:selectedRow3 preSelectedRow:&preSelectedRow3 Cell:cell indexPath:indexPath];
+            [self setMarkOrNot:cell info:tempExamInfo];
         }
-
             break;
             
         default:
             break;
     }
     
+}
+
+-(void)setMarkOrNot:(UITableViewCell *)cell  info:(ExamInfo *)tempExamInfo
+{
+    if (markArray) {
+        markArray =nil;
+    }
+     markArray = [[[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable]mutableCopy];
+    [markArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary * dic = (NSDictionary *)obj;
+        NSString *tempId = dic[@"id"];
+        if ([tempId isEqualToString:[tempExamInfo valueForKey:@"id"]]) {
+            if ([dic[@"isSelected"]isEqualToString:@"Yes"]) {
+                cell.textLabel.textColor = [UIColor orangeColor];
+                cell.detailTextLabel.textColor = [UIColor orangeColor];
+
+            }else
+            {
+                cell.textLabel.textColor = [UIColor blackColor];
+                cell.detailTextLabel.textColor = [UIColor blackColor];
+
+            }        
+        }
+    }];
 }
 
 -(void)configureSpecificRowPopViewWithRow:(NSInteger)selectedRow preSelectedRow:(NSInteger *)preSelectedRow Cell:(UITableViewCell *)cell indexPath:(NSIndexPath*)indexPath
@@ -471,6 +515,30 @@ static NSString *identifier = @"Cell";
 {
     MarkModelBlock  block = ^()
     {
+        switch (currentPage) {
+            case 1:
+            {
+                [self markPaperActionWithDataSource:firstDataSource row:selectedRow1];
+            }
+                break;
+            case 2:
+            {
+                [self markPaperActionWithDataSource:secondDataSource row:selectedRow2];
+            }
+                break;
+            case 3:
+            {
+              
+            }
+                break;
+            case 4:
+            {
+               
+            }
+                break;
+            default:
+                break;
+        }
         NSLog(@"%s",__func__);
     };
     return  block;
@@ -493,6 +561,30 @@ static NSString *identifier = @"Cell";
         [self.navigationController pushViewController:viewcontroller animated:YES];
         viewcontroller = nil;
     }
+}
+
+-(void)markPaperActionWithDataSource:(NSArray *)dataSource row:(NSInteger)selectedRow
+{
+    __weak TestUserGroupViewController * weakSelf = self;
+    //对应的试卷信息
+    ExamInfo * selectedInfo = [dataSource objectAtIndex:selectedRow];
+    [markArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary * dic = (NSDictionary *)obj;
+        NSString *tempId = dic[@"id"];
+        if ([tempId isEqualToString:[selectedInfo valueForKey:@"id"]]) {
+            if ([dic[@"isSelected"]isEqualToString:@"Yes"]) {
+                [[PersistentDataManager sharePersistenDataManager]updateAlreadyMarkPaperTableWithKey:[selectedInfo valueForKey:@"id"] value:@"No"];
+            }else
+            {
+                 [[PersistentDataManager sharePersistenDataManager]updateAlreadyMarkPaperTableWithKey:[selectedInfo valueForKey:@"id"] value:@"Yes"];
+            }
+           
+        }
+        if (stop) {
+            [weakSelf reloadAllTable];
+        }
+    }];
+
 }
 
 -(NSString *)getDetailDateStr:(ExamInfo *)tempExamInfo
