@@ -15,7 +15,7 @@
 #import "FetchDataInfo.h"
 #import "ExamPaperInfo.h"
 #import "ExamPaperInfoTimeStamp.h"
-
+#import "UserSetting.h"
 @implementation PersistentDataManager
 @synthesize db;
 
@@ -62,7 +62,10 @@
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists UserLoginInfoTable %@",[self enumerateObjectConverToStr:[info  class] withPrimarykey:@"UserID"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create UserLoginInfoTable successfully");
-            [self insertValueToExistedTableWithTableName:@"UserLoginInfoTable" Arguments:info primaryKey:@"UserID"];
+            if (info) {
+                  [self insertValueToExistedTableWithTableName:@"UserLoginInfoTable" Arguments:info primaryKey:@"UserID"];
+            }
+        
         }else
         {
             NSLog(@"Failer to create UserLoginInfoTable,Error: %@",[db lastError]);
@@ -79,8 +82,11 @@
     if ([self isTableOK:@"PaperListTable"]) {
         NSLog(@"PaperListTable已经存在");
         [self eraseTableData:@"PaperListTable"];
-        for (ExamInfo * info in array) {
-            [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
+        if ([array count]) {
+            for (ExamInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
+            }
+
         }
     }else
     {
@@ -88,9 +94,12 @@
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists PaperListTable %@",[self enumerateObjectConverToStr:[ExamInfo class] withPrimarykey:@"id"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create PaperListTable successfully");
-            for (ExamInfo * info in array) {
-                 [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
+            if ([array count]) {
+                for (ExamInfo * info in array) {
+                    [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
+                }
             }
+        
         }else
         {
             NSLog(@"Failer to create PaperListTable,Error: %@",[db lastError]);
@@ -108,23 +117,27 @@
     if ([self isTableOK:@"ExamPaperTable"]) {
         NSLog(@"ExamPaperTable已经存在");
         [self eraseTableData:@"ExamPaperTable"];
-        for (NSArray * specificArray in array) {
-            for (ExamPaperInfo * info in specificArray) {
-                [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
+        if ([array count]) {
+            for (NSArray * specificArray in array) {
+                for (ExamPaperInfo * info in specificArray) {
+                    [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
+                }
             }
         }
+    
     }else
     {
         NSLog(@"ExamPaperTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExamPaperTable %@",[self enumerateObjectConverToStr:[ExamPaperInfo class] withPrimarykey:@"id"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create ExamPaperTable successfully");
-            for (NSArray * specificArray in array) {
-                for (ExamPaperInfo * info in specificArray) {
-                    [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
+            if ([array count]) {
+                for (NSArray * specificArray in array) {
+                    for (ExamPaperInfo * info in specificArray) {
+                        [self insertValueToExistedTableWithTableName:@"ExamPaperTable" Arguments:info primaryKey:@"id"];
+                    }
                 }
             }
-        
         }else
         {
             NSLog(@"Failer to create table,Error: %@",[db lastError]);
@@ -141,8 +154,10 @@
     if ([self isTableOK:@"WrongTextBookTable"]) {
         NSLog(@"WrongTextBookTable已经存在");
         [self eraseTableData:@"WrongTextBookTable"];
+        if ([array count]) {
             for (ExamPaperInfoTimeStamp * info in array) {
                 [self insertValueToExistedTableWithTableName:@"WrongTextBookTable" Arguments:info primaryKey:@"id"];
+            }
         }
     }else
     {
@@ -150,9 +165,13 @@
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists WrongTextBookTable %@",[self enumerateObjectConverToStr:[ExamPaperInfoTimeStamp class] withPrimarykey:@"id"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create WrongTextBookTable successfully");
+            if ([array count]) {
                 for (ExamPaperInfoTimeStamp * info in array) {
                     [self insertValueToExistedTableWithTableName:@"WrongTextBookTable" Arguments:info primaryKey:@"id"];
                 }
+
+            }
+            
         }else
         {
             NSLog(@"Failer to create WrongTextBookTable,Error: %@",[db lastError]);
@@ -168,8 +187,10 @@
     if ([self isTableOK:@"ExampleListTable"]) {
         NSLog(@"ExampleListTable已经存在");
         [self eraseTableData:@"ExampleListTable"];
-        for (ExamplePaperInfo * info in array) {
-            [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+        if ([array count]) {
+            for (ExamplePaperInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+            }
         }
     }else
     {
@@ -177,8 +198,10 @@
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExampleListTable %@",[self enumerateObjectConverToStr:[ExamplePaperInfo class] withPrimarykey:@"TID"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create table successfully");
-            for (ExamplePaperInfo * info in array) {
-                [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+            if ([array count]) {
+                for (ExamplePaperInfo * info in array) {
+                    [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
+                }
             }
         }else
         {
@@ -197,18 +220,24 @@
     if ([self isTableOK:@"OtherInformationTable"]) {
         NSLog(@"OtherInformationTable已经存在");
         [self eraseTableData:@"OtherInformationTable"];
-        for (FetchDataInfo * info in array) {
-            [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
+        if ([array count]) {
+            for (FetchDataInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
+            }
         }
+    
     }else
     {
         NSLog(@"OtherInformationTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"KS_phoneSeq"]];
         if ([db executeUpdate:cmdStr]) {
             NSLog(@"create table successfully");
-            for (FetchDataInfo * info in array) {
-                [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
+            if ([array count]) {
+                for (FetchDataInfo * info in array) {
+                    [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
+                }
             }
+        
         }else
         {
             NSLog(@"Failer to create table,Error: %@",[db lastError]);
@@ -272,6 +301,81 @@
 }
 
 
+
+#pragma mark - 创建保存用户设置的表
+-(void)createUserSettingTable
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists UserSettingTable %@",[self enumerateObjectConverToStr:[UserSetting class] withPrimarykey:nil]];
+    if ([db executeUpdate:cmdStr]) {
+        
+        NSLog(@"create table successfully");
+        [self eraseTableData:@"UserSettingTable"];
+        NSMutableArray * objectValueArray = [NSMutableArray array];
+        unsigned int varCount;
+        Ivar *vars = class_copyIvarList([UserSetting class], &varCount);
+        for (int i = 0; i < varCount; i++) {
+            [objectValueArray addObject:@"No"];
+            
+        }
+        free(vars);
+        NSString *sqlInsertStr = [NSString stringWithFormat:@"insert into %@ %@",@"UserSettingTable",[self insertKeyStringWithkeyNum:varCount]];
+        if ([db executeUpdate:sqlInsertStr withArgumentsInArray:objectValueArray]) {
+            NSLog(@"初始化UserSetting 成功");
+        }
+    }else
+    {
+        NSLog(@"Failer to create table,Error: %@",[db lastError]);
+    }
+    [db close];
+}
+
+-(UserSetting *)readUserSettingData
+{
+    [db open];
+    
+    NSString * sqlStr = [NSString stringWithFormat:@"select * from UserSettingTable"];
+    FMResultSet *rs = [db executeQuery:sqlStr];
+    while ([rs next]) {
+        id settingInfo = [[UserSetting alloc]init];
+        unsigned int varCount;
+        Ivar *vars = class_copyIvarList([UserSetting class], &varCount);
+        for (int i = 0; i < varCount; i++) {
+            Ivar var = vars[i];
+            const char* name = ivar_getName(var);
+            NSString *valueKey = [NSString stringWithUTF8String:name];
+            valueKey = [valueKey substringFromIndex:1];
+            NSLog(@"%@",[rs stringForColumn:valueKey]);
+            [settingInfo setValue:[rs stringForColumn:valueKey] forKeyPath:valueKey];
+        }
+        free(vars);
+        [rs close];
+        [db close];
+        return settingInfo;
+    }
+    return nil;
+}
+
+-(void)updateUserSettingTableWithkey:(NSString *)key value:(NSString *)value
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"update UserSettingTable set %@=?",key];
+    if ([db executeUpdate:cmdStr,value]) {
+        NSLog(@"update UserSettingTable successfully");
+    }else
+    {
+        NSLog(@"Failer to update value to UserSettingTable,Error: %@",[db lastError]);
+    }
+    [db close];
+}
+
++ (NSString *)GetUUID
+{
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return (__bridge NSString *)string;
+}
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {

@@ -9,6 +9,10 @@
 #define FontSize 14
 #import "SettingViewController.h"
 #import "AppDelegate.h"
+#import "UserSetting.h"
+#import <objc/runtime.h>
+#import "PersistentDataManager.h"
+
 @interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     NSArray *firSectionDataSource;
@@ -44,7 +48,7 @@
     checkItems = [NSMutableDictionary dictionary];
     firSectionDataSource = @[@"单选答题自动进入下一题",@"答错后手机震动",@"自动更新题目",@"移除错题规则"];
     for (int i =0; i<[firSectionDataSource count]-1; i++) {
-        [checkItems setObject:@"NO" forKey:[NSNumber numberWithInt:i]];
+        [checkItems setObject:@"No" forKey:[NSNumber numberWithInt:i]];
     }
     
     //slider
@@ -59,6 +63,26 @@
     //设置这个页面，不能左右滑动。
     AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     myDelegate.containerViewController.canPan = NO;
+    
+    //创建用户设置的表
+    UserSetting * settingData =[[PersistentDataManager sharePersistenDataManager]readUserSettingData];
+    if (settingData ==nil) {
+        [[PersistentDataManager sharePersistenDataManager]createUserSettingTable];
+    }else
+    {
+        
+        if ([settingData.isAutoTurnPage isEqualToString:@"Yes"]) {
+            [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:0]];
+        }else if ([settingData.isVibrateWhenClick isEqualToString:@"Yes"])
+        {
+            [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:1]];
+        }else if ([settingData.isAutoUpdatePaper isEqualToString:@"Yes"])
+        {
+            [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:2]];
+        }
+   
+    }
+
 }
 -(void)viewDidDisappear:(BOOL)animated
 {
@@ -81,6 +105,10 @@
     [super viewDidUnload];
 }
 
+-(void)updateUserSettingTableWithKey:(NSString * )key Value:(NSString *)value
+{
+    [[PersistentDataManager sharePersistenDataManager]updateUserSettingTableWithkey:key value:value];
+}
 
 #pragma mark -
 #pragma mark UITableViewDataSource
@@ -128,7 +156,8 @@
 {
     if (indexPath.section ==0) {
         if (indexPath.row !=3) {
-            if ([[checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]] isEqual:@"No"]) {
+            NSString * str = [checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]];
+            if ([str isEqualToString:@"No"]) {
                 [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:indexPath.row]];
             }else
                 [checkItems setObject:@"No" forKey:[NSNumber numberWithInt:indexPath.row]];
@@ -137,9 +166,6 @@
         [tableView reloadData];
     }
 }
-
-
-
 
 -(void)configureCell:(UITableViewCell *)cell withIndex:(NSIndexPath *)index
 {
@@ -162,9 +188,12 @@
             {
                 if ([[checkItems objectForKey:[NSNumber numberWithInt:index.row]] isEqual:@"Yes"]) {
                     cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark"]];
+                    [self updateUserSettingTableWithKey:[self updateUserTableWithIndex:index.row] Value:@"Yes"];
                 }else
-                cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"cross"]];
-
+                {
+                    cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"cross"]];
+                    [self updateUserSettingTableWithKey:[self updateUserTableWithIndex:index.row] Value:@"No"];
+                }
             }
         }
             break;
@@ -199,6 +228,25 @@
     cell.textLabel.font = [UIFont systemFontOfSize:FontSize];
     cell.detailTextLabel.font = [UIFont systemFontOfSize:FontSize -2];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+}
+
+-(NSString *)updateUserTableWithIndex:(NSInteger)index
+{
+    NSString * tempKey = nil;
+    switch (index) {
+        case 0:
+            tempKey = @"isAutoTurnPage";
+            break;
+        case 1:
+            tempKey = @"isVibrateWhenClick";
+            break;
+        case 2:
+            tempKey = @"isAutoUpdatePaper";
+            break;
+        default:
+            break;
+    }
+    return tempKey;
 }
 
 -(void)intensityControl:(id)sender

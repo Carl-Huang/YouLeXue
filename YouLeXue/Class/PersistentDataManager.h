@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @class FMDatabase;
 @class UserLoginInfo;
+@class UserSetting;
 @interface PersistentDataManager : NSObject
 @property (retain ,nonatomic)FMDatabase *db;
 +(PersistentDataManager *)sharePersistenDataManager;
@@ -23,5 +24,8 @@
 -(void)createOtherInformationTable:(NSArray *)array;
 -(void)createExamPaperTable:(NSArray *)array;
 -(void)createWrongTextBook:(NSArray *)array;
+-(void)createUserSettingTable;
+-(void)updateUserSettingTableWithkey:(NSString *)key value:(NSString *)value;
+-(UserSetting *)readUserSettingData;
 -(NSMutableDictionary *)readExamPaperToDic;
 @end

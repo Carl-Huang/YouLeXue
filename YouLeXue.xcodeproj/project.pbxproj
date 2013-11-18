@@ -32,6 +32,7 @@
 		4E1306DB182D34370099B6CC /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1306D6182D34370099B6CC /* FMResultSet.m */; };
 		4E1306DE182D34A50099B6CC /* PersistentDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1306DD182D34A50099B6CC /* PersistentDataManager.m */; };
 		4E1306E0182D3A090099B6CC /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */; };
+		4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1545CA1839A06C0037AE02 /* UserSetting.m */; };
 		4E317C10182C940D0009FEC3 /* UserLoginInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */; };
 		4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */; };
 		4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */; };
@@ -318,6 +319,8 @@
 		4E1306DC182D34A50099B6CC /* PersistentDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersistentDataManager.h; sourceTree = "<group>"; };
 		4E1306DD182D34A50099B6CC /* PersistentDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersistentDataManager.m; sourceTree = "<group>"; };
 		4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		4E1545C91839A06C0037AE02 /* UserSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetting.h; sourceTree = "<group>"; };
+		4E1545CA1839A06C0037AE02 /* UserSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetting.m; sourceTree = "<group>"; };
 		4E317C0E182C940D0009FEC3 /* UserLoginInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginInfo.h; sourceTree = "<group>"; };
 		4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginInfo.m; sourceTree = "<group>"; };
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
@@ -683,6 +686,8 @@
 				4EC621ED182CD773001266A6 /* FetchUserMessageInfo.m */,
 				4E98DEF41837BAAD00D2703A /* ExamPaperInfoTimeStamp.h */,
 				4E98DEF51837BAAD00D2703A /* ExamPaperInfoTimeStamp.m */,
+				4E1545C91839A06C0037AE02 /* UserSetting.h */,
+				4E1545CA1839A06C0037AE02 /* UserSetting.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1550,6 +1555,7 @@
 				4E98DEF61837BAAD00D2703A /* ExamPaperInfoTimeStamp.m in Sources */,
 				4E98DEFA1837C9F700D2703A /* EndExamViewController.m in Sources */,
 				4E023C8D1838564A0030A612 /* AnswerSheetView.m in Sources */,
+				4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
