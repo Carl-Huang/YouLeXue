@@ -31,4 +31,7 @@
 
 //用户的答案
 @property (strong ,nonatomic) NSString * userAnswer;
+@property (strong ,nonatomic) NSString * timeStamp;
+@property (strong ,nonatomic) NSString * uuid;
+@property (strong ,nonatomic) NSString * paperTitleStr;
 @end

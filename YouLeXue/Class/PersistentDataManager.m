@@ -468,6 +468,45 @@
     [db close];
 }
 
+-(NSDictionary *)readEndExamTableData
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"select distinct uuid from EndExamPaperTable"];
+    FMResultSet *tempRs = [db executeQuery:cmdStr];
+    NSMutableArray * tempArray = [NSMutableArray array];
+    while ([tempRs next]) {
+        [tempArray addObject:[tempRs stringForColumn:@"uuid"]];
+    }
+    NSLog(@"%@",tempArray);
+    [tempRs close];
+    NSMutableDictionary * endExamDic = [NSMutableDictionary dictionary];
+    for (NSString * uuidStr in tempArray) {
+        NSMutableArray * endExamDataArray = [NSMutableArray array];
+        NSString * sqlStr = [NSString stringWithFormat:@"select * from EndExamPaperTable where uuid='%@'",uuidStr];
+        FMResultSet *rs = [db executeQuery:sqlStr];
+        while ([rs next]) {
+            unsigned int varCount;
+            SubmittedPaperInfo * obj = [[SubmittedPaperInfo alloc]init];
+            Ivar *vars = class_copyIvarList([SubmittedPaperInfo class], &varCount);
+            for (int i = 0; i < varCount; i++) {
+                Ivar var = vars[i];
+                const char* name = ivar_getName(var);
+                NSString *valueKey = [NSString stringWithUTF8String:name];
+                valueKey  = [valueKey substringFromIndex:1];
+                [obj setValue:[rs stringForColumn:valueKey] forKey:valueKey];
+            }
+            [endExamDataArray addObject:obj];
+            free(vars);
+        }
+        [rs close];
+        [endExamDic setObject:endExamDataArray forKey:uuidStr];
+    }
+    [db close];
+    if ([endExamDic count]) {
+        return endExamDic;
+    }
+    return nil;
+}
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {
@@ -540,7 +579,18 @@
     [db commit];
 }
 
-
+-(BOOL)deleteTable:(NSString *)tableName
+{
+    [db open];
+    NSString *sqlstr = [NSString stringWithFormat:@"DROP TABLE %@", tableName];
+    if (![db executeUpdate:sqlstr])
+    {
+        NSLog(@"Delete table error!");
+        return NO;
+    }
+    [db close];
+    return YES;
+}
 
 -(void)readDataWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue withTableName:(NSString *)tableName withObj:(id)obj
 {

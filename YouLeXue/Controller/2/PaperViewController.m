@@ -809,6 +809,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
     {
         //保存试卷和答案到本地
         NSMutableArray * endExamData = [NSMutableArray array];
+        NSDateFormatter * dateFormat = [[NSDateFormatter alloc]init];
+        [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+        NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
+        NSString * uuid = [self GetUUID];
         for (ExamPaperInfo * examInfo in questionDataSource) {
             if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
                 NSString *number = [examInfo valueForKey:@"num"];
@@ -818,15 +822,18 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 Ivar *vars = class_copyIvarList([ExamPaperInfo class], &varCount);
                 for (int i = 0; i < varCount; i++) {
                     Ivar var = vars[i];
-                    const char* name = ivar_getName(var);
-                    NSString *valueKey = [NSString stringWithUTF8String:name];
+                    const char* name    = ivar_getName(var);
+                    NSString *valueKey  = [NSString stringWithUTF8String:name];
                     [submittedInfo setValue:[examInfo valueForKey:valueKey] forKeyPath:valueKey];
                 }
                 NSString * userAnswer = @"没有作答";
                 if ([[answerDictionary objectForKey:number] length]) {
                     userAnswer =[answerDictionary objectForKey:number];
                 }
-                submittedInfo.userAnswer = userAnswer;
+                submittedInfo.userAnswer    = userAnswer;
+                submittedInfo.timeStamp     = timeStr;
+                submittedInfo.uuid          = uuid;
+                submittedInfo.paperTitleStr = self.title;
                 [endExamData addObject:submittedInfo];
                 submittedInfo = nil;
             }
@@ -837,7 +844,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
     return block;
 }
 
-
+- (NSString *)GetUUID
+{
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return (__bridge NSString *)string;
+}
 -(void)scrollToPage:(NSInteger)page
 {
     [currentDisplayItems removeAllObjects];

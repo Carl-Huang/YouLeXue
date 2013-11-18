@@ -7,9 +7,10 @@
 //
 
 #import "YDLeftMenuViewController.h"
-
+#import "PersistentDataManager.h"
+#import "SVPullToRefresh.h"
 @interface YDLeftMenuViewController ()
-
+@property (strong ,nonatomic) NSArray * dataSource;
 @end
 
 @implementation YDLeftMenuViewController
@@ -31,7 +32,17 @@
         rect.size.height +=88;
         self.leftTable.frame = rect;
     }
+    __weak YDLeftMenuViewController * weakSelf = self;
+    [self.leftTable addPullToRefreshWithActionHandler:^{
+        [weakSelf fillData];
+    }];
     // Do any additional setup after loading the view from its nib.
+}
+
+-(void)fillData
+{
+    NSDictionary * dic = [[PersistentDataManager sharePersistenDataManager]readEndExamTableData];
+    NSLog(@"%@",dic);
 }
 
 - (void)didReceiveMemoryWarning
@@ -46,6 +57,13 @@
 
 - (IBAction)leftCleanHistoryAction:(id)sender {
     NSLog(@"%s",__func__);
+    if ([[PersistentDataManager sharePersistenDataManager]eraseTableData:@"EndExamPaperTable"]) {
+        NSLog(@"删除成功");
+    }else
+    {
+        NSLog(@"删除失败");
+    }
+    
 }
 - (void)viewDidUnload {
     [self setLeftTable:nil];

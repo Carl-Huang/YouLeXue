@@ -34,4 +34,8 @@
 -(NSArray *)readAlreadyMarkPaperTable;
 -(void)updateAlreadyMarkPaperTableWithKey:(NSString *)key  value:(NSString *)value;
 -(void)createEndExamPaperTable:(NSArray *)array;
+
+-(BOOL)deleteTable:(NSString *)tableName;
+-(BOOL)eraseTableData:(NSString *)tableName;
+-(NSDictionary *)readEndExamTableData;
 @end
