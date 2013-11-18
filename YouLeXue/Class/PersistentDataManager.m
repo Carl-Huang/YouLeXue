@@ -220,7 +220,6 @@
         
     }
     [db close];
-
 }
 
 #pragma mark - 创建其他信息表

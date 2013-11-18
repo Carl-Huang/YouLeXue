@@ -32,7 +32,7 @@
         self.quesTextView = [[UIWebView alloc]initWithFrame:rect];
         self.quesTextView.dataDetectorTypes = UIDataDetectorTypeNone;
         [self addSubview:self.quesTextView];
-        self.quesTextView = nil;
+//        self.quesTextView = nil;
         self.paperType = type;
         self.itemIndex = index;
         mutiAnswer = [NSMutableArray array];
@@ -214,6 +214,7 @@
     buttonBState = NO;
     buttonCState = NO;
     buttonDState = NO;
+    
 }
 
 
