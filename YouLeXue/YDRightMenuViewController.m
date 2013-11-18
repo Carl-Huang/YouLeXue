@@ -349,6 +349,9 @@
 
         //保存数据数据库
         [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+        
+        //TODO:创建标注的信息表
+        
     }];
 
 }

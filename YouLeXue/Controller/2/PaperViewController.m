@@ -43,6 +43,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     CGFloat examTime;
     NSTimer *countTimer;
     
+    //练习模式下的时间
+    CGFloat countTime;
+    
     //滚动scrollview相关变量
     BOOL isEndScrolling;
      
@@ -78,6 +81,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 @implementation PaperViewController
 @synthesize questionDataSource;
 @synthesize  titleStr,criticalPage;
+@synthesize isExciseOrnot;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -101,6 +105,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
     {
         questionViewHeight = 320;
     }
+    if (isExciseOrnot) {
+        [self.exciseBtn setHidden:NO];
+        countTime = 0;
+    }else
+    {
+        [self.exciseBtn setHidden:YES];
+    }
+    
     
     //获取试卷分类
     NSMutableSet * set = [NSMutableSet set];
@@ -245,6 +257,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [self setQuesScrollView:nil];
     [self setPreQueBtn:nil];
     [self setNextQuesBtn:nil];
+    [self setExciseBtn:nil];
+    [self setShowAnswerBtn:nil];
     [super viewDidUnload];
 }
 
@@ -257,7 +271,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(void)descreaseTime
 {
-    [self translateTimeToStr:examTime --];
+    if (!isExciseOrnot) {
+        [self translateTimeToStr:examTime --];
+    }else
+    {
+        [self translateTimeToStr:countTime++];
+    }
+
 }
 
 -(void)translateTimeToStr:(NSInteger)time
@@ -265,9 +285,15 @@ typedef NS_ENUM(NSInteger, PanDirection)
     int minute = floor(time / 60.0);
     int second = time % 60;
 //    NSLog(@"%d,%d",minute,second);
-    self.timeLabel.text = [NSString stringWithFormat:@"剩余:%d分%d秒",minute,second];
-    
+    if (!isExciseOrnot) {
+         self.timeLabel.text = [NSString stringWithFormat:@"剩余:%d分%d秒",minute,second];
+    }else
+    {
+          self.timeLabel.text = [NSString stringWithFormat:@"已用:%d分%d秒",minute,second];  
+    }
+
 }
+
 
 #pragma mark - A,B,C,D Select Block
 -(ButtonConfigrationBlock)buttonBlock
@@ -773,6 +799,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [currentDisplayItems removeAllObjects];
     [self refreshScrollViewWithDirection:PanDirectionNone];
     [self.quesScrollView scrollRectToVisible:CGRectMake(320 *page, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
+}
+- (IBAction)showAnswerAction:(id)sender {
+    //练习模式下 ，显示答案
+    
 }
 @end
 

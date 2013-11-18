@@ -286,6 +286,10 @@ static NSString *identifier = @"Cell";
             
             //保存数据数据库
             [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
+            
+            //TODO:创建标注的信息表
+            
+            
             [self fillData];
             if (isShouldDownExamPaper) {
                 currentTableview = tableview;
@@ -402,20 +406,24 @@ static NSString *identifier = @"Cell";
         switch (currentPage) {
             case 1:
             {
-                ExamInfo * selectedInfo = [firstDataSource objectAtIndex:selectedRow1];
-                NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"id"]];
-                if ([paperList count]) {
-                    PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
-                    [viewcontroller setQuestionDataSource:paperList];
-                    [viewcontroller setExamInfo:selectedInfo];
-                    viewcontroller.title = @"测试用户组的试卷";
-                    [self.navigationController pushViewController:viewcontroller animated:YES];
-                    viewcontroller = nil;
-
-                }
+                [self viewControllerActionWithDataSource:firstDataSource row:selectedRow1 exciseOrNot:NO];
             }
             break;
-            
+            case 2:
+            {
+                  [self viewControllerActionWithDataSource:secondDataSource row:selectedRow2 exciseOrNot:NO];
+            }
+                break;
+            case 3:
+            {
+                 [self viewControllerActionWithDataSource:thirdDataSource row:selectedRow3 exciseOrNot:NO];
+            }
+                break;
+            case 4:
+            {
+                [self viewControllerActionWithDataSource:fourthDataSource row:selectedRow4 exciseOrNot:NO];
+            }
+                break;
             default:
                 break;
         }
@@ -429,6 +437,32 @@ static NSString *identifier = @"Cell";
     PracticeModelBlock  block = ^()
     {
         NSLog(@"%s",__func__);
+        switch (currentPage) {
+            case 1:
+            {
+                 [self viewControllerActionWithDataSource:firstDataSource row:selectedRow1 exciseOrNot:YES];
+            }
+                break;
+            case 2:
+            {
+                [self viewControllerActionWithDataSource:secondDataSource row:selectedRow2 exciseOrNot:YES];
+            }
+                break;
+            case 3:
+            {
+               [self viewControllerActionWithDataSource:thirdDataSource row:selectedRow3 exciseOrNot:YES];
+            }
+                break;
+            case 4:
+            {
+                [self viewControllerActionWithDataSource:fourthDataSource row:selectedRow4 exciseOrNot:YES];
+            }
+                break;
+            default:
+                break;
+        }
+        NSLog(@"%s",__func__);
+
     };
     return  block;
 }
@@ -440,6 +474,25 @@ static NSString *identifier = @"Cell";
         NSLog(@"%s",__func__);
     };
     return  block;
+}
+
+-(void)viewControllerActionWithDataSource:(NSArray *)dataSource row:(NSInteger)seletedRow exciseOrNot:(BOOL)exciseOrnot
+{
+    //对应的试卷信息
+    ExamInfo * selectedInfo = [dataSource objectAtIndex:seletedRow];
+    
+    //根据id 拿出相应的试卷
+    NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"id"]];
+    
+    if ([paperList count]) {
+        PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
+        [viewcontroller setQuestionDataSource:paperList];
+        [viewcontroller setExamInfo:selectedInfo];
+        [viewcontroller setIsExciseOrnot:exciseOrnot];
+        viewcontroller.title = @"测试用户组的试卷";
+        [self.navigationController pushViewController:viewcontroller animated:YES];
+        viewcontroller = nil;
+    }
 }
 
 -(NSString *)getDetailDateStr:(ExamInfo *)tempExamInfo

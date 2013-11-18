@@ -378,13 +378,40 @@
     [db close];
 }
 
-+ (NSString *)GetUUID
+#pragma mark - 创建试卷标注表
+-(void)createAlreadyMarkPaperTable:(NSArray *)array
 {
-    CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-    CFRelease(theUUID);
-    return (__bridge NSString *)string;
+    NSMutableArray * idArray = [NSMutableArray array];
+    for (ExamInfo * info in array) {
+        NSString * str = [info valueForKey:@"id"];
+        [idArray addObject:str];
+    }
+    NSString * keyStr = nil;
+    for (NSString * tempStr in idArray) {
+        if (keyStr ==nil) {
+            keyStr = tempStr;
+        }else
+        {
+            keyStr = [keyStr stringByAppendingString:[NSString stringWithFormat:@",%@",tempStr]];
+        }
+    }
+    
+    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists AlreadyMarkPaperTable %@",[self enumerateObjectConverToStr:[ExamInfo class] withPrimarykey:@"id"]];
+    if ([db executeUpdate:cmdStr]) {
+        NSLog(@"create PaperListTable successfully");
+        if ([array count]) {
+            for (ExamInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"PaperListTable" Arguments:info primaryKey:@"id"];
+            }
+        }
+        
+    }else
+    {
+        NSLog(@"Failer to create PaperListTable,Error: %@",[db lastError]);
+    }
 }
+
+
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {

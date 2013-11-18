@@ -11,8 +11,10 @@
 @interface PaperViewController : UIViewController
 @property (strong ,nonatomic) NSArray * questionDataSource;
 @property (strong ,nonatomic) ExamInfo * examInfo;
-
 @property (strong ,nonatomic) NSString * titleStr;
+@property (assign ,nonatomic) BOOL isExciseOrnot;
+
+
 @property (weak, nonatomic) IBOutlet UIButton *preQueBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextQuesBtn;
 @property (weak, nonatomic) IBOutlet UIScrollView *quesScrollView;
@@ -22,6 +24,9 @@
 - (IBAction)preQuestionAction:(id)sender;
 - (IBAction)nextQuestionAction:(id)sender;
 - (IBAction)wrongTextBookAction:(id)sender;
+@property (weak, nonatomic) IBOutlet UIView *exciseBtn;
+@property (weak, nonatomic) IBOutlet UIButton *showAnswerBtn;
 
+- (IBAction)showAnswerAction:(id)sender;
 
 @end
