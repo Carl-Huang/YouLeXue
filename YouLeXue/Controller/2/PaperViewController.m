@@ -30,6 +30,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "ExamPaperInfoTimeStamp.h"
 #import <objc/runtime.h>
 #import "EndExamViewController.h"
+#import "SubmittedPaperInfo.h"
+
+
 @interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
     NSArray * questTypes;
@@ -767,19 +770,22 @@ typedef NS_ENUM(NSInteger, PanDirection)
     int second = stopTimeStamp % 60;
     NSString * timeStr = [NSString stringWithFormat:@"%d分%d秒",minute,second];
     [viewController setTimeStamp:timeStr];
+    
     [viewController setDataSourece:questionDataSource];
     [viewController setAnswerDic:answerDictionary];
-    [viewController setBlock:[self configureEndExamBlock]];
+    
+    [viewController setBlock:[self configureClickItemBlock]];
+    [viewController setEndBlock:[self configureEndExamBlock]];
     
     [self.navigationController pushViewController:viewController animated:YES];
     viewController =nil;
     
 }
 
-#pragma  mark  - EndExamBlock
--(EndExamBlock)configureEndExamBlock
+#pragma  mark  - configureClickItemBlock  && EndBlock
+-(DidClickItemBlock)configureClickItemBlock
 {
-    EndExamBlock block = ^(NSInteger index)
+    DidClickItemBlock block = ^(NSInteger index)
     {
         if (index >=[self.questionDataSource count]-5) {
             printOnPage = [self.questionDataSource count]-5;
@@ -796,6 +802,41 @@ typedef NS_ENUM(NSInteger, PanDirection)
     };
     return block;
 }
+
+-(EndExamBlock)configureEndExamBlock
+{
+    EndExamBlock block = ^()
+    {
+        //保存试卷和答案到本地
+        NSMutableArray * endExamData = [NSMutableArray array];
+        for (ExamPaperInfo * examInfo in questionDataSource) {
+            if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
+                NSString *number = [examInfo valueForKey:@"num"];
+                
+                SubmittedPaperInfo * submittedInfo = [[SubmittedPaperInfo alloc]init];
+                unsigned int varCount = 0;
+                Ivar *vars = class_copyIvarList([ExamPaperInfo class], &varCount);
+                for (int i = 0; i < varCount; i++) {
+                    Ivar var = vars[i];
+                    const char* name = ivar_getName(var);
+                    NSString *valueKey = [NSString stringWithUTF8String:name];
+                    [submittedInfo setValue:[examInfo valueForKey:valueKey] forKeyPath:valueKey];
+                }
+                NSString * userAnswer = @"没有作答";
+                if ([[answerDictionary objectForKey:number] length]) {
+                    userAnswer =[answerDictionary objectForKey:number];
+                }
+                submittedInfo.userAnswer = userAnswer;
+                [endExamData addObject:submittedInfo];
+                submittedInfo = nil;
+            }
+        }
+        [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
+        endExamData = nil;
+    };
+    return block;
+}
+
 
 -(void)scrollToPage:(NSInteger)page
 {

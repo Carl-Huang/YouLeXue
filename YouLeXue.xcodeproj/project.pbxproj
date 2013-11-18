@@ -54,6 +54,7 @@
 		4E4CE3BC182F9A24003257C0 /* DetailPhoneNotiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E4CE3BA182F9A24003257C0 /* DetailPhoneNotiViewController.xib */; };
 		4E4CE3C5182FC2D5003257C0 /* UserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CE3C3182FC2D5003257C0 /* UserInfoViewController.m */; };
 		4E4CE3C6182FC2D5003257C0 /* UserInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */; };
+		4E60BA6F183A5DB9003269AA /* SubmittedPaperInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E60BA6E183A5DB9003269AA /* SubmittedPaperInfo.m */; };
 		4E691C4E182C7AF400EB73EA /* HttpHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E691C4D182C7AF400EB73EA /* HttpHelper.m */; };
 		4E7823F91831392A00DD396F /* VDAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7823EF1831392A00DD396F /* VDAlertView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4E7823FA1831392A00DD396F /* VDAlertViewBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E7823F01831392A00DD396F /* VDAlertViewBackground.png */; };
@@ -352,6 +353,8 @@
 		4E4CE3C2182FC2D5003257C0 /* UserInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoViewController.h; sourceTree = "<group>"; };
 		4E4CE3C3182FC2D5003257C0 /* UserInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoViewController.m; sourceTree = "<group>"; };
 		4E4CE3C4182FC2D5003257C0 /* UserInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserInfoViewController.xib; sourceTree = "<group>"; };
+		4E60BA6D183A5DB9003269AA /* SubmittedPaperInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubmittedPaperInfo.h; sourceTree = "<group>"; };
+		4E60BA6E183A5DB9003269AA /* SubmittedPaperInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubmittedPaperInfo.m; sourceTree = "<group>"; };
 		4E691C4C182C7AF400EB73EA /* HttpHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHelper.h; sourceTree = "<group>"; };
 		4E691C4D182C7AF400EB73EA /* HttpHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpHelper.m; sourceTree = "<group>"; };
 		4E7823EE1831392A00DD396F /* VDAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDAlertView.h; sourceTree = "<group>"; };
@@ -699,6 +702,8 @@
 				4E98DEF51837BAAD00D2703A /* ExamPaperInfoTimeStamp.m */,
 				4E1545C91839A06C0037AE02 /* UserSetting.h */,
 				4E1545CA1839A06C0037AE02 /* UserSetting.m */,
+				4E60BA6D183A5DB9003269AA /* SubmittedPaperInfo.h */,
+				4E60BA6E183A5DB9003269AA /* SubmittedPaperInfo.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1577,6 +1582,7 @@
 				4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */,
 				4E0DB12E1839EDD000D3031E /* WrongPaperViewController.m in Sources */,
 				4E0DB1321839F9E900D3031E /* WrongTextView.m in Sources */,
+				4E60BA6F183A5DB9003269AA /* SubmittedPaperInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

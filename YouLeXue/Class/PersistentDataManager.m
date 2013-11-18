@@ -16,6 +16,7 @@
 #import "ExamPaperInfo.h"
 #import "ExamPaperInfoTimeStamp.h"
 #import "UserSetting.h"
+#import "SubmittedPaperInfo.h"
 @implementation PersistentDataManager
 @synthesize db;
 
@@ -434,6 +435,39 @@
     [db close];
 }
 
+#pragma mark - 创建保存提交试卷的表
+-(void)createEndExamPaperTable:(NSArray *)array
+{
+    [db open];
+    if ([self isTableOK:@"EndExamPaperTable"]) {
+        NSLog(@"EndExamPaperTable已经存在");
+        if ([array count]) {
+                for (SubmittedPaperInfo * info in array) {
+                    [self insertValueToExistedTableWithTableName:@"EndExamPaperTable" Arguments:info primaryKey:nil];
+                }
+        }
+        
+    }else
+    {
+        NSLog(@"ExamPaperTable不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists EndExamPaperTable %@",[self enumerateObjectConverToStr:[SubmittedPaperInfo class] withPrimarykey:nil]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create ExamPaperTable successfully");
+            if ([array count]) {
+                for (SubmittedPaperInfo * info in array) {
+                    [self insertValueToExistedTableWithTableName:@"EndExamPaperTable" Arguments:info primaryKey:nil];
+                }
+
+            }
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+}
+
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {
@@ -470,7 +504,9 @@
     NSString *sqlInsertStr = [NSString stringWithFormat:@"insert into %@ %@",tableName,[self insertKeyStringWithkeyNum:varCount]];
     
     if ([db executeUpdate:sqlInsertStr withArgumentsInArray:objectValueArray]) {
-        NSLog(@"插入key: %@ 的记录",[obj valueForKey:key]);
+        if (key) {
+             NSLog(@"插入key: %@ 的记录",[obj valueForKey:key]);
+        }
     }else
     {
         NSLog(@"Failer to insert value to table,Error: %@",[db lastError]);
@@ -479,7 +515,10 @@
             //主键重复，则更新已存在的主键信息
             [self deleteRecordWithPrimaryKey:key keyValue:[obj valueForKey:key] tableName:tableName];
             [db executeUpdate:sqlInsertStr withArgumentsInArray:objectValueArray];
-             NSLog(@"插入key: %@ 的记录",[obj valueForKey:key]);
+            if (key) {
+                NSLog(@"插入key: %@ 的记录",[obj valueForKey:key]);
+            }
+        
         }
         
         

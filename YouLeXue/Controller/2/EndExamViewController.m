@@ -152,7 +152,10 @@
     switch (buttonIndex) {
         case 0:
             //交卷
+        {
+            self.endBlock();
             [self.navigationController popViewControllerAnimated:YES];
+        }
             break;
         case 1:
             //继续考试

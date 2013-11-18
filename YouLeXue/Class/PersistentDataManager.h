@@ -33,4 +33,5 @@
 -(void)createAlreadyMarkPaperTable:(NSArray *)array;
 -(NSArray *)readAlreadyMarkPaperTable;
 -(void)updateAlreadyMarkPaperTableWithKey:(NSString *)key  value:(NSString *)value;
+-(void)createEndExamPaperTable:(NSArray *)array;
 @end

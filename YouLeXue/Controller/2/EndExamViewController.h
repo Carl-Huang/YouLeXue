@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AnswerSheetView.h"
 
-typedef void (^EndExamBlock) (NSInteger index);
+typedef void (^DidClickItemBlock) (NSInteger index);
+typedef void (^EndExamBlock) ();
 @interface EndExamViewController : UIViewController
 @property (strong ,nonatomic) NSString * timeStamp;
 @property (strong ,nonatomic) NSArray * dataSourece;
@@ -21,5 +22,7 @@ typedef void (^EndExamBlock) (NSInteger index);
 @property (strong, nonatomic) AnswerSheetView *answerSheetView;
 
 
-@property (strong ,nonatomic) EndExamBlock block;
+@property (strong ,nonatomic) EndExamBlock endBlock;
+@property (strong ,nonatomic) DidClickItemBlock block;
+
 @end
