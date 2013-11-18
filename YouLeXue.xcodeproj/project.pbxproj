@@ -21,6 +21,9 @@
 		4E0C26EF182AB08D00AC0611 /* TestUserGroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E0C26EE182AB08D00AC0611 /* TestUserGroupViewController.xib */; };
 		4E0C26F3182AB0CB00AC0611 /* WrongBookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E0C26F2182AB0CB00AC0611 /* WrongBookViewController.xib */; };
 		4E0C26F5182AB0D300AC0611 /* SettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E0C26F4182AB0D300AC0611 /* SettingViewController.xib */; };
+		4E0DB12E1839EDD000D3031E /* WrongPaperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E0DB12C1839EDD000D3031E /* WrongPaperViewController.m */; };
+		4E0DB12F1839EDD000D3031E /* WrongPaperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E0DB12D1839EDD000D3031E /* WrongPaperViewController.xib */; };
+		4E0DB1321839F9E900D3031E /* WrongTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E0DB1311839F9E900D3031E /* WrongTextView.m */; };
 		4E117DB91830FFBE00690CDD /* User_Edit_Button_Confirm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E117DB71830FFBE00690CDD /* User_Edit_Button_Confirm@2x.png */; };
 		4E117DBA1830FFBE00690CDD /* User_Edit_Frame_Highlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E117DB81830FFBE00690CDD /* User_Edit_Frame_Highlight@2x.png */; };
 		4E117DBD1830FFD100690CDD /* User_Edit_Button_Confirm.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E117DBB1830FFD100690CDD /* User_Edit_Button_Confirm.png */; };
@@ -302,6 +305,11 @@
 		4E0C26EE182AB08D00AC0611 /* TestUserGroupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestUserGroupViewController.xib; sourceTree = "<group>"; };
 		4E0C26F2182AB0CB00AC0611 /* WrongBookViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WrongBookViewController.xib; sourceTree = "<group>"; };
 		4E0C26F4182AB0D300AC0611 /* SettingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingViewController.xib; sourceTree = "<group>"; };
+		4E0DB12B1839EDD000D3031E /* WrongPaperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WrongPaperViewController.h; sourceTree = "<group>"; };
+		4E0DB12C1839EDD000D3031E /* WrongPaperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WrongPaperViewController.m; sourceTree = "<group>"; };
+		4E0DB12D1839EDD000D3031E /* WrongPaperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WrongPaperViewController.xib; sourceTree = "<group>"; };
+		4E0DB1301839F9E900D3031E /* WrongTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WrongTextView.h; sourceTree = "<group>"; };
+		4E0DB1311839F9E900D3031E /* WrongTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WrongTextView.m; sourceTree = "<group>"; };
 		4E117DB71830FFBE00690CDD /* User_Edit_Button_Confirm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "User_Edit_Button_Confirm@2x.png"; sourceTree = "<group>"; };
 		4E117DB81830FFBE00690CDD /* User_Edit_Frame_Highlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "User_Edit_Frame_Highlight@2x.png"; sourceTree = "<group>"; };
 		4E117DBB1830FFD100690CDD /* User_Edit_Button_Confirm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = User_Edit_Button_Confirm.png; sourceTree = "<group>"; };
@@ -793,6 +801,8 @@
 				4E98DEF21837B48300D2703A /* WrongTextBookView.m */,
 				4E023C8B1838564A0030A612 /* AnswerSheetView.h */,
 				4E023C8C1838564A0030A612 /* AnswerSheetView.m */,
+				4E0DB1301839F9E900D3031E /* WrongTextView.h */,
+				4E0DB1311839F9E900D3031E /* WrongTextView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -916,6 +926,9 @@
 				4EF18678182A91BB00E5EEA8 /* WrongBookViewController.h */,
 				4EF18679182A91BB00E5EEA8 /* WrongBookViewController.m */,
 				4E0C26F2182AB0CB00AC0611 /* WrongBookViewController.xib */,
+				4E0DB12B1839EDD000D3031E /* WrongPaperViewController.h */,
+				4E0DB12C1839EDD000D3031E /* WrongPaperViewController.m */,
+				4E0DB12D1839EDD000D3031E /* WrongPaperViewController.xib */,
 			);
 			path = 4;
 			sourceTree = "<group>";
@@ -1483,6 +1496,7 @@
 				4E98DEFB1837C9F700D2703A /* EndExamViewController.xib in Resources */,
 				4E3D8715183904D20073CD47 /* checkmark.png in Resources */,
 				4E3D8716183904D20073CD47 /* cross.png in Resources */,
+				4E0DB12F1839EDD000D3031E /* WrongPaperViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1556,6 +1570,8 @@
 				4E98DEFA1837C9F700D2703A /* EndExamViewController.m in Sources */,
 				4E023C8D1838564A0030A612 /* AnswerSheetView.m in Sources */,
 				4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */,
+				4E0DB12E1839EDD000D3031E /* WrongPaperViewController.m in Sources */,
+				4E0DB1321839F9E900D3031E /* WrongTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

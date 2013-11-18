@@ -161,7 +161,6 @@
                 [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:indexPath.row]];
             }else
                 [checkItems setObject:@"No" forKey:[NSNumber numberWithInt:indexPath.row]];
-        
         }
         [tableView reloadData];
     }
@@ -252,6 +251,8 @@
 -(void)intensityControl:(id)sender
 {
     UISlider * tempSlider = (UISlider *)sender;
+    [[NSUserDefaults standardUserDefaults]setFloat:tempSlider.value forKey:@"APP_BRIGHTNESS"];
+    [UIScreen mainScreen].brightness = tempSlider.value;
     NSLog(@"%f",tempSlider.value);
 }
 @end

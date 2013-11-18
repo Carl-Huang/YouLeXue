@@ -228,7 +228,7 @@
 {
     for (FetchDataInfo * obj in dataSource) {
         
-        if ([obj.KS_phoneSeq isKindOfClass:[NSNumber class]]) {
+        if ([obj.KS_phoneSeq isKindOfClass:[NSString class]]) {
             if (obj.KS_phoneSeq.integerValue == indexPath.row+1) {
                 UIWebView * contentView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, 280, 150)];
                 [contentView loadHTMLString:obj.ArticleContent baseURL:nil];

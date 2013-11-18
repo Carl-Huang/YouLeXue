@@ -179,6 +179,16 @@
     }
     [db close];
 }
+-(void)insertValueIntoWrongTextBookTable:(NSArray *)array
+{
+    [db open];
+    if ([array count]) {
+        for (ExamPaperInfoTimeStamp * info in array) {
+            [self insertValueToExistedTableWithTableName:@"WrongTextBookTable" Arguments:info primaryKey:@"id"];
+        }
+    }
+    [db close];
+}
 
 #pragma mark - 创建案例的表
 -(void)createExampleListTable:(NSArray *)array

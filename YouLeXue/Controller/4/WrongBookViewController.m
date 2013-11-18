@@ -10,6 +10,8 @@
 #import "PersistentDataManager.h"
 #import "ExamPaperInfoTimeStamp.h"
 #import "WrongTextBookView.h"
+#import "SVPullToRefresh.h"
+#import "WrongPaperViewController.h"
 
 @interface WrongBookViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (strong ,nonatomic) NSArray * dataSource;
@@ -31,8 +33,24 @@
 {
     [super viewDidLoad];
     dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
-    
+    __weak WrongBookViewController * weakSelf = self;
+    [self.wrongBookTable addPullToRefreshWithActionHandler:^{
+        [weakSelf pullToUpdate];
+    }];
     // Do any additional setup after loading the view from its nib.
+}
+
+-(void)pullToUpdate
+{
+    if (![dataSource count]) {
+         dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+        [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+        [self.wrongBookTable reloadData];
+    }else
+    {
+        [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -81,7 +99,12 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    WrongPaperViewController * viewcontroller = [[WrongPaperViewController alloc]initWithNibName:@"WrongPaperViewController" bundle:nil];
+    [viewcontroller setQuestionDataSource:self.dataSource];
+    [viewcontroller setDidSelectedindex:indexPath.row];
+    [viewcontroller setTitleStr:@"错题本"];
+    [self.navigationController pushViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
 }
 
 

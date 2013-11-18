@@ -218,7 +218,16 @@ typedef NS_ENUM(NSInteger, PanDirection)
 -(void)back
 {
     NSLog(@"%s",__func__);
-    [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:wrongExamPaperInfoArray];
+    NSArray * tempData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+    if (![tempData count]) {
+        NSLog(@"创建并插入错题本");
+         [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:wrongExamPaperInfoArray];
+    }else
+    {
+        NSLog(@"插入错题本");
+        [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:wrongExamPaperInfoArray];
+    }
+   
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -501,6 +510,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [quesView setBlock:[self buttonBlock]];
             [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
             [self.quesScrollView addSubview:quesView];
+            quesView = nil;
         }else if (direction == PanDirectionRight)
         {
             NSString * tempStr = [currentDisplayItems objectAtIndex:4];
@@ -514,6 +524,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [quesView setBlock:[self buttonBlock]];
             [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
             [self.quesScrollView addSubview:quesView];
+            quesView = nil;
         }else
         {
             for (int i = 0; i < 5; i++) {
@@ -528,6 +539,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
                 
                 [self.quesScrollView addSubview:quesView];
+                quesView = nil;
             }
             
         }

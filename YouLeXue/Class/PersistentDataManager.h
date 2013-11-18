@@ -24,6 +24,7 @@
 -(void)createOtherInformationTable:(NSArray *)array;
 -(void)createExamPaperTable:(NSArray *)array;
 -(void)createWrongTextBook:(NSArray *)array;
+-(void)insertValueIntoWrongTextBookTable:(NSArray *)array;
 -(void)createUserSettingTable;
 -(void)updateUserSettingTableWithkey:(NSString *)key value:(NSString *)value;
 -(UserSetting *)readUserSettingData;

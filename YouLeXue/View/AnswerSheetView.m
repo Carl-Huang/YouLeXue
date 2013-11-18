@@ -125,7 +125,7 @@
     int row = x;
     int column = y;
     NSInteger index = row*5 + column;
-    NSString * str = [[self.titleDataSourece objectAtIndex:index]objectForKey:@"Title"];
+    NSString * str = [NSString stringWithFormat:@"%@",[[self.titleDataSourece objectAtIndex:index]objectForKey:@"Title"]];
     return str;
 }
 @end
