@@ -17,6 +17,8 @@
 #import "ExamPaperInfoTimeStamp.h"
 #import "UserSetting.h"
 #import "SubmittedPaperInfo.h"
+#import "SubmittedPaperIndex.h"
+
 @implementation PersistentDataManager
 @synthesize db;
 
@@ -468,19 +470,22 @@
     [db close];
 }
 
--(NSDictionary *)readEndExamTableData
+-(NSDictionary *)readEndExamTableData:(NSArray *)keyArray
 {
     [db open];
-    NSString * cmdStr = [NSString stringWithFormat:@"select distinct uuid from EndExamPaperTable"];
-    FMResultSet *tempRs = [db executeQuery:cmdStr];
-    NSMutableArray * tempArray = [NSMutableArray array];
-    while ([tempRs next]) {
-        [tempArray addObject:[tempRs stringForColumn:@"uuid"]];
-    }
-    NSLog(@"%@",tempArray);
-    [tempRs close];
+//    NSString * cmdStr = [NSString stringWithFormat:@"select distinct uuid from EndExamPaperTable"];
+//    FMResultSet *tempRs = [db executeQuery:cmdStr];
+//    NSMutableArray * tempArray = [NSMutableArray array];
+//    while ([tempRs next]) {
+//        [tempArray addObject:[tempRs stringForColumn:@"uuid"]];
+//    }
+//    NSLog(@"%@",tempArray);
+//    [tempRs close];
+//    
+//    
+    
     NSMutableDictionary * endExamDic = [NSMutableDictionary dictionary];
-    for (NSString * uuidStr in tempArray) {
+    for (NSString * uuidStr in keyArray) {
         NSMutableArray * endExamDataArray = [NSMutableArray array];
         NSString * sqlStr = [NSString stringWithFormat:@"select * from EndExamPaperTable where uuid='%@'",uuidStr];
         FMResultSet *rs = [db executeQuery:sqlStr];
@@ -507,6 +512,46 @@
     }
     return nil;
 }
+
+#pragma mark - 创建用于搜索已提交试卷的索引表
+-(void)createEndExamPaperIndexTable:(SubmittedPaperIndex *)info
+{
+    [db open];
+    if ([self isTableOK:@"EndExamPaperIndexTable"]) {
+        NSLog(@"EndExamPaperTable已经存在");
+        [self insertValueToExistedTableWithTableName:@"EndExamPaperIndexTable" Arguments:info primaryKey:@"uuid"];
+    }else
+    {
+        NSLog(@"EndExamPaperIndexTable不存在");
+        NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists EndExamPaperIndexTable %@",[self enumerateObjectConverToStr:[SubmittedPaperIndex class] withPrimarykey:@"uuid"]];
+        if ([db executeUpdate:cmdStr]) {
+            NSLog(@"create ExamPaperTable successfully");
+
+            [self insertValueToExistedTableWithTableName:@"EndExamPaperIndexTable" Arguments:info primaryKey:@"uuid"];
+ 
+        }else
+        {
+            NSLog(@"Failer to create table,Error: %@",[db lastError]);
+        }
+        
+    }
+    [db close];
+}
+
+-(void)insertIntoEndExamPaperIndexTable:(SubmittedPaperIndex *)info
+{
+    [db open];
+     [self insertValueToExistedTableWithTableName:@"EndExamPaperIndexTable" Arguments:info primaryKey:@"uuid"];
+    [db close];
+}
+
+-(NSArray *)readEndExamPaperIndexTable
+{
+    NSArray * array =[self readDataWithTableName:@"EndExamPaperIndexTable" withObjClass:[SubmittedPaperIndex class]];
+    return array;
+}
+
+
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {
@@ -559,7 +604,6 @@
             }
         
         }
-        
         
     }
 }

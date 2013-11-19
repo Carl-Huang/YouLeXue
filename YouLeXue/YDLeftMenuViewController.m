@@ -9,6 +9,8 @@
 #import "YDLeftMenuViewController.h"
 #import "PersistentDataManager.h"
 #import "SVPullToRefresh.h"
+#import "SubmittedPaperIndex.h"
+
 @interface YDLeftMenuViewController ()
 @property (strong ,nonatomic) NSArray * dataSource;
 @end
@@ -41,8 +43,9 @@
 
 -(void)fillData
 {
-    NSDictionary * dic = [[PersistentDataManager sharePersistenDataManager]readEndExamTableData];
-    NSLog(@"%@",dic);
+    self.dataSource = [[PersistentDataManager sharePersistenDataManager]readEndExamPaperIndexTable];
+    [self.leftTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
+    [self.leftTable reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,17 +82,25 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return [self.dataSource count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"Cell";
     UITableViewCell *cell = [self.leftTable dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+    SubmittedPaperIndex * info = [self.dataSource objectAtIndex:indexPath.row];
+    cell.textLabel.text = [info valueForKey:@"paperTitleStr"];
+    cell.detailTextLabel.text = [info valueForKey:@"timeStamp"];
+    cell.textLabel.font = [UIFont systemFontOfSize:14];
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:14];
+    [cell.imageView setImage:[UIImage imageNamed:@"Unfold_Left_Icon_Subject"]];
     
-    cell.textLabel.text = @"hello";
     
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     return cell;
 }
 

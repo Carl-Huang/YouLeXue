@@ -10,6 +10,7 @@
 @class FMDatabase;
 @class UserLoginInfo;
 @class UserSetting;
+@class SubmittedPaperIndex;
 @interface PersistentDataManager : NSObject
 @property (retain ,nonatomic)FMDatabase *db;
 +(PersistentDataManager *)sharePersistenDataManager;
@@ -37,5 +38,9 @@
 
 -(BOOL)deleteTable:(NSString *)tableName;
 -(BOOL)eraseTableData:(NSString *)tableName;
--(NSDictionary *)readEndExamTableData;
+-(NSDictionary *)readEndExamTableData:(NSArray *)keyArray;
+
+-(void)createEndExamPaperIndexTable:(SubmittedPaperIndex *)info;
+-(void)insertIntoEndExamPaperIndexTable:(SubmittedPaperIndex *)info;
+-(NSArray *)readEndExamPaperIndexTable;
 @end

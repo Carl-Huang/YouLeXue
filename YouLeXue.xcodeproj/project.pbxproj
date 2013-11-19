@@ -37,6 +37,7 @@
 		4E1306DE182D34A50099B6CC /* PersistentDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1306DD182D34A50099B6CC /* PersistentDataManager.m */; };
 		4E1306E0182D3A090099B6CC /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */; };
 		4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1545CA1839A06C0037AE02 /* UserSetting.m */; };
+		4E1928E5183B04FE00236EF4 /* SubmittedPaperIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */; };
 		4E317C10182C940D0009FEC3 /* UserLoginInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */; };
 		4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */; };
 		4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */; };
@@ -67,6 +68,8 @@
 		4E7824011831392A00DD396F /* VDProcessingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7823F81831392A00DD396F /* VDProcessingView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */; };
 		4E8A8DF9182F45CC00A73F71 /* RightPhontNotiViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */; };
+		4E94CB7B183B117C0064E9C2 /* EndExamScoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */; };
+		4E94CB7C183B117C0064E9C2 /* EndExamScoreViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */; };
 		4E98DEF31837B48300D2703A /* WrongTextBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E98DEF21837B48300D2703A /* WrongTextBookView.m */; };
 		4E98DEF61837BAAD00D2703A /* ExamPaperInfoTimeStamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E98DEF51837BAAD00D2703A /* ExamPaperInfoTimeStamp.m */; };
 		4E98DEFA1837C9F700D2703A /* EndExamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E98DEF81837C9F700D2703A /* EndExamViewController.m */; };
@@ -332,6 +335,8 @@
 		4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		4E1545C91839A06C0037AE02 /* UserSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetting.h; sourceTree = "<group>"; };
 		4E1545CA1839A06C0037AE02 /* UserSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetting.m; sourceTree = "<group>"; };
+		4E1928E3183B04FE00236EF4 /* SubmittedPaperIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubmittedPaperIndex.h; sourceTree = "<group>"; };
+		4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubmittedPaperIndex.m; sourceTree = "<group>"; };
 		4E317C0E182C940D0009FEC3 /* UserLoginInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginInfo.h; sourceTree = "<group>"; };
 		4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginInfo.m; sourceTree = "<group>"; };
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
@@ -371,6 +376,9 @@
 		4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightPhontNotiViewController.h; sourceTree = "<group>"; };
 		4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightPhontNotiViewController.m; sourceTree = "<group>"; };
 		4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RightPhontNotiViewController.xib; sourceTree = "<group>"; };
+		4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamScoreViewController.h; sourceTree = "<group>"; };
+		4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamScoreViewController.m; sourceTree = "<group>"; };
+		4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamScoreViewController.xib; sourceTree = "<group>"; };
 		4E98DEF11837B48300D2703A /* WrongTextBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WrongTextBookView.h; sourceTree = "<group>"; };
 		4E98DEF21837B48300D2703A /* WrongTextBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WrongTextBookView.m; sourceTree = "<group>"; };
 		4E98DEF41837BAAD00D2703A /* ExamPaperInfoTimeStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamPaperInfoTimeStamp.h; sourceTree = "<group>"; };
@@ -704,6 +712,8 @@
 				4E1545CA1839A06C0037AE02 /* UserSetting.m */,
 				4E60BA6D183A5DB9003269AA /* SubmittedPaperInfo.h */,
 				4E60BA6E183A5DB9003269AA /* SubmittedPaperInfo.m */,
+				4E1928E3183B04FE00236EF4 /* SubmittedPaperIndex.h */,
+				4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -914,6 +924,9 @@
 				4E98DEF71837C9F700D2703A /* EndExamViewController.h */,
 				4E98DEF81837C9F700D2703A /* EndExamViewController.m */,
 				4E98DEF91837C9F700D2703A /* EndExamViewController.xib */,
+				4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */,
+				4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */,
+				4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */,
 			);
 			path = 2;
 			sourceTree = "<group>";
@@ -1507,6 +1520,7 @@
 				4E3D8715183904D20073CD47 /* checkmark.png in Resources */,
 				4E3D8716183904D20073CD47 /* cross.png in Resources */,
 				4E0DB12F1839EDD000D3031E /* WrongPaperViewController.xib in Resources */,
+				4E94CB7C183B117C0064E9C2 /* EndExamScoreViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1583,6 +1597,8 @@
 				4E0DB12E1839EDD000D3031E /* WrongPaperViewController.m in Sources */,
 				4E0DB1321839F9E900D3031E /* WrongTextView.m in Sources */,
 				4E60BA6F183A5DB9003269AA /* SubmittedPaperInfo.m in Sources */,
+				4E1928E5183B04FE00236EF4 /* SubmittedPaperIndex.m in Sources */,
+				4E94CB7B183B117C0064E9C2 /* EndExamScoreViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

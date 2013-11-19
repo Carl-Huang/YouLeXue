@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import <objc/runtime.h>
 #import "EndExamViewController.h"
 #import "SubmittedPaperInfo.h"
-
+#import "SubmittedPaperIndex.h"
 
 @interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
@@ -813,6 +813,18 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
         NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
         NSString * uuid = [self GetUUID];
+        
+        //创建用于查选已提交的试卷
+        SubmittedPaperIndex * submittedIndex = [[SubmittedPaperIndex alloc]init
+                                                ];
+        submittedIndex.paperTitleStr = self.title;
+        submittedIndex.timeStamp = timeStr;
+        submittedIndex.uuid = uuid;
+        [[PersistentDataManager sharePersistenDataManager]createEndExamPaperIndexTable:submittedIndex];
+        
+        
+        
+        //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
             if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
                 NSString *number = [examInfo valueForKey:@"num"];
@@ -831,9 +843,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
                     userAnswer =[answerDictionary objectForKey:number];
                 }
                 submittedInfo.userAnswer    = userAnswer;
-                submittedInfo.timeStamp     = timeStr;
                 submittedInfo.uuid          = uuid;
-                submittedInfo.paperTitleStr = self.title;
                 [endExamData addObject:submittedInfo];
                 submittedInfo = nil;
             }
