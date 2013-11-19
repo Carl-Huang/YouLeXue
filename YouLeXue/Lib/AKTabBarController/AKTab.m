@@ -318,6 +318,7 @@ static const float kTopMargin = 2.0;
             if (!topEdgeColor) {
                 topEdgeColor = _edgeColor ?: [UIColor colorWithRed:.1f green:.1f blue:.1f alpha:.8f];
             }
+            topEdgeColor = [UIColor clearColor];
             int topMargin = topEdgeColor == [UIColor clearColor] ? 0 : kTopMargin;
             
             CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();

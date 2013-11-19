@@ -22,8 +22,8 @@
 
 #import "AKTabBar.h"
 
-static int kInterTabMargin = 1;
-static int kTopEdgeWidth   = 1;
+static int kInterTabMargin = 0;
+static int kTopEdgeWidth   = 0;
 
 @implementation AKTabBar
 

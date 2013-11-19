@@ -57,11 +57,15 @@
     
 //    akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:nav_a,nav_b,nav_c,nav_d,nav_e,nil];
     akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:firstViewController,secondViewController,thirdViewController,fourthViewController,fifthViewController,nil];
+    akTabBarController.tabWidth = 320.0/5;
     [akTabBarController setBackgroundImageName:@"Bottom_Bar01"];
+    [akTabBarController setSelectedBackgroundImageName:@"Bottom_Bar"];
     [akTabBarController setSelectedTabColors:@[[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor]]];
     [akTabBarController setTabColors:@[[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor],[UIColor clearColor]]];
-
-    [akTabBarController setTabInnerStrokeColor:[UIColor clearColor]];
+    [akTabBarController setSelectedIconColors:@[[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0]]];
+    [akTabBarController setTabEdgeColor:[UIColor clearColor]];
+    [akTabBarController setTopEdgeColor:[UIColor clearColor]];
+    //[akTabBarController setTabInnerStrokeColor:[UIColor clearColor]];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:akTabBarController];
 
     self.leftMenuViewController = [[YDLeftMenuViewController alloc] init];
