@@ -112,8 +112,16 @@
 
 -(BOOL)shouldDrawBackgroundWithNum:(NSInteger)num X:(NSInteger)x Y:(NSInteger)y
 {
-    int row = ceil(num/5);
-    int column = num - (row*5);
+    NSInteger indexNum = num;
+    for (int i =0 ;i< [self.titleDataSourece count];i++) {
+        NSString * str = [[self.titleDataSourece objectAtIndex:i]objectForKey:@"Title"];
+        if ([str isEqualToString:[NSString stringWithFormat:@"%d",num]]) {
+            indexNum = i;
+        }
+    }
+
+    int row = ceil(indexNum/5);
+    int column = indexNum - (row*5);
     if (x==row && y== column) {
         NSLog(@"%d,%d",row,column);
         return YES;

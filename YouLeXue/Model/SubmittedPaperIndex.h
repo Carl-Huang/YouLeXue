@@ -12,4 +12,8 @@
 @property (strong ,nonatomic) NSString * paperTitleStr;
 @property (strong ,nonatomic) NSString * timeStamp;
 @property (strong ,nonatomic) NSString * uuid;
+@property (strong ,nonatomic) NSString * score;
+@property (strong ,nonatomic) NSString * paperTotalScore;
+@property (strong ,nonatomic) NSString * useTime;
+@property (strong ,nonatomic) NSString * totalExamTime;
 @end

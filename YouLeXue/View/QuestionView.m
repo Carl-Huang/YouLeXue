@@ -24,7 +24,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         alphabetAryS = @[@"A",@"B",@"C",@"D"];
-        alphabetAryM = @[@"Y",@"N"];
+        alphabetAryM = @[@"1",@"0"];
         originRect = frame;
         rect = frame;
         rect.origin.x = 0;
@@ -426,7 +426,7 @@
                     sendStr = str;
                 }else
                 {
-                    sendStr = [sendStr stringByAppendingString:[NSString stringWithFormat:@",%@",str]];
+                    sendStr = [sendStr stringByAppendingString:[NSString stringWithFormat:@" ,%@",str]];
                 }
             }
             self.block(sendStr,self.itemIndex);
@@ -451,10 +451,10 @@
             //如果是判断题的话
             if (self.paperType == PaperTypeOpinion) {
                 if (btn.tag == 1) {
-                    self.block(@"Y",self.itemIndex);
+                    self.block(@"1",self.itemIndex);
                 }else
                 {
-                    self.block(@"N",self.itemIndex);
+                    self.block(@"0",self.itemIndex);
                 }
                 return;
             }

@@ -42,6 +42,7 @@ typedef void (^ButtonConfigrationBlock) (NSString *str,NSInteger itemIndex);
 @property (strong ,nonatomic) NSString * answerStr;
 @property (strong ,nonatomic) ButtonConfigrationBlock block;
 @property (assign ,nonatomic) NSInteger itemIndex;
+@property (assign ,nonatomic) NSInteger questionIndex;
 @property (assign ,nonatomic) PaperType paperType;
 - (id)initWithFrame:(CGRect)frame ItemIndex:(NSInteger)index PaperType:(PaperType)type isTitle:(BOOL)isTitle;
 

@@ -77,6 +77,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //错题本
     NSMutableArray * wrongExamPaperInfoArray;
+    
+    //记录已经检查的项目
+    NSInteger alreayCheckItemIndex;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -217,6 +220,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //初始化错题本
     wrongExamPaperInfoArray = [NSMutableArray array];
+    
+    alreayCheckItemIndex = 0;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -317,11 +322,38 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(BOOL)isExamTitle:(NSInteger )index
 {
-    ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:index];
-    if ([[tempPaperInfo valueForKey:@"IsRnd"]integerValue]==0) {
-        return  YES;
+    for (int i = alreayCheckItemIndex ;i<[self.questionDataSource count];i++) {
+        ExamPaperInfo *tempInfo = [self.questionDataSource objectAtIndex:i];
+        if ([[tempInfo valueForKey:@"num"]integerValue] ==index) {
+            alreayCheckItemIndex = i+1;
+            if ([[tempInfo valueForKey:@"IsRnd"]integerValue] ==0) {
+                return YES;
+            }else
+            {
+                return NO;
+            }
+        }
     }
-    return  NO;
+    return NO;
+    
+    
+//    ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:index];
+//    if ([[tempPaperInfo valueForKey:@"IsRnd"]integerValue]==0) {
+//        return  YES;
+//    }
+//    return  NO;
+    
+    
+//    ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:index];
+//
+//    BOOL isTitle = YES;
+//    for (NSString *key in answerDictionary) {
+//        NSInteger keyInt = [key integerValue];
+//        if (keyInt ==index&&[[tempPaperInfo valueForKey:@"IsRnd"]integerValue]==1) {
+//            isTitle = NO;
+//        }
+//    }
+//    return isTitle;
 }
 
 -(PaperType)paperType:(NSInteger)index
@@ -425,6 +457,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [subViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         //重新加载新的题目
         NSInteger startIndex = [tempStartIndexStr integerValue];
+        
+        if (startIndex < currentPage) {
+            alreayCheckItemIndex = 0;
+        }else
+        {
+            alreayCheckItemIndex = startIndex;
+        }
+
         printOnPage = startIndex;
         currentPage = startIndex;
         criticalPage = startIndex+2;
@@ -560,11 +600,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }else
         {
             for (int i = 0; i < 5; i++) {
+                NSInteger questionIndex = [[[questionDataSource objectAtIndex:(printOnPage+i)]valueForKey:@"num"]integerValue];
+
                 NSString * tempStr = [currentDisplayItems objectAtIndex:i];
                 QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*(printOnPage+i), 0, 320, questionViewHeight)
-                                                                   ItemIndex:(printOnPage+i)
+                                                                   ItemIndex:questionIndex
                                                                    PaperType:[self paperType:(printOnPage+i)]
-                                                                     isTitle:[self isExamTitle:(printOnPage+i)]];
+                                                                     isTitle:[self isExamTitle:(questionIndex)]];
 
                 [quesView setSelectButonStatus:[self getAlreadyChooseItem:i]];
                 [quesView setBlock:[self buttonBlock]];
@@ -772,6 +814,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [viewController setTimeStamp:timeStr];
     
     [viewController setDataSourece:questionDataSource];
+    
     [viewController setAnswerDic:answerDictionary];
     
     [viewController setBlock:[self configureClickItemBlock]];
@@ -813,17 +856,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
         NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
         NSString * uuid = [self GetUUID];
-        
-        //创建用于查选已提交的试卷
-        SubmittedPaperIndex * submittedIndex = [[SubmittedPaperIndex alloc]init
-                                                ];
-        submittedIndex.paperTitleStr = self.title;
-        submittedIndex.timeStamp = timeStr;
-        submittedIndex.uuid = uuid;
-        [[PersistentDataManager sharePersistenDataManager]createEndExamPaperIndexTable:submittedIndex];
-        
-        
-        
+        NSInteger  score = 0;
+        NSInteger lastTime = examOriginTime - examTime;
+        int minute = floor(lastTime / 60.0);
+        int second = lastTime % 60;
+        NSString * usedTime = [NSString stringWithFormat:@"%d分%d秒",minute,second];
         //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
             if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
@@ -841,6 +878,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 NSString * userAnswer = @"没有作答";
                 if ([[answerDictionary objectForKey:number] length]) {
                     userAnswer =[answerDictionary objectForKey:number];
+                    if ([userAnswer isEqualToString:[examInfo valueForKey:@"Answer"]]) {
+                        score += [[examInfo valueForKey:@"tmfs"]integerValue];
+                    }
                 }
                 submittedInfo.userAnswer    = userAnswer;
                 submittedInfo.uuid          = uuid;
@@ -850,6 +890,24 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
         endExamData = nil;
+        
+        
+        
+        //创建用于查选已提交的试卷
+        SubmittedPaperIndex * submittedIndex = [[SubmittedPaperIndex alloc]init
+                                                ];
+        submittedIndex.paperTitleStr = self.title;
+        submittedIndex.timeStamp = timeStr;
+        submittedIndex.uuid = uuid;
+        submittedIndex.score = [NSString stringWithFormat:@"%d",score];
+        submittedIndex.useTime = usedTime;
+        submittedIndex.totalExamTime = [NSString stringWithFormat:@"%0.1f",examOriginTime];
+        
+        [[PersistentDataManager sharePersistenDataManager]createEndExamPaperIndexTable:submittedIndex];
+        
+        
+        
+        
     };
     return block;
 }
