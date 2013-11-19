@@ -38,6 +38,8 @@
 		4E1306E0182D3A090099B6CC /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */; };
 		4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1545CA1839A06C0037AE02 /* UserSetting.m */; };
 		4E1928E5183B04FE00236EF4 /* SubmittedPaperIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */; };
+		4E1E428C183BC43A00CDE577 /* EndExamScoreViewControllerNav.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */; };
+		4E1E428D183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */; };
 		4E317C10182C940D0009FEC3 /* UserLoginInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */; };
 		4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */; };
 		4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */; };
@@ -337,6 +339,9 @@
 		4E1545CA1839A06C0037AE02 /* UserSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetting.m; sourceTree = "<group>"; };
 		4E1928E3183B04FE00236EF4 /* SubmittedPaperIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubmittedPaperIndex.h; sourceTree = "<group>"; };
 		4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubmittedPaperIndex.m; sourceTree = "<group>"; };
+		4E1E4289183BC43A00CDE577 /* EndExamScoreViewControllerNav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamScoreViewControllerNav.h; sourceTree = "<group>"; };
+		4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamScoreViewControllerNav.m; sourceTree = "<group>"; };
+		4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamScoreViewControllerNav.xib; sourceTree = "<group>"; };
 		4E317C0E182C940D0009FEC3 /* UserLoginInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginInfo.h; sourceTree = "<group>"; };
 		4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginInfo.m; sourceTree = "<group>"; };
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
@@ -927,6 +932,9 @@
 				4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */,
 				4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */,
 				4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */,
+				4E1E4289183BC43A00CDE577 /* EndExamScoreViewControllerNav.h */,
+				4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */,
+				4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */,
 			);
 			path = 2;
 			sourceTree = "<group>";
@@ -1521,6 +1529,7 @@
 				4E3D8716183904D20073CD47 /* cross.png in Resources */,
 				4E0DB12F1839EDD000D3031E /* WrongPaperViewController.xib in Resources */,
 				4E94CB7C183B117C0064E9C2 /* EndExamScoreViewController.xib in Resources */,
+				4E1E428D183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1599,6 +1608,7 @@
 				4E60BA6F183A5DB9003269AA /* SubmittedPaperInfo.m in Sources */,
 				4E1928E5183B04FE00236EF4 /* SubmittedPaperIndex.m in Sources */,
 				4E94CB7B183B117C0064E9C2 /* EndExamScoreViewController.m in Sources */,
+				4E1E428C183BC43A00CDE577 /* EndExamScoreViewControllerNav.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

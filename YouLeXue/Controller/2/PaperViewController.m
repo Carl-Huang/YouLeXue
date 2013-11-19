@@ -32,6 +32,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "EndExamViewController.h"
 #import "SubmittedPaperInfo.h"
 #import "SubmittedPaperIndex.h"
+#import "EndExamScoreViewControllerNav.h"
+
 
 @interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
@@ -63,8 +65,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
     PanDirection prePanDirection;
     NSMutableArray * currentDisplayItems; //保存着相对criticalPage，前一个数据，和后一个数据
     NSInteger currentPage;
-    NSMutableArray * questionStrArray;    //所有试题的描述
     
+    //所有试题的描述
+    NSMutableArray * questionStrArray;    
+    
+    //所有试题，包括答案
+    NSMutableArray * QAStrArray;
     
     //QuestionView height
     NSInteger questionViewHeight;
@@ -162,8 +168,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     self.quesScrollView.scrollEnabled = YES;
     self.quesScrollView.showsHorizontalScrollIndicator = NO;
 
-    questionStrArray = [NSMutableArray array];
-    answerDictionary = [NSMutableDictionary dictionary];
+    questionStrArray    = [NSMutableArray array];
+    QAStrArray          = [NSMutableArray array];
+    answerDictionary    = [NSMutableDictionary dictionary];
     for (int i = 0;i< [questionDataSource count];i++) {
         NSString * tempTitle = nil;
         NSString * descriptionStr = nil;
@@ -197,12 +204,22 @@ typedef NS_ENUM(NSInteger, PanDirection)
         {
              descriptionStr = [NSString stringWithFormat:@"%@%@%@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"]];
             NSError * error;
+            
+            //正则表达式，用于去掉超链接
             NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<a href=\"[^\"]+\">([^<]+)</a>" options:NSRegularExpressionCaseInsensitive error:&error];
             descriptionStr = [regex stringByReplacingMatchesInString:descriptionStr options:0 range:NSMakeRange(0, [descriptionStr length]) withTemplate:@"$1"];
+            
             [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
         }
         [questionStrArray addObject:descriptionStr];
-        
+        NSString * answerStr = [NSString stringWithFormat:@"%@",[tempPaperInfo valueForKey:@"DAJS"]];
+        if ([answerStr length]) {
+            [QAStrArray addObject:[descriptionStr stringByAppendingString:answerStr]];
+        }else
+        {
+            [QAStrArray addObject:descriptionStr];
+        }
+    
     }
     currentDisplayItems = [NSMutableArray array];
     
@@ -311,6 +328,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     ButtonConfigrationBlock block = ^(NSString *str,NSInteger itemIndex)
     {
+        alreayCheckItemIndex = itemIndex;
         if (![self isExamTitle:itemIndex]&&str) {
             [answerDictionary setObject:str forKey:[NSString stringWithFormat:@"%d",itemIndex]];
             NSLog(@"%@",answerDictionary);
@@ -571,11 +589,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [self getDisplayImagesWithCurpage:criticalPage direction:direction];
     if (criticalPage < [questionDataSource count]-2) {
         if (direction == PanDirectionLeft) {
+            alreayCheckItemIndex = shouldDeletedPageL;
+            NSInteger questionIndex = [[[questionDataSource objectAtIndex:(shouldDeletedPageL)]valueForKey:@"num"]integerValue];
+            
             NSString * tempStr = [currentDisplayItems objectAtIndex:0];
-            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageL PaperType:[self paperType:shouldDeletedPageL] isTitle:[self isExamTitle:shouldDeletedPageL]];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageL, 0, 320, questionViewHeight) ItemIndex:questionIndex PaperType:[self paperType:shouldDeletedPageL] isTitle:[self isExamTitle:questionIndex]];
             
             //判断是否已经选择了，有就设置相应的选项
-            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
+            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",questionIndex]];
             if ([tempAlphabet length]) {
                 [quesView setSelectButonStatus:tempAlphabet];
             }
@@ -585,11 +606,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
             quesView = nil;
         }else if (direction == PanDirectionRight)
         {
+            alreayCheckItemIndex = shouldDeletedPageR;
+            NSInteger questionIndex = [[[questionDataSource objectAtIndex:(shouldDeletedPageR)]valueForKey:@"num"]integerValue];
             NSString * tempStr = [currentDisplayItems objectAtIndex:4];
-            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:shouldDeletedPageR PaperType:[self paperType:shouldDeletedPageR] isTitle:[self isExamTitle:shouldDeletedPageR]];
+            QuestionView * quesView = [[QuestionView alloc]initWithFrame:CGRectMake(320*shouldDeletedPageR, 0, 320, questionViewHeight) ItemIndex:questionIndex PaperType:[self paperType:shouldDeletedPageR] isTitle:[self isExamTitle:questionIndex]];
             
             //判断是否已经选择了，有就设置相应的选项
-            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageR]];
+            NSString *tempAlphabet =[answerDictionary objectForKey:[NSString stringWithFormat:@"%d",questionIndex]];
             if ([tempAlphabet length]) {
                 [quesView setSelectButonStatus:tempAlphabet];
             }
@@ -608,7 +631,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
                                                                    PaperType:[self paperType:(printOnPage+i)]
                                                                      isTitle:[self isExamTitle:(questionIndex)]];
 
-                [quesView setSelectButonStatus:[self getAlreadyChooseItem:i]];
+                [quesView setSelectButonStatus:[self getAlreadyChooseItem:questionIndex]];
                 [quesView setBlock:[self buttonBlock]];
                 [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
                 
@@ -623,27 +646,30 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(NSString *)getAlreadyChooseItem:(NSInteger)index
 {
-    switch (index) {
-        case 0:
-            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
-            break;
-        case 1:
-            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",prePage]];
-            break;
-        case 2:
-            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",criticalPage]];
-            break;
-        case 3:
-            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",nextPage]];
-            break;
-        case 4:
-            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageR]];
-            break;
-
-        default:
-            return nil;
-            break;
-    }
+//    NSInteger questionIndex = [[[questionDataSource objectAtIndex:(index)]valueForKey:@"num"]integerValue];
+    NSString * str =  [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",index]];
+    return str;
+//    switch (index) {
+//        case 0:
+//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
+//            break;
+//        case 1:
+//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",prePage]];
+//            break;
+//        case 2:
+//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",criticalPage]];
+//            break;
+//        case 3:
+//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",nextPage]];
+//            break;
+//        case 4:
+//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageR]];
+//            break;
+//
+//        default:
+//            return nil;
+//            break;
+//    }
 }
 
 
@@ -807,16 +833,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [countTimer invalidate];
     }
     EndExamViewController * viewController = [[EndExamViewController alloc]initWithNibName:@"EndExamViewController" bundle:nil];
+    viewController.title = self.title;
     NSInteger stopTimeStamp = examOriginTime - examTime;
     int minute = floor(stopTimeStamp / 60.0);
     int second = stopTimeStamp % 60;
     NSString * timeStr = [NSString stringWithFormat:@"%d分%d秒",minute,second];
     [viewController setTimeStamp:timeStr];
-    
     [viewController setDataSourece:questionDataSource];
-    
     [viewController setAnswerDic:answerDictionary];
-    
     [viewController setBlock:[self configureClickItemBlock]];
     [viewController setEndBlock:[self configureEndExamBlock]];
     
@@ -861,6 +885,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         int minute = floor(lastTime / 60.0);
         int second = lastTime % 60;
         NSString * usedTime = [NSString stringWithFormat:@"%d分%d秒",minute,second];
+        
         //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
             if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
@@ -877,8 +902,25 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 }
                 NSString * userAnswer = @"没有作答";
                 if ([[answerDictionary objectForKey:number] length]) {
+                    //读取答案，分析答案
                     userAnswer =[answerDictionary objectForKey:number];
-                    if ([userAnswer isEqualToString:[examInfo valueForKey:@"Answer"]]) {
+                    NSMutableArray * answers = [NSMutableArray arrayWithArray:[[examInfo valueForKey:@"Answer"] componentsSeparatedByString:@","]];
+                    
+                    NSMutableArray *userAnswers = [NSMutableArray arrayWithArray:[userAnswer componentsSeparatedByString:@","]];
+                    
+                    BOOL isRight = NO;
+                    for (NSString * useranswer in userAnswers) {
+                        for (NSString * answer in answers) {
+                            NSString * tempStr1 = [useranswer stringByReplacingOccurrencesOfString:@" " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [useranswer length])];
+                            
+                             NSString * tempStr2 = [answer stringByReplacingOccurrencesOfString:@" " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [answer length])];
+                            if ([tempStr1 isEqualToString:tempStr2]) {
+                                isRight = YES;
+                                break;
+                            }
+                        }
+                    }
+                    if (isRight) {
                         score += [[examInfo valueForKey:@"tmfs"]integerValue];
                     }
                 }
@@ -891,8 +933,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
         endExamData = nil;
         
-        
-        
         //创建用于查选已提交的试卷
         SubmittedPaperIndex * submittedIndex = [[SubmittedPaperIndex alloc]init
                                                 ];
@@ -901,12 +941,18 @@ typedef NS_ENUM(NSInteger, PanDirection)
         submittedIndex.uuid = uuid;
         submittedIndex.score = [NSString stringWithFormat:@"%d",score];
         submittedIndex.useTime = usedTime;
-        submittedIndex.totalExamTime = [NSString stringWithFormat:@"%0.1f",examOriginTime];
-        
+        submittedIndex.totalExamTime = [NSString stringWithFormat:@"%d",(int)roundf( examOriginTime/60.0)];
+        submittedIndex.paperTotalScore = [self.examInfo valueForKey:@"sjzf"];
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperIndexTable:submittedIndex];
         
         
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            EndExamScoreViewControllerNav *viewcontroller = [[EndExamScoreViewControllerNav alloc]initWithNibName:@"EndExamScoreViewControllerNav" bundle:nil];
+            [viewcontroller setInfo:submittedIndex];
+            [self.navigationController pushViewController:viewcontroller animated:YES];
+            viewcontroller = nil;
+            
+        });
         
     };
     return block;
@@ -927,7 +973,19 @@ typedef NS_ENUM(NSInteger, PanDirection)
 }
 - (IBAction)showAnswerAction:(id)sender {
     //练习模式下 ，显示答案
-    
+    NSLog(@"%d",currentPage);
+    CGRect rect = CGRectMake(320*currentPage, 0, 320, questionViewHeight);
+    NSArray * subViews = [self.quesScrollView subviews];
+    for (UIView * view in subViews) {
+        if ([view isKindOfClass:[QuestionView class]]) {
+            if (CGRectEqualToRect(rect, view.frame)) {
+                //显示答案
+                QuestionView * questionView = (QuestionView *)view;
+                NSString * str = [QAStrArray objectAtIndex:currentPage];
+                [questionView.quesTextView loadHTMLString:str baseURL:nil];
+            }
+        }
+    }
 }
 
 

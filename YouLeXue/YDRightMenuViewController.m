@@ -123,6 +123,7 @@
             __weak UIImageView *weakImageview = self.userImage;
             [self.userImage setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                 [weakImageview setImage:image];
+                [[NSUserDefaults standardUserDefaults]setObject:image forKey:UserImage];
             } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                 ;
             }];

@@ -7,13 +7,14 @@
 //
 
 #import "EndExamScoreViewController.h"
-
+#import "SubmittedPaperIndex.h"
 @interface EndExamScoreViewController ()
 
 @end
 
 @implementation EndExamScoreViewController
-
+@synthesize dataSource;
+@synthesize info;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -26,6 +27,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    UIImage * image =  [[NSUserDefaults standardUserDefaults]objectForKey:UserImage];
+    if (image) {
+        [self.userImage setImage:image];
+    }
+    self.scoreLabel.text = info.score;
+    
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -49,5 +56,86 @@
 }
 
 - (IBAction)shareExam:(id)sender {
+}
+
+- (IBAction)back:(id)sender {
+ 
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+
+
+#pragma mark -
+#pragma mark UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 4;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *identifier = @"Cell";
+    UITableViewCell *cell = [self.PaperInfoTable dequeueReusableCellWithIdentifier:identifier];
+    if (cell == nil)
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+
+
+    NSString * str = nil;
+    if (indexPath.row == 0) {
+        str = [NSString stringWithFormat:@"您的得分: %@",info.score];
+    }else if (indexPath.row == 1)
+    {
+        str = [NSString stringWithFormat:@"试卷总分: %@",info.paperTotalScore];
+    }else if (indexPath.row ==2)
+    {
+        str = [NSString stringWithFormat:@"您的时间: %@",info.useTime];
+    }else if (indexPath.row ==3)
+    {
+        str = [NSString stringWithFormat:@"考卷时间: %@",info.totalExamTime];
+    }
+    cell.textLabel.text = str;
+    cell.textLabel.font = [UIFont systemFontOfSize:14];
+    [cell.imageView setImage:[UIImage imageNamed:@"User Settings_Icon_Point@2x"]];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    return cell;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIImageView * headerView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"User Settings_Frame01"]];
+    UILabel * description = [[UILabel alloc]initWithFrame:CGRectMake(85, 5, 100, 30)];
+    description.text = @"成绩单";
+    description.textAlignment = NSTextAlignmentCenter;
+    description.textColor = [UIColor whiteColor];
+    description.font = [UIFont systemFontOfSize:16];
+    [description setBackgroundColor:[UIColor clearColor]];
+    [headerView addSubview:description];
+    description = nil;
+    
+    return headerView;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIImageView * footerView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"User Settings_Frame03"]];
+    return footerView;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 35.0f;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 10.0f;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 40.0f;
 }
 @end

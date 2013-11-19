@@ -24,5 +24,7 @@ typedef void (^EndExamBlock) ();
 
 @property (strong ,nonatomic) EndExamBlock endBlock;
 @property (strong ,nonatomic) DidClickItemBlock block;
+- (IBAction)continousExam:(id)sender;
+- (IBAction)submitPaper:(id)sender;
 
 @end

@@ -7,6 +7,8 @@
 //答题卡每一项的高度
 #define AnswerSheetRowHeight 30
 
+//登陆成功后保持用户头像
+#define UserImage @"UserImage"
 
 #import <Availability.h>
 

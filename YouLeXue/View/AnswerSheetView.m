@@ -46,7 +46,6 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    self.canDrawBackgroundItem = [NSMutableArray array];
     UITapGestureRecognizer * gesutre = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture:)];
     [self addGestureRecognizer:gesutre];
     gesutre  = nil;
@@ -74,32 +73,23 @@
     for (int i =0; i< floor(answerCount/5.0); i++) {
         for (int j =0; j < 5; j++) {
             //Draw BackGround
+            CGContextSaveGState(context);
             for (NSString *str in self.alreadyAnswerTitle) {
                 if ([self shouldDrawBackgroundWithNum:[str integerValue] X:i Y:j]) {
-                    CGContextSaveGState(context);
+                    
                     CGContextSetRGBFillColor(context, 66.0/255.0, 183.0/255.0, 201.0/255.0, 1.0);
                     CGContextFillRect(context, CGRectMake((RowOffsetX)*j, RowHeight*(i), RowOffsetX-1, RowHeight-1));
-                    CGContextRestoreGState(context);
                 }
-
             }
-           
+           CGContextRestoreGState(context);
             
             //Draw Text
-//            CGContextSetTextMatrix(context, CGAffineTransformMakeScale(1.0, -1.0));
-//            CGContextSelectFont(context, "Helvetica", 18, kCGEncodingMacRoman);
-//            CGContextSetFillColorWithColor(context, [[UIColor blackColor]CGColor]);
-//            CGContextShowTextAtPoint(context, 5+(OffsetX)*(j+1)+(RowOffsetX)*j, (OffsetY-5)+RowHeight*(i+1), [self getTextOnSheetWithX:i Y:j], 2);
-            
-            //CGContextShowTextAtPoint 不能画中文，所以采用以下方法
-            CGContextRef textureContext = UIGraphicsGetCurrentContext();
-            UIGraphicsPushContext(textureContext);
             [[self getTextOnSheetWithX:i Y:j] drawAtPoint:CGPointMake(20+(OffsetX)*(j+1)+(RowOffsetX)*j, (OffsetY+5)+RowHeight*(i)) withFont:[UIFont systemFontOfSize:16]];
-            UIGraphicsPopContext();
         }
         CGContextSetLineWidth(context, .1f);
         CGContextMoveToPoint(context, OffsetX, OffsetY+RowHeight*i);
         CGContextAddLineToPoint(context, OffsetX+AnswerSheetWidth, OffsetY+RowHeight*i);
+        CGContextStrokePath(context);
     }
     for (int i =0; i< 4; i++) {
         CGContextSetLineWidth(context, .1f);
@@ -136,4 +126,16 @@
     NSString * str = [NSString stringWithFormat:@"%@",[[self.titleDataSourece objectAtIndex:index]objectForKey:@"Title"]];
     return str;
 }
+
+
+//            CGContextSetTextMatrix(context, CGAffineTransformMakeScale(1.0, -1.0));
+//            CGContextSelectFont(context, "Helvetica", 18, kCGEncodingMacRoman);
+//            CGContextSetFillColorWithColor(context, [[UIColor blackColor]CGColor]);
+//            CGContextShowTextAtPoint(context, 5+(OffsetX)*(j+1)+(RowOffsetX)*j, (OffsetY-5)+RowHeight*(i+1), [self getTextOnSheetWithX:i Y:j], 2);
+
+//CGContextShowTextAtPoint 不能画中文，所以采用以下方法
+//            CGContextRef textureContext = UIGraphicsGetCurrentContext();
+//            UIGraphicsPushContext(textureContext);
+//            [[self getTextOnSheetWithX:i Y:j] drawAtPoint:CGPointMake(20+(OffsetX)*(j+1)+(RowOffsetX)*j, (OffsetY+5)+RowHeight*(i)) withFont:[UIFont systemFontOfSize:16]];
+//            UIGraphicsPopContext();
 @end

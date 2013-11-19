@@ -10,7 +10,7 @@
 #import "PersistentDataManager.h"
 #import "SVPullToRefresh.h"
 #import "SubmittedPaperIndex.h"
-
+#import "EndExamScoreViewController.h"
 @interface YDLeftMenuViewController ()
 @property (strong ,nonatomic) NSArray * dataSource;
 @end
@@ -106,6 +106,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    SubmittedPaperIndex * info = [self.dataSource objectAtIndex:indexPath.row];
+    EndExamScoreViewController * viewcontroller = [[EndExamScoreViewController alloc]initWithNibName:@"EndExamScoreViewController" bundle:nil];
+    [viewcontroller setInfo:info];
+    [self presentModalViewController:viewcontroller animated:YES];
 }
 @end

@@ -29,7 +29,7 @@
         //考试模式
         UIButton * examModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [examModel setFrame:ButtonFrame];
-        [examModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Mode"] forState:UIControlStateNormal];
+        [examModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Mode@2x"] forState:UIControlStateNormal];
         [examModel addTarget:self action:@selector(examModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * examText = [[UILabel alloc]initWithFrame:CGRectMake(examModel.frame.origin.x+examModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         examText.font = [UIFont systemFontOfSize:12];
@@ -42,7 +42,7 @@
         ButtonFrame = CGRectMake(10+width, 10, width/4, 20);
         UIButton * practiceModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [practiceModel setFrame:ButtonFrame];
-        [practiceModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Exercise"] forState:UIControlStateNormal];
+        [practiceModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Exercise@2x"] forState:UIControlStateNormal];
         [practiceModel addTarget:self action:@selector(practiceModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * practiceText = [[UILabel alloc]initWithFrame:CGRectMake(practiceModel.frame.origin.x+practiceModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         practiceText.font = [UIFont systemFontOfSize:12];
@@ -55,7 +55,7 @@
         ButtonFrame = CGRectMake(10+2*width, 10, width/4, 20);
         UIButton * markModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [markModel setFrame:ButtonFrame];
-        [markModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Cancel"] forState:UIControlStateNormal];
+        [markModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Cancel@2x"] forState:UIControlStateNormal];
         [markModel addTarget:self action:@selector(markModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * markText = [[UILabel alloc]initWithFrame:CGRectMake(markModel.frame.origin.x+markModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         markText.font = [UIFont systemFontOfSize:12];

@@ -557,7 +557,7 @@ static NSString *identifier = @"Cell";
         [viewcontroller setQuestionDataSource:paperList];
         [viewcontroller setExamInfo:selectedInfo];
         [viewcontroller setIsExciseOrnot:exciseOrnot];
-        viewcontroller.title = @"测试用户组的试卷";
+        viewcontroller.title = [selectedInfo valueForKey:@"title"];
         [self.navigationController pushViewController:viewcontroller animated:YES];
         viewcontroller = nil;
     }

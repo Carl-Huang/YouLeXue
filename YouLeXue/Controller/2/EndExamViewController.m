@@ -38,6 +38,17 @@
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
     self.timeLabel.text = self.timeStamp;
+    __block NSInteger alreadyAnswerQuesCount = 0;
+    [answerDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if ([obj length]) {
+            alreadyAnswerQuesCount++;
+        }
+        if (stop) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.doneQuestionCount.text = [NSString stringWithFormat:@"已答%d题",alreadyAnswerQuesCount];
+            });
+        }
+    }];
     
     
     //AnswerSheet
@@ -51,7 +62,8 @@
     
     //BackgroundScrollview
     [self.backgroundScrollView addSubview:self.answerSheetView];
-    [self.backgroundScrollView setContentSize:CGSizeMake(320, self.answerSheetView.frame.size.height+400)];
+    self.answerSheetView = nil;
+    [self.backgroundScrollView setContentSize:CGSizeMake(320,  (count/5.0)*AnswerSheetRowHeight+300)];
 
 }
 
@@ -154,7 +166,7 @@
             //交卷
         {
             self.endBlock();
-            [self.navigationController popViewControllerAnimated:YES];
+            
         }
             break;
         case 1:
@@ -166,4 +178,14 @@
 }
 
 
+- (IBAction)continousExam:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)submitPaper:(id)sender {
+    //交卷
+    UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定交卷吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    [alertview show];
+    alertview = nil;
+}
 @end
