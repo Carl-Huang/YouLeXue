@@ -25,6 +25,8 @@
 #import "FetchDataInfo.h"
 #import "VDAlertView.h"
 #import "ExamInfo.h"
+#import "UIImage+SaveToLocal.h"
+
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
@@ -123,7 +125,7 @@
             __weak UIImageView *weakImageview = self.userImage;
             [self.userImage setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                 [weakImageview setImage:image];
-                [[NSUserDefaults standardUserDefaults]setObject:image forKey:UserImage];
+                [UIImage saveImage:image name:UserImageLocalDataName];
             } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                 ;
             }];

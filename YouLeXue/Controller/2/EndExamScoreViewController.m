@@ -9,6 +9,7 @@
 #import "EndExamScoreViewController.h"
 #import "SubmittedPaperIndex.h"
 #import <ShareSDK/ShareSDK.h>
+#import "UIImage+SaveToLocal.h"
 @interface EndExamScoreViewController ()
 
 @end
@@ -28,9 +29,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIImage * image =  [[NSUserDefaults standardUserDefaults]objectForKey:UserImage];
+    UIImage *image  = [UIImage readImageWithName:UserImageLocalDataName];
     if (image) {
-        [self.userImage setImage:image];
+        self.userImage.image = image;
     }
     self.scoreLabel.text = info.score;
     

@@ -28,5 +28,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *showAnswerBtn;
 
 - (IBAction)showAnswerAction:(id)sender;
+- (IBAction)showTableView:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *showTableBtn;
 
 @end

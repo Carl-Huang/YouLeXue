@@ -10,6 +10,7 @@
 #import "SubmittedPaperIndex.h"
 #import "UIViewController+TabbarConfigure.h"
 #import <ShareSDK/ShareSDK.h>
+#import "UIImage+SaveToLocal.h"
 @interface EndExamScoreViewControllerNav ()
 
 @end
@@ -30,11 +31,12 @@
 {
     [super viewDidLoad];
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
-
-    UIImage * image =  [[NSUserDefaults standardUserDefaults]objectForKey:UserImage];
+    UIImage *image  = [UIImage readImageWithName:UserImageLocalDataName];
     if (image) {
-        [self.userImage setImage:image];
+        self.userImage.image = image;
     }
+ 
+
     self.scoreLabel.text = info.score;
     
     // Do any additional setup after loading the view from its nib.

@@ -133,6 +133,7 @@
 		4EA9A21D183C5BC200F9C9CE /* ShareSDKiPhoneDefaultShareViewUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA9A1E7183C5BC100F9C9CE /* ShareSDKiPhoneDefaultShareViewUI.framework */; };
 		4EA9A21E183C5BC200F9C9CE /* ShareSDKiPhoneSimpleShareViewUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4EA9A1E8183C5BC100F9C9CE /* ShareSDKiPhoneSimpleShareViewUI.bundle */; };
 		4EA9A21F183C5BC200F9C9CE /* ShareSDKiPhoneSimpleShareViewUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA9A1E9183C5BC100F9C9CE /* ShareSDKiPhoneSimpleShareViewUI.framework */; };
+		4EA9A222183C88C000F9C9CE /* UIImage+SaveToLocal.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA9A221183C88C000F9C9CE /* UIImage+SaveToLocal.m */; };
 		4EC621E2182CC09F001266A6 /* ExamInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E1182CC09F001266A6 /* ExamInfo.m */; };
 		4EC621E5182CC2BD001266A6 /* ExamPaperInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E4182CC2BD001266A6 /* ExamPaperInfo.m */; };
 		4EC621E8182CC3FA001266A6 /* ExamplePaperInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC621E7182CC3FA001266A6 /* ExamplePaperInfo.m */; };
@@ -511,6 +512,8 @@
 		4EA9A1E7183C5BC100F9C9CE /* ShareSDKiPhoneDefaultShareViewUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ShareSDKiPhoneDefaultShareViewUI.framework; sourceTree = "<group>"; };
 		4EA9A1E8183C5BC100F9C9CE /* ShareSDKiPhoneSimpleShareViewUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ShareSDKiPhoneSimpleShareViewUI.bundle; sourceTree = "<group>"; };
 		4EA9A1E9183C5BC100F9C9CE /* ShareSDKiPhoneSimpleShareViewUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ShareSDKiPhoneSimpleShareViewUI.framework; sourceTree = "<group>"; };
+		4EA9A220183C88C000F9C9CE /* UIImage+SaveToLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SaveToLocal.h"; sourceTree = "<group>"; };
+		4EA9A221183C88C000F9C9CE /* UIImage+SaveToLocal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SaveToLocal.m"; sourceTree = "<group>"; };
 		4EC621E0182CC09F001266A6 /* ExamInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamInfo.h; sourceTree = "<group>"; };
 		4EC621E1182CC09F001266A6 /* ExamInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamInfo.m; sourceTree = "<group>"; };
 		4EC621E3182CC2BD001266A6 /* ExamPaperInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamPaperInfo.h; sourceTree = "<group>"; };
@@ -1512,6 +1515,8 @@
 				4EC62297182CDD23001266A6 /* Constant.h */,
 				4E1306DC182D34A50099B6CC /* PersistentDataManager.h */,
 				4E1306DD182D34A50099B6CC /* PersistentDataManager.m */,
+				4EA9A220183C88C000F9C9CE /* UIImage+SaveToLocal.h */,
+				4EA9A221183C88C000F9C9CE /* UIImage+SaveToLocal.m */,
 			);
 			path = Class;
 			sourceTree = "<group>";
@@ -1529,13 +1534,6 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
-				4EA9A1A0183C5BC100F9C9CE /* ShareSDK_v2.6.0 */,
-				4EA9A0C1183C577300F9C9CE /* libz.1.2.5.dylib */,
-				4EA9A0BF183C575400F9C9CE /* libicucore.dylib */,
-				4EA9A0BD183C574300F9C9CE /* CoreTelephony.framework */,
-				4E034F51183A5715008588D2 /* MessageUI.framework */,
-				4ED6187218313A3F00D8400C /* Default-568h@2x.png */,
-				4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
 				C32C214F1828912200FBF75C /* Products */,
@@ -1553,6 +1551,13 @@
 		C32C21501828912200FBF75C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4EA9A1A0183C5BC100F9C9CE /* ShareSDK_v2.6.0 */,
+				4EA9A0C1183C577300F9C9CE /* libz.1.2.5.dylib */,
+				4EA9A0BF183C575400F9C9CE /* libicucore.dylib */,
+				4EA9A0BD183C574300F9C9CE /* CoreTelephony.framework */,
+				4E034F51183A5715008588D2 /* MessageUI.framework */,
+				4ED6187218313A3F00D8400C /* Default-568h@2x.png */,
+				4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */,
 				4EC6229A182CDF28001266A6 /* SystemConfiguration.framework */,
 				4EC62298182CDF1B001266A6 /* Security.framework */,
 				4EF18683182A925500E5EEA8 /* QuartzCore.framework */,
@@ -1953,6 +1958,7 @@
 				4E1928E5183B04FE00236EF4 /* SubmittedPaperIndex.m in Sources */,
 				4E94CB7B183B117C0064E9C2 /* EndExamScoreViewController.m in Sources */,
 				4E1E428C183BC43A00CDE577 /* EndExamScoreViewControllerNav.m in Sources */,
+				4EA9A222183C88C000F9C9CE /* UIImage+SaveToLocal.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

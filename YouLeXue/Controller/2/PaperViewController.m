@@ -129,13 +129,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //获取试卷分类
     NSMutableSet * set = [NSMutableSet set];
     [questionDataSource enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        ExamPaperInfo * info = obj;
+        ExamPaperInfo * info = (ExamPaperInfo *)obj;
         NSString * tmtType = [NSString stringWithFormat:@"%@",[info valueForKey:@"Tmtype"]];
         NSDictionary * dic = @{@"Tmtype":tmtType,@"StartIndex":[NSString stringWithFormat:@"%d",idx]};
         BOOL isCanAddobj = YES;
         if ([set count]) {
             for (NSDictionary *dic in set) {
-                if ([[dic valueForKey:@"Tmtype" ] isEqualToString:[info valueForKey:@"Tmtype"]]) {
+                if ([[dic valueForKey:@"Tmtype" ] isEqualToString:[NSString stringWithFormat:@"%@",[info valueForKey:@"Tmtype"]]]) {
                     isCanAddobj = NO;
                 }
             }
@@ -233,8 +233,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     currentPage = 0;
     printOnPage = 0;
     [self refreshScrollViewWithDirection:panDirectioin];
+    [self.popUpTable setHidden:YES];
     [self.view bringSubviewToFront:self.popUpTable];
-    
+    [self.view bringSubviewToFront:self.showAnswerBtn];
     //初始化错题本
     wrongExamPaperInfoArray = [NSMutableArray array];
     
@@ -287,6 +288,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [self setNextQuesBtn:nil];
     [self setExciseBtn:nil];
     [self setShowAnswerBtn:nil];
+    [self setShowTableBtn:nil];
     [super viewDidUnload];
 }
 
@@ -422,7 +424,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [questTypes count]+1;
+    return [questTypes count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -435,25 +437,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSArray *array = [cell.contentView subviews];
     [array makeObjectsPerformSelector:@selector(removeFromSuperview)];
     UIImageView * imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"User_Edit_Button_Confirm@2x"]];
-    [imageView setFrame:CGRectMake(0, 0, 88, 45)];
+    [imageView setFrame:CGRectMake(0, 0, 95, 45)];
     [cell.contentView addSubview:imageView];
     imageView = nil;
-    
-    
-    if (indexPath.row == 0) {
-        UILabel * textLabel = [[UILabel alloc]initWithFrame:CGRectMake(25, 0, 60, 41)];
-        textLabel.font = [UIFont systemFontOfSize:13];
-        textLabel.textAlignment = NSTextAlignmentCenter;
-        textLabel.backgroundColor = [UIColor clearColor];
-        textLabel.textColor = [UIColor whiteColor];
-        textLabel.text = @"大题切换";
-        [cell.contentView addSubview:textLabel];
-        textLabel = nil;
-    }else
-    {
-        NSNumber *type = [[questTypes objectAtIndex:indexPath.row-1]objectForKey:@"Tmtype"];
-        [self configureCell:cell withType:[type integerValue]];
-    }
+    NSNumber *type = [[questTypes objectAtIndex:indexPath.row]objectForKey:@"Tmtype"];
+    [self configureCell:cell withType:[type integerValue]];
     UIImageView * leftImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Case_Button_Change@2x"]];
     [leftImage setFrame:CGRectMake(5, 10, 20, 20)];
     [cell.contentView addSubview:leftImage];
@@ -463,35 +451,30 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        isShouldShowTable = !isShouldShowTable;
-        [self configurePopupTable];
+
+    //跳到相应的题目分类
+     NSString *tempStartIndexStr = [[questTypes objectAtIndex:indexPath.row]objectForKey:@"StartIndex"];
+     NSArray *subViews = [self.quesScrollView subviews];
+    [subViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    //重新加载新的题目
+    NSInteger startIndex = [tempStartIndexStr integerValue];
+    
+    if (startIndex < currentPage) {
+        alreayCheckItemIndex = 0;
     }else
     {
-        
-        //跳到相应的题目分类
-         NSString *tempStartIndexStr = [[questTypes objectAtIndex:indexPath.row-1]objectForKey:@"StartIndex"];
-         NSArray *subViews = [self.quesScrollView subviews];
-        [subViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        //重新加载新的题目
-        NSInteger startIndex = [tempStartIndexStr integerValue];
-        
-        if (startIndex < currentPage) {
-            alreayCheckItemIndex = 0;
-        }else
-        {
-            alreayCheckItemIndex = startIndex;
-        }
-
-        printOnPage = startIndex;
-        currentPage = startIndex;
-        criticalPage = startIndex+2;
-        [currentDisplayItems removeAllObjects];
-        [self refreshScrollViewWithDirection:PanDirectionNone];
-        [self.quesScrollView scrollRectToVisible:CGRectMake(320 *currentPage, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
-        isShouldShowTable = !isShouldShowTable;
-        [self configurePopupTable];
+        alreayCheckItemIndex = startIndex;
     }
+
+    printOnPage = startIndex;
+    currentPage = startIndex;
+    criticalPage = startIndex+2;
+    [currentDisplayItems removeAllObjects];
+    [self refreshScrollViewWithDirection:PanDirectionNone];
+    [self.quesScrollView scrollRectToVisible:CGRectMake(320 *currentPage, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
+    isShouldShowTable = !isShouldShowTable;
+    [self.popUpTable setHidden:!isShouldShowTable];
+    [self configurePopupTable];
 }
 
 -(void)configureCell:(UITableViewCell *)cell withType:(NSInteger)type
@@ -986,6 +969,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
             }
         }
     }
+}
+
+- (IBAction)showTableView:(id)sender {
+    isShouldShowTable = !isShouldShowTable;
+    [self.popUpTable setHidden:!isShouldShowTable];
+    [self configurePopupTable];
 }
 
 

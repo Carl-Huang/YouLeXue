@@ -8,7 +8,7 @@
 #define AnswerSheetRowHeight 30
 
 //登陆成功后保持用户头像
-#define UserImage @"UserImage"
+#define UserImageLocalDataName @"UserImage"
 
 #import <Availability.h>
 

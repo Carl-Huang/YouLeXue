@@ -38,6 +38,9 @@
     [self.leftTable addPullToRefreshWithActionHandler:^{
         [weakSelf fillData];
     }];
+    
+    
+    [self fillData];
     // Do any additional setup after loading the view from its nib.
 }
 
