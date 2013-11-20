@@ -38,9 +38,11 @@
 
 -(BOOL)deleteTable:(NSString *)tableName;
 -(BOOL)eraseTableData:(NSString *)tableName;
--(NSDictionary *)readEndExamTableData:(NSArray *)keyArray;
+-(NSArray *)readEndExamTableData:(NSString *)key;
 
 -(void)createEndExamPaperIndexTable:(SubmittedPaperIndex *)info;
 -(void)insertIntoEndExamPaperIndexTable:(SubmittedPaperIndex *)info;
 -(NSArray *)readEndExamPaperIndexTable;
+
+
 @end

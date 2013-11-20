@@ -10,6 +10,13 @@
 //登陆成功后保持用户头像
 #define UserImageLocalDataName @"UserImage"
 
+//设置
+#define AutoNextQuestion @"AutoNextQuestioin"
+#define VibrateWhenClick @"VibrateWhenClick"
+#define AutoUpdateQuestion @"AutoUpdateQuestoin"
+
+
+
 #import <Availability.h>
 
 #ifndef __IPHONE_5_0

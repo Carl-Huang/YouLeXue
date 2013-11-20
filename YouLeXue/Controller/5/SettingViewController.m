@@ -54,10 +54,10 @@
     //slider
     sliderLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, 80, 35)];
     sliderLabel.text = @"亮度设置";
+    [sliderLabel setBackgroundColor:[UIColor clearColor]];
     sliderLabel.font = [UIFont systemFontOfSize:FontSize];
     slider = [[UISlider alloc]initWithFrame:CGRectMake(10, 20, 280, 40)];
     [slider addTarget:self action:@selector(intensityControl:) forControlEvents:UIControlEventTouchUpInside];
-    
     regulationStr = @"1";
     
     //设置这个页面，不能左右滑动。
@@ -159,16 +159,35 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section ==0) {
+    if (indexPath.section ==0)
+    {
         if (indexPath.row !=3) {
-            NSString * str = [checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]];
-            if ([str isEqualToString:@"No"]) {
-                [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:indexPath.row]];
-            }else
-                [checkItems setObject:@"No" forKey:[NSNumber numberWithInt:indexPath.row]];
+            [self configureCheckItemWithIndexPath:indexPath];
+            switch (indexPath.row) {
+                case 0:
+                    [[NSUserDefaults standardUserDefaults]setObject:[checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]] forKey:AutoNextQuestion];
+                    break;
+                case 1:
+                    [[NSUserDefaults standardUserDefaults]setObject:[checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]] forKey:VibrateWhenClick];
+                    break;
+                case 2:
+                    [[NSUserDefaults standardUserDefaults]setObject:[checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]] forKey:AutoUpdateQuestion];
+                    break;
+                default:
+                    break;
+            }
         }
         [tableView reloadData];
     }
+}
+
+-(void)configureCheckItemWithIndexPath:(NSIndexPath *)indexPath
+{
+    NSString * str = [checkItems objectForKey:[NSNumber numberWithInt:indexPath.row]];
+    if ([str isEqualToString:@"No"]) {
+        [checkItems setObject:@"Yes" forKey:[NSNumber numberWithInt:indexPath.row]];
+    }else
+        [checkItems setObject:@"No" forKey:[NSNumber numberWithInt:indexPath.row]];
 }
 
 -(void)configureCell:(UITableViewCell *)cell withIndex:(NSIndexPath *)index

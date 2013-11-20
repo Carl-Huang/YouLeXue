@@ -470,45 +470,31 @@
     [db close];
 }
 
--(NSDictionary *)readEndExamTableData:(NSArray *)keyArray
+-(NSArray *)readEndExamTableData:(NSString *)key
 {
     [db open];
-//    NSString * cmdStr = [NSString stringWithFormat:@"select distinct uuid from EndExamPaperTable"];
-//    FMResultSet *tempRs = [db executeQuery:cmdStr];
-//    NSMutableArray * tempArray = [NSMutableArray array];
-//    while ([tempRs next]) {
-//        [tempArray addObject:[tempRs stringForColumn:@"uuid"]];
-//    }
-//    NSLog(@"%@",tempArray);
-//    [tempRs close];
-//    
-//    
-    
-    NSMutableDictionary * endExamDic = [NSMutableDictionary dictionary];
-    for (NSString * uuidStr in keyArray) {
-        NSMutableArray * endExamDataArray = [NSMutableArray array];
-        NSString * sqlStr = [NSString stringWithFormat:@"select * from EndExamPaperTable where uuid='%@'",uuidStr];
-        FMResultSet *rs = [db executeQuery:sqlStr];
-        while ([rs next]) {
-            unsigned int varCount;
-            SubmittedPaperInfo * obj = [[SubmittedPaperInfo alloc]init];
-            Ivar *vars = class_copyIvarList([SubmittedPaperInfo class], &varCount);
-            for (int i = 0; i < varCount; i++) {
-                Ivar var = vars[i];
-                const char* name = ivar_getName(var);
-                NSString *valueKey = [NSString stringWithUTF8String:name];
-                valueKey  = [valueKey substringFromIndex:1];
-                [obj setValue:[rs stringForColumn:valueKey] forKey:valueKey];
-            }
-            [endExamDataArray addObject:obj];
-            free(vars);
+   
+    NSMutableArray * endExamDataArray = [NSMutableArray array];
+    NSString * sqlStr = [NSString stringWithFormat:@"select * from EndExamPaperTable where uuid='%@'",key];
+    FMResultSet *rs = [db executeQuery:sqlStr];
+    while ([rs next]) {
+        unsigned int varCount;
+        SubmittedPaperInfo * obj = [[SubmittedPaperInfo alloc]init];
+        Ivar *vars = class_copyIvarList([SubmittedPaperInfo class], &varCount);
+        for (int i = 0; i < varCount; i++) {
+            Ivar var = vars[i];
+            const char* name = ivar_getName(var);
+            NSString *valueKey = [NSString stringWithUTF8String:name];
+            valueKey  = [valueKey substringFromIndex:1];
+            [obj setValue:[rs stringForColumn:valueKey] forKey:valueKey];
         }
-        [rs close];
-        [endExamDic setObject:endExamDataArray forKey:uuidStr];
+        [endExamDataArray addObject:obj];
+        free(vars);
     }
+    [rs close];
     [db close];
-    if ([endExamDic count]) {
-        return endExamDic;
+    if ([endExamDataArray count]) {
+        return endExamDataArray;
     }
     return nil;
 }

@@ -11,6 +11,8 @@
 #import "UIViewController+TabbarConfigure.h"
 #import <ShareSDK/ShareSDK.h>
 #import "UIImage+SaveToLocal.h"
+#import "AppDelegate.h"
+
 @interface EndExamScoreViewControllerNav ()
 
 @end
@@ -38,8 +40,10 @@
  
 
     self.scoreLabel.text = info.score;
-    
-    // Do any additional setup after loading the view from its nib.
+    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    self.descriptionLabel.text = [NSString stringWithFormat:@"%@,您的本次考试成绩如下",    myDelegate.userInfo.UserName];
+    self.descriptionLabel.font = [UIFont systemFontOfSize:13];
+
 }
 
 -(void)back

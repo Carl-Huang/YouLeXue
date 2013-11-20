@@ -158,6 +158,27 @@
 
 }
 
++(void)getAdImageWithURL:(NSString *)url CompletedBlock:(void (^)(id item,NSError * error))block
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod:@"GET"];
+    [request setTimeoutInterval:10.0];
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:queue
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error){
+                               if (error) {
+                                   NSLog(@"Httperror:%@%d", error.localizedDescription,error.code);
+                                   block(nil,error);
+                               }else{
+                                   
+                                   block(data,nil);
+                               }
+                           }];
+}
+
+
 //***********************************************************************
 //将取得的内容转换为模型
 + (id )mapModelProcess:(id)responseObject withClass:(Class)class

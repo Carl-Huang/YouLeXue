@@ -300,6 +300,8 @@
 
 -(void)saveDataTolocal
 {
+    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    myDelegate.userInfo = userInfo;
     [[PersistentDataManager sharePersistenDataManager]createUserLoginInfoTable:userInfo];
 }
 - (IBAction)loginAction:(id)sender {

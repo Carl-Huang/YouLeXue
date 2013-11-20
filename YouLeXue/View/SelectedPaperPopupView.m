@@ -55,7 +55,7 @@
         ButtonFrame = CGRectMake(10+2*width, 10, width/4, 20);
         UIButton * markModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [markModel setFrame:ButtonFrame];
-        [markModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Cancel@2x"] forState:UIControlStateNormal];
+        [markModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_CancelN@2x"] forState:UIControlStateNormal];
         [markModel addTarget:self action:@selector(markModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * markText = [[UILabel alloc]initWithFrame:CGRectMake(markModel.frame.origin.x+markModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         markText.font = [UIFont systemFontOfSize:12];

@@ -11,9 +11,20 @@
 #import "UserLoginInfo.h"
 #import "AppDelegate.h"
 #import "PersistentDataManager.h"
+#import "HttpHelper.h"
+#import "UIImage+SaveToLocal.h"
+
+
+#define Ad1 @"http://www.55280.com//UploadFiles/2013/0/2013091210340360268.jpg"
+#define Ad2 @"http://www.55280.com//UploadFiles/2013/0/2013091210504240285.jpg"
+#define Ad3 @"http://www.55280.com/UploadFiles/2013/0/2013091210580477232.jpg"
 @interface MainViewController ()
 {
     UserLoginInfo * info;
+    
+    //保存下载的图片
+    NSMutableArray *imageArray;
+    NSInteger  count;
 }
 @end
 
@@ -37,6 +48,93 @@
     [self updateInterface];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LogoutNotification" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LoginNotification" object:nil];
+    imageArray = [NSMutableArray array];
+    
+    
+    //判断之前是否保存过图片
+    NSArray * imageNameAry = @[Ad1,Ad2,Ad3];
+    for (NSString * str in imageNameAry) {
+        UIImage * image = [UIImage readImageWithName:str];
+        if (image) {
+            [imageArray addObject:image];
+        }
+    }
+    
+    [self downloadAdImage];
+    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(changeImage) userInfo:nil repeats:YES];
+
+    self.backgroundImgeView.userInteractionEnabled = YES;
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(openAdUrl)];
+    [self.backgroundImgeView addGestureRecognizer:tapGesture];
+    tapGesture = nil;
+    count = 0;
+
+}
+
+-(void)openAdUrl
+{
+    NSLog(@"image：%d",count);
+    switch (count) {
+            
+        case 1:
+            //打开广告一的连接
+            ;
+            break;
+        case 2:
+            //打开广告二的连接
+            ;
+            
+            break;
+        case 3:
+            //打开广告三的连接
+            ;
+            break;
+
+        default:
+            break;
+    }
+}
+
+-(void)changeImage
+{
+    if ([imageArray count]) {
+        if (count >= [imageArray count]) {
+            count = 0;
+        }
+        for (int i = count;i<[imageArray count];i++) {
+            UIImage *image = [imageArray objectAtIndex:i];
+            [self.backgroundImgeView setImage:image];
+            count ++;
+            break;
+        }
+        
+    }
+}
+
+-(void)downloadAdImage
+{
+    [HttpHelper getAdImageWithURL:Ad1 CompletedBlock:^(id item, NSError *error) {
+        if (item) {
+            UIImage * image = [[UIImage alloc]initWithData:item];
+            [UIImage saveImage:image name:@"Ad1"];
+            
+            [imageArray addObject:image];
+        }
+    }];
+    [HttpHelper getAdImageWithURL:Ad2 CompletedBlock:^(id item, NSError *error) {
+        if (item) {
+            UIImage * image = [[UIImage alloc]initWithData:item];
+            [UIImage saveImage:image name:@"Ad2"];
+            [imageArray addObject:image];
+        }
+    }];
+    [HttpHelper getAdImageWithURL:Ad3 CompletedBlock:^(id item, NSError *error) {
+        if (item) {
+            UIImage * image = [[UIImage alloc]initWithData:item];
+            [UIImage saveImage:image name:@"Ad3"];
+            [imageArray addObject:image];
+        }
+    }];
 }
 
 -(void)updateInterface
@@ -133,6 +231,7 @@
     [self setCountTimeLabel:nil];
     [self setMessageCountLabel:nil];
     [self setNotLoignLabel:nil];
+    [self setBackgroundImgeView:nil];
     [super viewDidUnload];
 }
 

@@ -33,6 +33,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "SubmittedPaperInfo.h"
 #import "SubmittedPaperIndex.h"
 #import "EndExamScoreViewControllerNav.h"
+#import "UserSetting.h"
+#import <AudioToolbox/AudioToolbox.h>
+
 
 
 @interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
@@ -86,6 +89,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //记录已经检查的项目
     NSInteger alreayCheckItemIndex;
+    
+    //是否自动进入下一题
+    BOOL  isAutoEnterNextQue;
+    
+    //点击选题时候，是否震动
+    BOOL isVibrateWhenClick;
+    
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -94,6 +104,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
 @synthesize questionDataSource;
 @synthesize  titleStr,criticalPage;
 @synthesize isExciseOrnot;
+@synthesize isJustBrowse;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -106,16 +118,47 @@ typedef NS_ENUM(NSInteger, PanDirection)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self initializedInterface];
+    [self initializedManipulateData];
+    [self countPageInitializing];
+    
+    [self.popUpTable setHidden:YES];
+    [self.view bringSubviewToFront:self.popUpTable];
+    [self.view bringSubviewToFront:self.showAnswerBtn];
+    //初始化错题本
+    wrongExamPaperInfoArray = [NSMutableArray array];
+    
+    //用于记录已经检查过的项目
+    alreayCheckItemIndex = 0;
+    
+}
+
+-(void)initializedInterface
+{
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
-    [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
-    if (IS_SCREEN_4_INCH) {
-        questionViewHeight = 408;
-        CGRect rect= self.quesScrollView.frame;
-        rect.size.height +=88;
-        self.quesScrollView.frame = rect;
+    if (!isJustBrowse) {
+         [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
+        if (IS_SCREEN_4_INCH) {
+            questionViewHeight = 408;
+            CGRect rect= self.quesScrollView.frame;
+            rect.size.height +=88;
+            self.quesScrollView.frame = rect;
+        }else
+        {
+            questionViewHeight = 320;
+        }
     }else
     {
-        questionViewHeight = 320;
+        if (IS_SCREEN_4_INCH) {
+            questionViewHeight = 448;
+            CGRect rect= self.quesScrollView.frame;
+            rect.size.height +=128;
+            self.quesScrollView.frame = rect;
+        }else
+        {
+            questionViewHeight = 400;
+        }
+
     }
     if (isExciseOrnot) {
         [self.exciseBtn setHidden:NO];
@@ -124,8 +167,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
     {
         [self.exciseBtn setHidden:YES];
     }
-    
-    
+
+}
+
+-(void)initializedManipulateData
+{
     //获取试卷分类
     NSMutableSet * set = [NSMutableSet set];
     [questionDataSource enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -149,7 +195,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     }];
     questTypes = [set allObjects];
     set = nil;
-
+    
     //
     isShouldShowTable = NO;
     originTableRect = self.popUpTable.frame;
@@ -157,9 +203,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     
     //倒计时
-    countTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
-    examTime = [[self.examInfo valueForKey:@"kssj"]floatValue]*60;
-    examOriginTime = examTime;
+    if (!isJustBrowse) {
+        countTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
+        examTime = [[self.examInfo valueForKey:@"kssj"]floatValue]*60;
+        examOriginTime = examTime;
+        [self.timeLabel setHidden:NO];
+    }
+    
     
     //content View
     [self.quesScrollView setContentSize:CGSizeMake([questionDataSource count]*320+10, self.quesScrollView.frame.size.height)];
@@ -167,14 +217,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
     self.quesScrollView.delegate = self;
     self.quesScrollView.scrollEnabled = YES;
     self.quesScrollView.showsHorizontalScrollIndicator = NO;
-
+    
     questionStrArray    = [NSMutableArray array];
     QAStrArray          = [NSMutableArray array];
     answerDictionary    = [NSMutableDictionary dictionary];
     for (int i = 0;i< [questionDataSource count];i++) {
         NSString * tempTitle = nil;
         NSString * descriptionStr = nil;
-        ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:i];
+        id tempPaperInfo = [questionDataSource objectAtIndex:i];
         if ([[tempPaperInfo valueForKey:@"IsRnd"]integerValue]==0) {
             NSInteger type = [[tempPaperInfo valueForKey:@"num"]integerValue];
             switch (type) {
@@ -202,7 +252,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
             descriptionStr = [NSString stringWithFormat:@"%@%@%@",tempTitle,[tempPaperInfo valueForKey:@"tmnr"],[tempPaperInfo valueForKey:@"beizhu"]];
         }else
         {
-             descriptionStr = [NSString stringWithFormat:@"%@%@%@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"]];
+            if (isJustBrowse) {
+                descriptionStr = [NSString stringWithFormat:@"%@%@\n您的答案:%@ %@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"userAnswer"],[tempPaperInfo valueForKey:@"tmnr"]];
+            }else
+            {
+                descriptionStr = [NSString stringWithFormat:@"%@%@%@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"]];
+            }
+            
             NSError * error;
             
             //正则表达式，用于去掉超链接
@@ -219,8 +275,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
         {
             [QAStrArray addObject:descriptionStr];
         }
-    
+        
     }
+
+}
+
+-(void)countPageInitializing
+{
     currentDisplayItems = [NSMutableArray array];
     
     [self addObserver:self forKeyPath:@"criticalPage" options:NSKeyValueObservingOptionNew context:NULL];
@@ -233,24 +294,18 @@ typedef NS_ENUM(NSInteger, PanDirection)
     currentPage = 0;
     printOnPage = 0;
     [self refreshScrollViewWithDirection:panDirectioin];
-    [self.popUpTable setHidden:YES];
-    [self.view bringSubviewToFront:self.popUpTable];
-    [self.view bringSubviewToFront:self.showAnswerBtn];
-    //初始化错题本
-    wrongExamPaperInfoArray = [NSMutableArray array];
-    
-    alreayCheckItemIndex = 0;
 }
-
 -(void)viewWillAppear:(BOOL)animated
 {
-    if ([countTimer isValid]) {
-        [countTimer fire];
-    }else
-    {
-        countTimer =[NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
+    if (!isJustBrowse) {
+        if ([countTimer isValid]) {
+            [countTimer fire];
+        }else
+        {
+            countTimer =[NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(descreaseTime) userInfo:nil repeats:YES];
+        }
+        [self configureUserDefaultSetting];
     }
-
 }
 
 -(void)back
@@ -266,13 +321,37 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:wrongExamPaperInfoArray];
     }
    
+    if (!isJustBrowse) {
+        UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+        [alertview show];
+        alertview = nil;
+    }
     
-    UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
-    [alertview show];
-    alertview = nil;
 }
 
-
+-(void)configureUserDefaultSetting
+{
+    UserSetting * settingData =[[PersistentDataManager sharePersistenDataManager]readUserSettingData];
+    if (settingData)
+    {
+        if ([settingData.isAutoTurnPage isEqualToString:@"Yes"]) {
+            isAutoEnterNextQue = YES;
+        }else
+        {
+            isAutoEnterNextQue = NO;
+        }
+        if ([settingData.isVibrateWhenClick isEqualToString:@"Yes"]) {
+            isVibrateWhenClick = YES;
+        }else
+        {
+            isVibrateWhenClick = NO;
+        }
+    }else
+    {
+        isAutoEnterNextQue = NO;
+        isVibrateWhenClick = NO;
+    }
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -328,12 +407,27 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #pragma mark - A,B,C,D Select Block
 -(ButtonConfigrationBlock)buttonBlock
 {
+    __weak PaperViewController *weakSelf = self;
     ButtonConfigrationBlock block = ^(NSString *str,NSInteger itemIndex)
     {
         alreayCheckItemIndex = itemIndex;
         if (![self isExamTitle:itemIndex]&&str) {
             [answerDictionary setObject:str forKey:[NSString stringWithFormat:@"%d",itemIndex]];
             NSLog(@"%@",answerDictionary);
+            
+            if (isAutoEnterNextQue) {
+                //单选题的情况自动进入下一题
+                ExamPaperInfo * info = [self.questionDataSource objectAtIndex:itemIndex];
+                if ([[info valueForKey:@"Tmtype"]integerValue]==PaperTypeChoose) {
+                    [weakSelf nextQuestion];
+                }
+            
+            }
+            
+            if (isVibrateWhenClick) {
+                //手机震动
+                [self vibrate];
+            }
         }
         NSLog(@"%d",itemIndex);
     };
@@ -355,25 +449,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
     }
     return NO;
-    
-    
-//    ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:index];
-//    if ([[tempPaperInfo valueForKey:@"IsRnd"]integerValue]==0) {
-//        return  YES;
-//    }
-//    return  NO;
-    
-    
-//    ExamPaperInfo *tempPaperInfo = [questionDataSource objectAtIndex:index];
-//
-//    BOOL isTitle = YES;
-//    for (NSString *key in answerDictionary) {
-//        NSInteger keyInt = [key integerValue];
-//        if (keyInt ==index&&[[tempPaperInfo valueForKey:@"IsRnd"]integerValue]==1) {
-//            isTitle = NO;
-//        }
-//    }
-//    return isTitle;
 }
 
 -(PaperType)paperType:(NSInteger)index
@@ -629,30 +704,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
 -(NSString *)getAlreadyChooseItem:(NSInteger)index
 {
-//    NSInteger questionIndex = [[[questionDataSource objectAtIndex:(index)]valueForKey:@"num"]integerValue];
+
     NSString * str =  [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",index]];
     return str;
-//    switch (index) {
-//        case 0:
-//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageL]];
-//            break;
-//        case 1:
-//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",prePage]];
-//            break;
-//        case 2:
-//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",criticalPage]];
-//            break;
-//        case 3:
-//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",nextPage]];
-//            break;
-//        case 4:
-//            return [answerDictionary objectForKey:[NSString stringWithFormat:@"%d",shouldDeletedPageR]];
-//            break;
-//
-//        default:
-//            return nil;
-//            break;
-//    }
 }
 
 
@@ -716,9 +770,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
     }
    
-    
-    
-    
+    //第二种方法判断翻页
 //    CGFloat offsetX = scrollView.contentOffset.x;
 //    //    NSLog(@"%f",offsetX);
 //    CGFloat pageWidth = scrollView.frame.size.width;
@@ -753,14 +805,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
    isEndScrolling = YES;
 }
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-#ifdef LogoutFunctionName
-    NSLog(@"%s",__func__);
-#endif
-    
-//    isEndScrolling = YES;
-}
+
 - (IBAction)preQuestionAction:(id)sender {
     if (currentPage > 0) {
         currentPage --;
@@ -782,6 +827,20 @@ typedef NS_ENUM(NSInteger, PanDirection)
     }
 }
 
+//自动翻页时，执行的操作
+-(void)nextQuestion
+{
+    if (currentPage <[questionStrArray count]) {
+        currentPage ++;
+        [self.quesScrollView scrollRectToVisible:CGRectMake(currentPage *self.quesScrollView.frame.size.width, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
+        if (currentPage>2) {
+            [self refreshScrollViewWithDirection:PanDirectionRight];
+        }
+        
+    }
+}
+
+//加入错题本
 - (IBAction)wrongTextBookAction:(id)sender {
     
     ExamPaperInfo * examQuestionInfo = [questionDataSource objectAtIndex:currentPage];
@@ -810,6 +869,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
 }
 
+
 -(void)endExamAction
 {
     if ([countTimer isValid]) {
@@ -835,6 +895,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #pragma  mark  - configureClickItemBlock  && EndBlock
 -(DidClickItemBlock)configureClickItemBlock
 {
+    //从答题表返回后，跳到相应的题目
     DidClickItemBlock block = ^(NSInteger index)
     {
         if (index >=[self.questionDataSource count]-5) {
@@ -853,6 +914,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     return block;
 }
 
+//提交试卷
 -(EndExamBlock)configureEndExamBlock
 {
     EndExamBlock block = ^()
@@ -871,7 +933,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         
         //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
-            if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
+//            if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
                 NSString *number = [examInfo valueForKey:@"num"];
                 
                 SubmittedPaperInfo * submittedInfo = [[SubmittedPaperInfo alloc]init];
@@ -911,7 +973,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 submittedInfo.uuid          = uuid;
                 [endExamData addObject:submittedInfo];
                 submittedInfo = nil;
-            }
+//            }
         }
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
         endExamData = nil;
@@ -932,6 +994,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         dispatch_async(dispatch_get_main_queue(), ^{
             EndExamScoreViewControllerNav *viewcontroller = [[EndExamScoreViewControllerNav alloc]initWithNibName:@"EndExamScoreViewControllerNav" bundle:nil];
             [viewcontroller setInfo:submittedIndex];
+            viewcontroller.title = submittedIndex.paperTitleStr;
             [self.navigationController pushViewController:viewcontroller animated:YES];
             viewcontroller = nil;
             
@@ -948,12 +1011,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
     CFRelease(theUUID);
     return (__bridge NSString *)string;
 }
+
 -(void)scrollToPage:(NSInteger)page
 {
     [currentDisplayItems removeAllObjects];
     [self refreshScrollViewWithDirection:PanDirectionNone];
     [self.quesScrollView scrollRectToVisible:CGRectMake(320 *page, 0, 320, self.quesScrollView.frame.size.height) animated:YES];
 }
+
 - (IBAction)showAnswerAction:(id)sender {
     //练习模式下 ，显示答案
     NSLog(@"%d",currentPage);
@@ -977,7 +1042,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [self configurePopupTable];
 }
 
-
+-(void)vibrate   {
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
 #pragma mark AlertView Deleaget
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {

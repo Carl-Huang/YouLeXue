@@ -13,6 +13,7 @@
 @property (strong ,nonatomic) ExamInfo * examInfo;
 @property (strong ,nonatomic) NSString * titleStr;
 @property (assign ,nonatomic) BOOL isExciseOrnot;
+@property (assign ,nonatomic) BOOL isJustBrowse;  //单纯的浏览试题
 
 
 @property (weak, nonatomic) IBOutlet UIButton *preQueBtn;

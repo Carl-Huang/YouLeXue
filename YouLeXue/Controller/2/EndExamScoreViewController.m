@@ -10,6 +10,10 @@
 #import "SubmittedPaperIndex.h"
 #import <ShareSDK/ShareSDK.h>
 #import "UIImage+SaveToLocal.h"
+#import "AppDelegate.h"
+#import "BrowsePaperViewController.h"
+#import "PersistentDataManager.h"
+#import "ExamInfo.h"
 @interface EndExamScoreViewController ()
 
 @end
@@ -34,8 +38,12 @@
         self.userImage.image = image;
     }
     self.scoreLabel.text = info.score;
+    self.titleLabel.text = self.title;
+    self.titleLabel.adjustsFontSizeToFitWidth = YES;
     
-    // Do any additional setup after loading the view from its nib.
+    AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    self.descriptionLabel.text = [NSString stringWithFormat:@"%@,您的本次考试成绩如下",    myDelegate.userInfo.UserName];
+    self.descriptionLabel.font = [UIFont systemFontOfSize:13];
 }
 
 - (void)didReceiveMemoryWarning
@@ -49,12 +57,32 @@
     [self setDescriptionLabel:nil];
     [self setScoreLabel:nil];
     [self setPaperInfoTable:nil];
+    [self setTitleLabel:nil];
     [super viewDidUnload];
 }
 - (IBAction)viewPaperAnswer:(id)sender {
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readEndExamTableData:info.uuid];
+    NSArray * examInfoArray = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
+    
+    
+    BrowsePaperViewController * viewcontroller = [[BrowsePaperViewController alloc]initWithNibName:@"BrowsePaperViewController" bundle:nil];
+    [viewcontroller setQuestionDataSource:array];
+    for (ExamInfo * examInfo in examInfoArray) {
+        if ([[examInfo valueForKey:@"id"] isEqual:[[array objectAtIndex:0] valueForKey:@"kid"]]) {
+            [viewcontroller setExamInfo:examInfo];
+        }
+    }
+    [viewcontroller setIsExciseOrnot:NO];
+    [viewcontroller setIsJustBrowse:YES];
+    viewcontroller.title = info.paperTitleStr;
+   
+    [self presentModalViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
+
 }
 
 - (IBAction)ExamAgain:(id)sender {
+    
 }
 
 - (IBAction)shareExam:(id)sender {

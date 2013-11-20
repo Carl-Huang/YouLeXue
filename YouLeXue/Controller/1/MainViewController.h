@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *countTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *messageCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *NotLoignLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImgeView;
 
 @end

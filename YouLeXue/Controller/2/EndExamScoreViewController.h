@@ -20,5 +20,6 @@
 - (IBAction)shareExam:(id)sender;
 - (IBAction)back:(id)sender;
 
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @end
