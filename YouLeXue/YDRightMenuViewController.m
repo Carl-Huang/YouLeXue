@@ -26,6 +26,7 @@
 #import "VDAlertView.h"
 #import "ExamInfo.h"
 #import "UIImage+SaveToLocal.h"
+#import "MBProgressHUD.h"
 
 @interface YDRightMenuViewController ()
 {
@@ -322,6 +323,8 @@
     if (self.passwordTextField.text.length == 0) {
         [self showAlertView:@"密码不能为空"];
     }
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak YDRightMenuViewController * weakSelf = self;
     [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
         if (item) {
@@ -338,10 +341,24 @@
             }];
             
         }
+        [weakSelf removeMBView];
+        if (error) {
+            
+            if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
+                UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"与服务器连接失败，请检查" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alertView show];
+                alertView = nil;
+            }
+        }
        
     }];
     
     
+}
+
+-(void)removeMBView
+{
+    [MBProgressHUD  hideHUDForView:self.view animated:YES];
 }
 - (IBAction)phoneAlertBtnAction:(id)sender {
     
