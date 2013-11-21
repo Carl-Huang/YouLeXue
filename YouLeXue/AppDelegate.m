@@ -148,7 +148,7 @@
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:akTabBarController];
 
     self.leftMenuViewController = [[YDLeftMenuViewController alloc] init];
-    
+//     UINavigationController * nav_left = [[UINavigationController alloc] initWithRootViewController:self.leftMenuViewController];
     self.rightMenuViewController = [[YDRightMenuViewController alloc] init];
 
     self.containerViewController = [YDSlideMenuContainerViewController

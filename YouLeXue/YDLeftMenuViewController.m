@@ -12,7 +12,7 @@
 #import "SubmittedPaperIndex.h"
 #import "EndExamScoreViewController.h"
 @interface YDLeftMenuViewController ()
-@property (strong ,nonatomic) NSArray * dataSource;
+@property (strong ,nonatomic) NSMutableArray * dataSource;
 @end
 
 @implementation YDLeftMenuViewController
@@ -29,6 +29,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+//    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"User Settings_Frame02@2x"] forBarMetrics:UIBarMetricsDefault];
+    
     if (IS_SCREEN_4_INCH) {
         CGRect rect = self.leftTable.frame;
         rect.size.height +=88;
@@ -46,7 +48,7 @@
 
 -(void)fillData
 {
-    self.dataSource = [[PersistentDataManager sharePersistenDataManager]readEndExamPaperIndexTable];
+    self.dataSource = [[[PersistentDataManager sharePersistenDataManager]readEndExamPaperIndexTable]mutableCopy];
     [self.leftTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
     [self.leftTable reloadData];
 }
@@ -63,7 +65,9 @@
 
 - (IBAction)leftCleanHistoryAction:(id)sender {
     NSLog(@"%s",__func__);
-    if ([[PersistentDataManager sharePersistenDataManager]eraseTableData:@"EndExamPaperTable"]) {
+    [self.dataSource removeAllObjects];
+    [self.leftTable reloadData];
+    if ([[PersistentDataManager sharePersistenDataManager]eraseTableData:@"EndExamPaperIndexTable"]) {
         NSLog(@"删除成功");
     }else
     {
@@ -114,5 +118,7 @@
     viewcontroller.title = info.paperTitleStr;
     [viewcontroller setInfo:info];
     [self presentModalViewController:viewcontroller animated:YES];
+//    [self.navigationController pushViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
 }
 @end

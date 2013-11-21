@@ -52,15 +52,18 @@
     
     
     //判断之前是否保存过图片
-    NSArray * imageNameAry = @[Ad1,Ad2,Ad3];
+    NSArray * imageNameAry = @[@"Ad1",@"Ad2",@"Ad3"];
     for (NSString * str in imageNameAry) {
         UIImage * image = [UIImage readImageWithName:str];
         if (image) {
             [imageArray addObject:image];
         }
     }
+    if ([imageNameAry count]==0) {
+        [self downloadAdImage];
+    }
     
-    [self downloadAdImage];
+    
     [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(changeImage) userInfo:nil repeats:YES];
 
     self.backgroundImgeView.userInteractionEnabled = YES;
@@ -153,6 +156,7 @@
         NSDate * currentDate = [NSDate date];
         
         NSInteger lastDate = [self daysWithinEraFromDate:currentDate toDate:date];
+        
         if (lastDate <0) {
             lastDate = 0;
         }

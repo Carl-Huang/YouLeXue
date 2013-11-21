@@ -39,5 +39,5 @@
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 
 
-@property (strong ,nonatomic) UserLoginInfo * userInfo;
+@property (strong ,nonatomic) __block UserLoginInfo * userInfo;
 @end

@@ -104,7 +104,7 @@
 {
     NSInteger indexNum = num;
     for (int i =0 ;i< [self.titleDataSourece count];i++) {
-        NSString * str = [[self.titleDataSourece objectAtIndex:i]objectForKey:@"Title"];
+        NSString * str = [NSString stringWithFormat:@"%@",[[self.titleDataSourece objectAtIndex:i]objectForKey:@"Title"]];
         if ([str isEqualToString:[NSString stringWithFormat:@"%d",num]]) {
             indexNum = i;
         }

@@ -114,10 +114,17 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
    
-        NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
-        //因为用户始终有一个，所以只读取第零个元素
-        if ([array count]) {
-            self.userInfo = [array objectAtIndex:0];
+        if (userInfo==nil) {
+            NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+            if ([array count]) {
+                //因为用户始终有一个，所以只读取第零个元素
+                self.userInfo = (UserLoginInfo *)[array objectAtIndex:0];
+            }else
+                self.userInfo = nil;
+            
+        }
+        
+        if (userInfo) {
             [self.afterLoginView setHidden:NO];
             NSString * imageStr = [userInfo valueForKey:@"UserFace"];
             imageStr = [imageStr stringByReplacingOccurrencesOfString:@"3g" withString:@"www"];

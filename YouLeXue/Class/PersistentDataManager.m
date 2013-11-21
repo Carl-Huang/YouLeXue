@@ -541,6 +541,7 @@
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName
 {
+    [db open];
     NSString *sqlstr = [NSString stringWithFormat:@"DELETE FROM %@", tableName];
     if (![db executeUpdate:sqlstr])
     {
