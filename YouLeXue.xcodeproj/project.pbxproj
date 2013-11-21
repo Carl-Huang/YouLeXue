@@ -165,6 +165,8 @@
 		4EC6229B182CDF28001266A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EC6229A182CDF28001266A6 /* SystemConfiguration.framework */; };
 		4ED6187318313A3F00D8400C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4ED6187218313A3F00D8400C /* Default-568h@2x.png */; };
 		4EDDB600183232D500C1AD09 /* SelectedPaperPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EDDB5FF183232D500C1AD09 /* SelectedPaperPopupView.m */; };
+		4EEBA51F183DDB750016BBFC /* EndExamViewController_M.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EEBA51D183DDB750016BBFC /* EndExamViewController_M.m */; };
+		4EEBA520183DDB750016BBFC /* EndExamViewController_M.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EEBA51E183DDB750016BBFC /* EndExamViewController_M.xib */; };
 		4EF1863F182A8B3800E5EEA8 /* home-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862D182A8B3800E5EEA8 /* home-icon.png */; };
 		4EF18640182A8B3800E5EEA8 /* reveal-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862E182A8B3800E5EEA8 /* reveal-icon.png */; };
 		4EF18641182A8B3800E5EEA8 /* reveal-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1862F182A8B3800E5EEA8 /* reveal-icon@2x.png */; };
@@ -449,9 +451,9 @@
 		4E8A8DF5182F45CC00A73F71 /* RightPhontNotiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightPhontNotiViewController.h; sourceTree = "<group>"; };
 		4E8A8DF6182F45CC00A73F71 /* RightPhontNotiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightPhontNotiViewController.m; sourceTree = "<group>"; };
 		4E8A8DF7182F45CC00A73F71 /* RightPhontNotiViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RightPhontNotiViewController.xib; sourceTree = "<group>"; };
-		4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamScoreViewController.h; sourceTree = "<group>"; };
-		4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamScoreViewController.m; sourceTree = "<group>"; };
-		4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamScoreViewController.xib; sourceTree = "<group>"; };
+		4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EndExamScoreViewController.h; path = ../2/EndExamScoreViewController.h; sourceTree = "<group>"; };
+		4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EndExamScoreViewController.m; path = ../2/EndExamScoreViewController.m; sourceTree = "<group>"; };
+		4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EndExamScoreViewController.xib; path = ../2/EndExamScoreViewController.xib; sourceTree = "<group>"; };
 		4E98DEF11837B48300D2703A /* WrongTextBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WrongTextBookView.h; sourceTree = "<group>"; };
 		4E98DEF21837B48300D2703A /* WrongTextBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WrongTextBookView.m; sourceTree = "<group>"; };
 		4E98DEF41837BAAD00D2703A /* ExamPaperInfoTimeStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamPaperInfoTimeStamp.h; sourceTree = "<group>"; };
@@ -577,6 +579,9 @@
 		4ED6187218313A3F00D8400C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4EDDB5FE183232D500C1AD09 /* SelectedPaperPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectedPaperPopupView.h; sourceTree = "<group>"; };
 		4EDDB5FF183232D500C1AD09 /* SelectedPaperPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectedPaperPopupView.m; sourceTree = "<group>"; };
+		4EEBA51C183DDB750016BBFC /* EndExamViewController_M.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamViewController_M.h; sourceTree = "<group>"; };
+		4EEBA51D183DDB750016BBFC /* EndExamViewController_M.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamViewController_M.m; sourceTree = "<group>"; };
+		4EEBA51E183DDB750016BBFC /* EndExamViewController_M.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamViewController_M.xib; sourceTree = "<group>"; };
 		4EF1862D182A8B3800E5EEA8 /* home-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home-icon.png"; sourceTree = "<group>"; };
 		4EF1862E182A8B3800E5EEA8 /* reveal-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reveal-icon.png"; sourceTree = "<group>"; };
 		4EF1862F182A8B3800E5EEA8 /* reveal-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reveal-icon@2x.png"; sourceTree = "<group>"; };
@@ -869,9 +874,15 @@
 		4E0F9E3B183D0AC300423864 /* Left */ = {
 			isa = PBXGroup;
 			children = (
+				4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */,
+				4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */,
+				4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */,
 				4E0F9E3C183D0AC300423864 /* BrowsePaperViewController.h */,
 				4E0F9E3D183D0AC300423864 /* BrowsePaperViewController.m */,
 				4E0F9E3E183D0AC300423864 /* BrowsePaperViewController.xib */,
+				4EEBA51C183DDB750016BBFC /* EndExamViewController_M.h */,
+				4EEBA51D183DDB750016BBFC /* EndExamViewController_M.m */,
+				4EEBA51E183DDB750016BBFC /* EndExamViewController_M.xib */,
 			);
 			path = Left;
 			sourceTree = "<group>";
@@ -1289,9 +1300,6 @@
 				4E98DEF71837C9F700D2703A /* EndExamViewController.h */,
 				4E98DEF81837C9F700D2703A /* EndExamViewController.m */,
 				4E98DEF91837C9F700D2703A /* EndExamViewController.xib */,
-				4E94CB78183B117B0064E9C2 /* EndExamScoreViewController.h */,
-				4E94CB79183B117B0064E9C2 /* EndExamScoreViewController.m */,
-				4E94CB7A183B117C0064E9C2 /* EndExamScoreViewController.xib */,
 				4E1E4289183BC43A00CDE577 /* EndExamScoreViewControllerNav.h */,
 				4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */,
 				4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */,
@@ -1916,6 +1924,7 @@
 				4EA9A22B183CAA2600F9C9CE /* Alert_FrameS@2x.png in Resources */,
 				4EA9A22C183CAA2600F9C9CE /* Section_Icon_CancelN@2x.png in Resources */,
 				4E0F9E40183D0AC300423864 /* BrowsePaperViewController.xib in Resources */,
+				4EEBA520183DDB750016BBFC /* EndExamViewController_M.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1997,6 +2006,7 @@
 				4E1E428C183BC43A00CDE577 /* EndExamScoreViewControllerNav.m in Sources */,
 				4EA9A222183C88C000F9C9CE /* UIImage+SaveToLocal.m in Sources */,
 				4E0F9E3F183D0AC300423864 /* BrowsePaperViewController.m in Sources */,
+				4EEBA51F183DDB750016BBFC /* EndExamViewController_M.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -59,7 +59,7 @@
             [imageArray addObject:image];
         }
     }
-    if ([imageNameAry count]==0) {
+    if ([imageArray count]==0) {
         [self downloadAdImage];
     }
     

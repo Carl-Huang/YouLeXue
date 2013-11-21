@@ -115,9 +115,10 @@
 {
     SubmittedPaperIndex * info = [self.dataSource objectAtIndex:indexPath.row];
     EndExamScoreViewController * viewcontroller = [[EndExamScoreViewController alloc]initWithNibName:@"EndExamScoreViewController" bundle:nil];
-    viewcontroller.title = info.paperTitleStr;
+    viewcontroller.titleStr = info.paperTitleStr;
     [viewcontroller setInfo:info];
-    [self presentModalViewController:viewcontroller animated:YES];
+    [self presentModalViewController:viewcontroller animated:NO];
+    
 //    [self.navigationController pushViewController:viewcontroller animated:YES];
     viewcontroller = nil;
 }

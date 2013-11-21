@@ -442,6 +442,29 @@
 						<reference key="IBUIFontDescription" ref="544766983"/>
 						<reference key="IBUIFont" ref="179107346"/>
 					</object>
+					<object class="IBUIButton" id="223178339">
+						<reference key="NSNextResponder" ref="191373211"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{270, 5}, {30, 30}}</string>
+						<reference key="NSSuperview" ref="191373211"/>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<bool key="IBUIOpaque">NO</bool>
+						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<reference key="IBUIHighlightedTitleColor" ref="794477219"/>
+						<object class="NSColor" key="IBUINormalTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+						</object>
+						<reference key="IBUINormalTitleShadowColor" ref="217322306"/>
+						<object class="NSCustomResource" key="IBUINormalBackgroundImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">Exercise_Model_Button_Submit.png</string>
+						</object>
+						<reference key="IBUIFontDescription" ref="544766983"/>
+						<reference key="IBUIFont" ref="179107346"/>
+					</object>
 				</array>
 				<string key="NSFrame">{{0, 20}, {320, 460}}</string>
 				<reference key="NSSuperview"/>
@@ -623,6 +646,15 @@
 					</object>
 					<int key="connectionID">280</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">endExamBtnAction:</string>
+						<reference key="source" ref="223178339"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">283</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -652,6 +684,7 @@
 							<reference ref="524420544"/>
 							<reference ref="220906651"/>
 							<reference ref="767779224"/>
+							<reference ref="223178339"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -771,6 +804,11 @@
 						<reference key="object" ref="767779224"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">282</int>
+						<reference key="object" ref="223178339"/>
+						<reference key="parent" ref="191373211"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -792,6 +830,7 @@
 				<string key="277.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="278.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="279.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="282.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="32.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="50.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -802,7 +841,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">281</int>
+			<int key="maxID">283</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
@@ -816,6 +855,7 @@
 			<string key="Case List_Button_Next@2x.png">{48, 48}</string>
 			<string key="Case List_Button_Pre@2x.png">{48, 48}</string>
 			<string key="Case_Button_Status-04@2x.png">{36, 36}</string>
+			<string key="Exercise_Model_Button_Submit.png">{24, 24}</string>
 			<string key="Exercise_bg@2x.png">{570, 58}</string>
 			<string key="Top_Bar.png">{320, 45}</string>
 			<string key="User_Edit_Button_Confirm@2x.png">{114, 48}</string>

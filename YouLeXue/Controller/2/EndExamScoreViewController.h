@@ -21,5 +21,5 @@
 - (IBAction)back:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-
+@property (strong,nonatomic) NSString * titleStr;
 @end

@@ -33,5 +33,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *showTableBtn;
 - (IBAction)modelViewback:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+- (IBAction)endExamBtnAction:(id)sender;
 
 @end

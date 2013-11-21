@@ -29,14 +29,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "PersistentDataManager.h"
 #import "ExamPaperInfoTimeStamp.h"
 #import <objc/runtime.h>
-#import "EndExamViewController.h"
+#import "EndExamViewController_M.h"
 #import "SubmittedPaperInfo.h"
 #import "SubmittedPaperIndex.h"
 #import "EndExamScoreViewControllerNav.h"
 #import "UserSetting.h"
 #import <AudioToolbox/AudioToolbox.h>
-
-
+#import "EndExamScoreViewController.h"
+#import "AppDelegate.h"
 
 @interface BrowsePaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
@@ -130,7 +130,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //用于记录已经检查过的项目
     alreayCheckItemIndex = 0;
-    
+    self.titleLabel.text = titleStr;
 }
 
 -(void)initializedInterface
@@ -772,34 +772,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
     }
    
-    //第二种方法判断翻页
-//    CGFloat offsetX = scrollView.contentOffset.x;
-//    //    NSLog(@"%f",offsetX);
-//    CGFloat pageWidth = scrollView.frame.size.width;
-//    float fractionalPage = scrollView.contentOffset.x / pageWidth;
-//    NSInteger page = lround(fractionalPage);
-//       if (page >2) {
-//        currentPage = page;
-//        criticalPage = page;
-////        NSLog(@"当前页:%d",page);
-//        NSInteger  offset = page*self.quesScrollView.frame.size.width;
-////        NSLog(@"offsetX:%f",offsetX);
-////        NSLog(@"offset:%d",offset);
-////        NSLog(@"preOffset:%d",preOffsetX);
-//        preOffsetX = criticalPage * 320;
-//        if (offsetX >=offset&&isEndScrolling&&offsetX>preOffsetX) {
-//            NSLog(@"*************下一页");
-//            isEndScrolling = NO;
-//            panDirectioin = PanDirectionRight;
-//            [self refreshScrollViewWithDirection:panDirectioin];
-//        }else if (offsetX < preOffsetX&&isEndScrolling){
-//            NSLog(@"**************上一页");
-//            isEndScrolling = NO;
-//            panDirectioin = PanDirectionLeft;
-//            [self refreshScrollViewWithDirection:panDirectioin];
-//        }
-//
-//    }
+ 
 }
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
@@ -877,8 +850,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
     if ([countTimer isValid]) {
         [countTimer invalidate];
     }
-    EndExamViewController * viewController = [[EndExamViewController alloc]initWithNibName:@"EndExamViewController" bundle:nil];
-    viewController.title = self.title;
+    EndExamViewController_M * viewController = [[EndExamViewController_M alloc]initWithNibName:@"EndExamViewController_M" bundle:nil];
+    viewController.title = titleStr;
     NSInteger stopTimeStamp = examOriginTime - examTime;
     int minute = floor(stopTimeStamp / 60.0);
     int second = stopTimeStamp % 60;
@@ -888,8 +861,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [viewController setAnswerDic:answerDictionary];
     [viewController setBlock:[self configureClickItemBlock]];
     [viewController setEndBlock:[self configureEndExamBlock]];
-    
-    [self.navigationController pushViewController:viewController animated:YES];
+    [self presentModalViewController:viewController animated:YES];
     viewController =nil;
     
 }
@@ -935,7 +907,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
         
         //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
-//            if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
                 NSString *number = [examInfo valueForKey:@"num"];
                 
                 SubmittedPaperInfo * submittedInfo = [[SubmittedPaperInfo alloc]init];
@@ -975,7 +946,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 submittedInfo.uuid          = uuid;
                 [endExamData addObject:submittedInfo];
                 submittedInfo = nil;
-//            }
         }
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
         endExamData = nil;
@@ -983,7 +953,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         //创建用于查选已提交的试卷
         SubmittedPaperIndex * submittedIndex = [[SubmittedPaperIndex alloc]init
                                                 ];
-        submittedIndex.paperTitleStr = self.title;
+        submittedIndex.paperTitleStr = self.titleStr;
         submittedIndex.timeStamp = timeStr;
         submittedIndex.uuid = uuid;
         submittedIndex.score = [NSString stringWithFormat:@"%d",score];
@@ -991,16 +961,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
         submittedIndex.totalExamTime = [NSString stringWithFormat:@"%d",(int)roundf( examOriginTime/60.0)];
         submittedIndex.paperTotalScore = [self.examInfo valueForKey:@"sjzf"];
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperIndexTable:submittedIndex];
+        EndExamScoreViewController *viewcontroller = [[EndExamScoreViewController alloc]initWithNibName:@"EndExamScoreViewController" bundle:nil];
+        [viewcontroller setInfo:submittedIndex];
+        [viewcontroller setTitleStr:submittedIndex.paperTitleStr];
+        UIViewController * controller = [self presentedViewController];
+        [controller presentModalViewController:viewcontroller animated:YES];
+        viewcontroller = nil;
         
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            EndExamScoreViewControllerNav *viewcontroller = [[EndExamScoreViewControllerNav alloc]initWithNibName:@"EndExamScoreViewControllerNav" bundle:nil];
-            [viewcontroller setInfo:submittedIndex];
-            viewcontroller.title = submittedIndex.paperTitleStr;
-            [self.navigationController pushViewController:viewcontroller animated:YES];
-            viewcontroller = nil;
-            
-        });
         
     };
     return block;
@@ -1053,7 +1020,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     switch (buttonIndex) {
         case 0:
             //退出考试
-            [self.navigationController popViewControllerAnimated:YES];
+            [self dismissModalViewControllerAnimated:YES];
             break;
         case 1:
             //继续考试
@@ -1064,6 +1031,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
 }
 - (IBAction)modelViewback:(id)sender {
     [self dismissModalViewControllerAnimated:YES];
+}
+- (IBAction)endExamBtnAction:(id)sender {
+    [self endExamAction];
 }
 @end
 

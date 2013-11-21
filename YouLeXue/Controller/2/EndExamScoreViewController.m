@@ -44,6 +44,7 @@
     AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     self.descriptionLabel.text = [NSString stringWithFormat:@"%@,您的本次考试成绩如下",    myDelegate.userInfo.UserName];
     self.descriptionLabel.font = [UIFont systemFontOfSize:13];
+    self.titleLabel.text = self.titleStr;
 }
 
 - (void)didReceiveMemoryWarning
@@ -75,13 +76,30 @@
     [viewcontroller setIsExciseOrnot:NO];
     [viewcontroller setIsJustBrowse:YES];
     viewcontroller.title = info.paperTitleStr;
-   
     [self presentModalViewController:viewcontroller animated:YES];
     viewcontroller = nil;
 
 }
 
 - (IBAction)ExamAgain:(id)sender {
+    //重新考试
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readEndExamTableData:info.uuid];
+    NSArray * examInfoArray = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
+    
+    
+    BrowsePaperViewController * viewcontroller = [[BrowsePaperViewController alloc]initWithNibName:@"BrowsePaperViewController" bundle:nil];
+    [viewcontroller setQuestionDataSource:array];
+    for (ExamInfo * examInfo in examInfoArray) {
+        if ([[examInfo valueForKey:@"id"] isEqual:[[array objectAtIndex:0] valueForKey:@"kid"]]) {
+            [viewcontroller setExamInfo:examInfo];
+        }
+    }
+    [viewcontroller setIsExciseOrnot:NO];
+    [viewcontroller setIsJustBrowse:NO];
+    [viewcontroller setTitleStr:info.paperTitleStr];
+    [self presentModalViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
+
     
 }
 
@@ -118,10 +136,19 @@
 
 - (IBAction)back:(id)sender {
  
-    [self dismissModalViewControllerAnimated:YES];
+    [self popModalsToRootFrom:self];
 }
 
+-(void)popModalsToRootFrom:(UIViewController*)aVc {
+    if([aVc.presentingViewController isKindOfClass:[YDSlideMenuContainerViewController class]]) {
+        [aVc.presentingViewController dismissModalViewControllerAnimated:NO];
+        return;
+    }else
+    {
+        [self popModalsToRootFrom:aVc.presentingViewController];  
+    }
 
+}
 
 #pragma mark -
 #pragma mark UITableViewDataSource
