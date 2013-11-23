@@ -15,7 +15,8 @@
 #define VibrateWhenClick @"VibrateWhenClick"
 #define AutoUpdateQuestion @"AutoUpdateQuestoin"
 
-
+//服务器
+#define ServerPrefix @"http://www.55280.com"
 
 #import <Availability.h>
 

@@ -354,6 +354,7 @@
 		4EF187EE182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187ED182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m */; };
 		4EF187F3182AA70500E5EEA8 /* SVPullToRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4EF187F0182AA70500E5EEA8 /* SVPullToRefresh.bundle */; };
 		4EF187F4182AA70500E5EEA8 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */; };
+		4EFAA04918408D4A000AB053 /* CaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFAA04818408D4A000AB053 /* CaseView.m */; };
 		4EFF03AC18339C3B005B13BA /* PaperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF03AA18339C3B005B13BA /* PaperViewController.m */; };
 		4EFF03AD18339C3B005B13BA /* PaperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EFF03AB18339C3B005B13BA /* PaperViewController.xib */; };
 		4EFF03B31833C129005B13BA /* QuestionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF03B21833C129005B13BA /* QuestionView.m */; };
@@ -791,6 +792,8 @@
 		4EF187F0182AA70500E5EEA8 /* SVPullToRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVPullToRefresh.bundle; sourceTree = "<group>"; };
 		4EF187F1182AA70500E5EEA8 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
+		4EFAA04718408D4A000AB053 /* CaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaseView.h; sourceTree = "<group>"; };
+		4EFAA04818408D4A000AB053 /* CaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaseView.m; sourceTree = "<group>"; };
 		4EFF03A918339C3B005B13BA /* PaperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperViewController.h; sourceTree = "<group>"; };
 		4EFF03AA18339C3B005B13BA /* PaperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperViewController.m; sourceTree = "<group>"; };
 		4EFF03AB18339C3B005B13BA /* PaperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaperViewController.xib; sourceTree = "<group>"; };
@@ -1201,6 +1204,8 @@
 				4E023C8C1838564A0030A612 /* AnswerSheetView.m */,
 				4E0DB1301839F9E900D3031E /* WrongTextView.h */,
 				4E0DB1311839F9E900D3031E /* WrongTextView.m */,
+				4EFAA04718408D4A000AB053 /* CaseView.h */,
+				4EFAA04818408D4A000AB053 /* CaseView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1677,11 +1682,6 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = Vedon;
-				TargetAttributes = {
-					C32C216E1828912300FBF75C = {
-						TestTargetID = C32C214D1828912200FBF75C;
-					};
-				};
 			};
 			buildConfigurationList = C32C21491828912200FBF75C /* Build configuration list for PBXProject "YouLeXue" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1994,6 +1994,7 @@
 				4E1306DA182D34370099B6CC /* FMDatabaseQueue.m in Sources */,
 				4E1306DB182D34370099B6CC /* FMResultSet.m in Sources */,
 				4E1306DE182D34A50099B6CC /* PersistentDataManager.m in Sources */,
+				4EFAA04918408D4A000AB053 /* CaseView.m in Sources */,
 				4E8A8DF8182F45CC00A73F71 /* RightPhontNotiViewController.m in Sources */,
 				4E4CE3BB182F9A24003257C0 /* DetailPhoneNotiViewController.m in Sources */,
 				4E4CE3C5182FC2D5003257C0 /* UserInfoViewController.m in Sources */,

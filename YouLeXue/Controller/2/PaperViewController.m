@@ -628,12 +628,20 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
         }else
         {
-            
-            [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
-            [currentDisplayItems addObject:[questionStrArray objectAtIndex:prePage]];
-            [currentDisplayItems addObject:[questionStrArray objectAtIndex:criticalPage]];
-            [currentDisplayItems addObject:[questionStrArray objectAtIndex:nextPage]];
-            [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
+            if ([questionStrArray count]>=5) {
+                [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageL]];
+                [currentDisplayItems addObject:[questionStrArray objectAtIndex:prePage]];
+                [currentDisplayItems addObject:[questionStrArray objectAtIndex:criticalPage]];
+                [currentDisplayItems addObject:[questionStrArray objectAtIndex:nextPage]];
+                [currentDisplayItems addObject:[questionStrArray objectAtIndex:shouldDeletedPageR]];
+
+            }else
+            {
+                //TODO:当问题的数量少于5项时候
+                for (NSString * str in questionStrArray) {
+                    [currentDisplayItems addObject:str];
+                }
+            }
         }
     }
     
