@@ -117,7 +117,7 @@
     EndExamScoreViewController * viewcontroller = [[EndExamScoreViewController alloc]initWithNibName:@"EndExamScoreViewController" bundle:nil];
     viewcontroller.titleStr = info.paperTitleStr;
     [viewcontroller setInfo:info];
-    [self presentModalViewController:viewcontroller animated:NO];
+    [self presentModalViewController:viewcontroller animated:YES];
     
 //    [self.navigationController pushViewController:viewcontroller animated:YES];
     viewcontroller = nil;

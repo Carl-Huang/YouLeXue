@@ -75,7 +75,7 @@
     }
     [viewcontroller setIsExciseOrnot:NO];
     [viewcontroller setIsJustBrowse:YES];
-    viewcontroller.title = info.paperTitleStr;
+    [viewcontroller setTitleStr:info.paperTitleStr];
     [self presentModalViewController:viewcontroller animated:YES];
     viewcontroller = nil;
 
@@ -141,7 +141,7 @@
 
 -(void)popModalsToRootFrom:(UIViewController*)aVc {
     if([aVc.presentingViewController isKindOfClass:[YDSlideMenuContainerViewController class]]) {
-        [aVc.presentingViewController dismissModalViewControllerAnimated:NO];
+        [aVc.presentingViewController dismissModalViewControllerAnimated:YES];
         return;
     }else
     {

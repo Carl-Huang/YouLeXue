@@ -91,6 +91,7 @@
 
 +(void)getOtherInformationCompletedBlock:(void (^)(id item,NSError * error))block
 {
+    
     NSString * cmdStr = [NSString stringWithFormat:@"http://www.55280.com/jsonapi/otherinfo.asp"];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {

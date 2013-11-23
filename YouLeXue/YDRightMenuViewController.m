@@ -90,6 +90,7 @@
 
 -(void)fillData
 {
+    NSLog(@"%s",__func__);
     dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
     
     if ([dataSource count] == 0) {
@@ -113,6 +114,7 @@
 }
 -(void)refreshStatus
 {
+    NSLog(@"%s",__func__);
     dispatch_async(dispatch_get_main_queue(), ^{
    
         if (userInfo==nil) {
@@ -249,7 +251,7 @@
                 contentView.scrollView.bounces = NO;
                 [contentView setOpaque:NO];
                 
-                VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"hell" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"提示" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
                 [alert setCustomSubview:contentView];
                 [alert show];
 

@@ -12,6 +12,9 @@
 #import <ShareSDK/ShareSDK.h>
 #import "UIImage+SaveToLocal.h"
 #import "AppDelegate.h"
+#import "PaperViewController.h"
+#import "PersistentDataManager.h"
+#import "ExamInfo.h"
 
 @interface EndExamScoreViewControllerNav ()
 
@@ -65,9 +68,42 @@
     [super viewDidUnload];
 }
 - (IBAction)viewPaperAnswer:(id)sender {
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readEndExamTableData:info.uuid];
+    NSArray * examInfoArray = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
+    
+    
+    PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
+    [viewcontroller setQuestionDataSource:array];
+    for (ExamInfo * examInfo in examInfoArray) {
+        if ([[examInfo valueForKey:@"id"] isEqual:[[array objectAtIndex:0] valueForKey:@"kid"]]) {
+            [viewcontroller setExamInfo:examInfo];
+        }
+    }
+    [viewcontroller setIsExciseOrnot:NO];
+    [viewcontroller setIsJustBrowse:YES];
+    [viewcontroller setTitle:info.paperTitleStr];
+    [self.navigationController pushViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
 }
 
 - (IBAction)ExamAgain:(id)sender {
+    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readEndExamTableData:info.uuid];
+    NSArray * examInfoArray = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
+    
+    
+    PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
+    [viewcontroller setQuestionDataSource:array];
+    for (ExamInfo * examInfo in examInfoArray) {
+        if ([[examInfo valueForKey:@"id"] isEqual:[[array objectAtIndex:0] valueForKey:@"kid"]]) {
+            [viewcontroller setExamInfo:examInfo];
+        }
+    }
+    [viewcontroller setIsExciseOrnot:NO];
+    [viewcontroller setIsJustBrowse:NO];
+    [viewcontroller setTitle:info.paperTitleStr];
+    [self.navigationController pushViewController:viewcontroller animated:YES];
+    viewcontroller = nil;
+
 }
 
 - (IBAction)shareExam:(id)sender {

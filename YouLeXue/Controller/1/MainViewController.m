@@ -18,6 +18,8 @@
 #define Ad1 @"http://www.55280.com//UploadFiles/2013/0/2013091210340360268.jpg"
 #define Ad2 @"http://www.55280.com//UploadFiles/2013/0/2013091210504240285.jpg"
 #define Ad3 @"http://www.55280.com/UploadFiles/2013/0/2013091210580477232.jpg"
+
+
 @interface MainViewController ()
 {
     UserLoginInfo * info;
@@ -80,22 +82,30 @@
     switch (count) {
             
         case 1:
+            [self openURL:@"http://www.55280.com/Item/list.asp?id=1511"];
             //打开广告一的连接
             ;
             break;
         case 2:
             //打开广告二的连接
-            ;
+            [self openURL:@"http://www.55280.com/Item/list.asp?id=1511"];
             
             break;
         case 3:
             //打开广告三的连接
-            ;
+            [self openURL:@"http://www.55280.com/Item/list.asp?id=1511"];
             break;
 
         default:
             break;
     }
+}
+
+-(void)openURL:(NSString *)urlStr
+{
+   
+    NSURL * url = [NSURL URLWithString:urlStr];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 -(void)changeImage

@@ -253,7 +253,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }else
         {
             if (isJustBrowse) {
-                descriptionStr = [NSString stringWithFormat:@"%@%@\n您的答案:%@ %@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"userAnswer"],[tempPaperInfo valueForKey:@"tmnr"]];
+                descriptionStr = [NSString stringWithFormat:@"%@%@%@\n您的答案:%@ %@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"],[tempPaperInfo valueForKey:@"userAnswer"],[tempPaperInfo valueForKey:@"DAJS"]];
             }else
             {
                 descriptionStr = [NSString stringWithFormat:@"%@%@%@",[tempPaperInfo valueForKey:@"num"],[tempPaperInfo valueForKey:@"title"],[tempPaperInfo valueForKey:@"tmnr"]];
@@ -325,6 +325,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
         UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
         [alertview show];
         alertview = nil;
+    }else
+    {
+        [self.navigationController popViewControllerAnimated:YES];
     }
     
 }
