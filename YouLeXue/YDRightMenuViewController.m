@@ -27,11 +27,18 @@
 #import "ExamInfo.h"
 #import "UIImage+SaveToLocal.h"
 #import "MBProgressHUD.h"
+#import "SDWebImageManager.h"
 
 @interface YDRightMenuViewController ()
 {
     NSArray * descriptionArray;
     NSArray * dataSource;
+    
+    NSInteger dwonloadingImage;
+    NSInteger downloadedImage;
+    
+    //downloader
+    SDWebImageManager * manager;
 }
 @end
 
@@ -50,7 +57,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    manager = [SDWebImageManager sharedManager];
     //屏幕适配
     if (IS_SCREEN_4_INCH) {
         CGRect rect1 = self.rightTable.frame;
@@ -92,6 +99,12 @@
 {
     NSLog(@"%s",__func__);
     dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
+    //下载连接中的图片
+    for (FetchDataInfo *info in dataSource) {
+        NSString * tempStr = info.ArticleContent;
+        [self downloadImageWithImageURL:tempStr];
+    }
+    
     
     if ([dataSource count] == 0) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
@@ -245,7 +258,31 @@
         if ([obj.KS_phoneSeq isKindOfClass:[NSString class]]) {
             if (obj.KS_phoneSeq.integerValue == indexPath.row+1) {
                 UIWebView * contentView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, 280, 150)];
-                [contentView loadHTMLString:obj.ArticleContent baseURL:nil];
+                [contentView stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 10.0;"];
+         
+                
+                float scaleFactor = 0.8;
+                contentView.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor);
+                
+                
+                
+                NSString *tempStr = obj.ArticleContent;
+                NSString * imageFolder = [UIImage getFolderName];
+                NSString * imageUrl = [self getImageName:tempStr];
+                NSURL *url =nil;
+                NSString *descrption =nil;
+                if (imageUrl) {
+                    url = [NSURL fileURLWithPath:[imageFolder stringByAppendingPathComponent:imageUrl]];
+                    NSString * replaceStr = [self getImageUrl:tempStr];
+                    if (replaceStr) {
+                        descrption = [tempStr stringByReplacingOccurrencesOfString:replaceStr withString:imageUrl];
+                    }
+                    [contentView loadHTMLString:descrption baseURL:url];
+                }else
+                {
+                    [contentView loadHTMLString:obj.ArticleContent baseURL:nil];
+                }
+                
                 contentView.backgroundColor = [UIColor clearColor];
 //                contentView.scrollView.scrollEnabled = NO;
                 contentView.scrollView.bounces = NO;
@@ -260,6 +297,7 @@
         }
     }
 }
+
 
 #pragma mark - TextField Delegate
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
@@ -442,6 +480,64 @@
     if ([keyPath isEqual:@"isShouldShowLoginView"]) {
         //登陆
         [self refreshStatus];
+    }
+}
+
+#pragma mark - 提取图片url
+-(NSString *)getImageUrl:(NSString *)searchStr
+{
+    NSError * error;
+    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"/\\S*\\d.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
+    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
+    
+    if ([compomentArray count]) {
+        for (NSTextCheckingResult * checktStr in compomentArray) {
+            NSRange range = [checktStr rangeAtIndex:0];
+            return [searchStr substringWithRange:range];
+        }
+        return searchStr;
+    }
+    return  nil;
+}
+
+-(NSString *)getImageName:(NSString *)searchStr
+{
+    
+    NSError * error;
+    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"\\d*.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
+    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
+    
+    for (NSTextCheckingResult * checktStr in compomentArray) {
+        NSRange range = [checktStr rangeAtIndex:0];
+        return [searchStr substringWithRange:range];
+    }
+    return nil;
+}
+
+-(void)downloadImageWithImageURL:(NSString *)imageurl
+{
+    __weak YDRightMenuViewController * weakSelf =self;
+    if (imageurl) {
+        NSString * imageName = [self getImageUrl:imageurl];
+        if (imageName) {
+            NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
+            NSURL *url = [NSURL URLWithString:imageUrl];
+            dwonloadingImage ++;
+            [manager downloadWithURL:url options:0 progress:^(NSUInteger receivedSize, long long expectedSize) {
+                ;
+            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                [UIImage saveImage:image name:[self getImageName:[url absoluteString]]];
+                downloadedImage ++;
+                [weakSelf isAllImageDownload];
+            }];
+        }
+    }
+}
+
+-(void)isAllImageDownload
+{
+    if (downloadedImage ==downloadedImage) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }
 }
 @end

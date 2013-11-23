@@ -210,11 +210,11 @@
             }else
             {
                 if ([[checkItems objectForKey:[NSNumber numberWithInt:index.row]] isEqual:@"Yes"]) {
-                    cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark"]];
+                    cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Setting_Icon_Check@2x"]];
                     [self updateUserSettingTableWithKey:[self updateUserTableWithIndex:index.row] Value:@"Yes"];
                 }else
                 {
-                    cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"cross"]];
+                    cell.accessoryView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Setting_Icon_UnCheck@2x"]];
                     [self updateUserSettingTableWithKey:[self updateUserTableWithIndex:index.row] Value:@"No"];
                 }
             }

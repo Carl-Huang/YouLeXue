@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 @property (weak, nonatomic) IBOutlet UIButton *canDoOrNotBtn;
 
 
+- (IBAction)canDoOrnotActioin:(id)sender;
 @property (strong ,nonatomic) NSArray * caseDataSource;
 - (IBAction)showAnswer:(id)sender;
 - (IBAction)saveQues:(id)sender;

@@ -132,9 +132,6 @@
 //     UINavigationController * nav_d = [[UINavigationController alloc] initWithRootViewController:fourthViewController];
     
     SettingViewController * fifthViewController = [[SettingViewController alloc]initWithNibName:@"SettingViewController" bundle:nil];
-//    UINavigationController * nav_e = [[UINavigationController alloc] initWithRootViewController:fifthViewController];
-    
-//    akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:nav_a,nav_b,nav_c,nav_d,nav_e,nil];
     akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:firstViewController,secondViewController,thirdViewController,fourthViewController,fifthViewController,nil];
     akTabBarController.tabWidth = 320.0/5;
     [akTabBarController setBackgroundImageName:@"Bottom_Bar01"];
@@ -144,11 +141,9 @@
     [akTabBarController setSelectedIconColors:@[[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0],[UIColor colorWithRed:69/255.0 green:182/255.0 blue:204/255.0 alpha:1.0]]];
     [akTabBarController setTabEdgeColor:[UIColor clearColor]];
     [akTabBarController setTopEdgeColor:[UIColor clearColor]];
-    //[akTabBarController setTabInnerStrokeColor:[UIColor clearColor]];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:akTabBarController];
 
     self.leftMenuViewController = [[YDLeftMenuViewController alloc] init];
-//     UINavigationController * nav_left = [[UINavigationController alloc] initWithRootViewController:self.leftMenuViewController];
     self.rightMenuViewController = [[YDRightMenuViewController alloc] init];
 
     self.containerViewController = [YDSlideMenuContainerViewController
@@ -159,7 +154,22 @@
     
         
     self.containerViewController.delegate=self;
+    
+    UIImageView * delayImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"loading"]];
+    if (IS_SCREEN_4_INCH) {
+        [delayImage setFrame:CGRectMake(0, 20, 320, 548)];
+    }else
+    {
+        [delayImage setFrame:CGRectMake(0, 20, 320, 460)];
+    }
+
+    [UIView animateWithDuration:6 animations:^{
+        [delayImage setAlpha:0.0];
+        [delayImage removeFromSuperview];
+    }];
+
     [self.window makeKeyAndVisible];
+    [self.window addSubview:delayImage];
     return YES;
 }
 

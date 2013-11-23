@@ -45,6 +45,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [self animation];
     [self.afterLoginView setHidden:YES];
     [self updateInterface];

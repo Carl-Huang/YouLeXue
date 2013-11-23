@@ -418,5 +418,15 @@
     [self setCanDoOrNotBtn:nil];
     [super viewDidUnload];
 }
+- (IBAction)canDoOrnotActioin:(id)sender {
+    UIButton * btn = sender;
+    if (!btn.selected) {
+        [btn setSelected:YES];
+    }else
+    {
+        [btn setSelected:NO];
+    }
+    
+}
 @end
 
