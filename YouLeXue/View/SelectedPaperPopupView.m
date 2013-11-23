@@ -14,7 +14,7 @@
 
 @implementation SelectedPaperPopupView
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withBtnImage1:(NSString *)image1 btnImage2:(NSString *)image2 btnImage3:(NSString *)image3 text1:(NSString *)str1 test2:(NSString *)str2 test3:(NSString *)str3
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -29,12 +29,17 @@
         //考试模式
         UIButton * examModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [examModel setFrame:ButtonFrame];
-        [examModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Mode@2x"] forState:UIControlStateNormal];
+        if (!image1) {
+                    [examModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Mode@2x"] forState:UIControlStateNormal];
+        }else
+        {
+            [examModel setBackgroundImage:[UIImage imageNamed:image1] forState:UIControlStateNormal];
+        }
         [examModel addTarget:self action:@selector(examModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * examText = [[UILabel alloc]initWithFrame:CGRectMake(examModel.frame.origin.x+examModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         examText.font = [UIFont systemFontOfSize:12];
         [examText setTextColor:[UIColor colorWithRed:66.0/255.0 green:183.0/255.0 blue:201.0/255.0 alpha:1.0]];
-        examText.text = @"考试模式";
+        examText.text = str1;
         [self addSubview:examText];
         [self addSubview:examModel];
         
@@ -42,12 +47,18 @@
         ButtonFrame = CGRectMake(10+width, 10, width/4, 20);
         UIButton * practiceModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [practiceModel setFrame:ButtonFrame];
-        [practiceModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Exercise@2x"] forState:UIControlStateNormal];
+        if (!image2) {
+            [practiceModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_Exercise@2x"] forState:UIControlStateNormal];
+        }else
+        {
+            [practiceModel setBackgroundImage:[UIImage imageNamed:image2] forState:UIControlStateNormal];
+        }
+        
         [practiceModel addTarget:self action:@selector(practiceModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * practiceText = [[UILabel alloc]initWithFrame:CGRectMake(practiceModel.frame.origin.x+practiceModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         practiceText.font = [UIFont systemFontOfSize:12];
         [practiceText setTextColor:[UIColor colorWithRed:66.0/255.0 green:183.0/255.0 blue:201.0/255.0 alpha:1.0]];
-        practiceText.text = @"练习模式";
+        practiceText.text = str2;
         [self addSubview:practiceText];
         [self addSubview:practiceModel];
         
@@ -55,12 +66,17 @@
         ButtonFrame = CGRectMake(10+2*width, 10, width/4, 20);
         UIButton * markModel = [UIButton buttonWithType:UIButtonTypeCustom];
         [markModel setFrame:ButtonFrame];
-        [markModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_CancelN@2x"] forState:UIControlStateNormal];
+        if (!image3) {
+            [markModel setBackgroundImage:[UIImage imageNamed:@"Section_Icon_CancelN@2x"] forState:UIControlStateNormal];
+        }else
+        {
+            [markModel setBackgroundImage:[UIImage imageNamed:image3] forState:UIControlStateNormal];
+        }
         [markModel addTarget:self action:@selector(markModelAction) forControlEvents:UIControlEventTouchUpInside];
         UILabel * markText = [[UILabel alloc]initWithFrame:CGRectMake(markModel.frame.origin.x+markModel.frame.size.width, TextLabelOffsetY,3*width/4, TextLabelHeight)];
         markText.font = [UIFont systemFontOfSize:12];
         [markText setTextColor:[UIColor colorWithRed:66.0/255.0 green:183.0/255.0 blue:201.0/255.0 alpha:1.0]];
-        markText.text = @"标注试卷";
+        markText.text = str3;
         [self addSubview:markText];
         [self addSubview:markModel];
 

@@ -8,6 +8,7 @@
 
 #import "CasePaperViewController.h"
 #import "UIViewController+TabbarConfigure.h"
+#import "ExamplePaperInfo.h"
 @interface CasePaperViewController ()
 {
     NSInteger questionViewHeight;

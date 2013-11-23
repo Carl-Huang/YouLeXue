@@ -72,4 +72,6 @@
 @property (strong ,nonatomic) NSString * KS_daan; //答案解释
 @property (strong ,nonatomic) NSString * KS_leixing;
 
+//记录是否会做案例题
+@property (strong ,nonatomic) NSString * canDoOrNot;
 @end

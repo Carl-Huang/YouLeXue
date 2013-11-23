@@ -408,6 +408,12 @@
     [HttpHelper getExampleListWithGroupId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             [[PersistentDataManager sharePersistenDataManager]createExampleListTable:(NSArray *)item];
+            
+            //创建标注的信息表
+            NSArray * arr = [[PersistentDataManager sharePersistenDataManager]readAlreadyMarkCaseTable];
+            if ([arr count]==0) {
+                [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkCaseTable:item];
+            }
         }
         if (error) {
             NSLog(@"%@",[error description]);

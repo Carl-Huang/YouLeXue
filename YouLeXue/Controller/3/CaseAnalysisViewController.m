@@ -20,6 +20,7 @@
 #import "UserLoginInfo.h"
 #import "PersistentDataManager.h"
 #import "SelectedPaperPopupView.h"
+#import "CasePaperViewController.h"
 static NSString *identifier = @"Cell";
 @interface CaseAnalysisViewController ()<UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate>
 {
@@ -53,7 +54,11 @@ static NSString *identifier = @"Cell";
     //current reload tableview
     UITableView * currentTableview;
     
+    //保存标注信息的数组
     NSMutableArray * markArray;
+    
+    //保存全部信息的数组
+    NSMutableArray * totalDataVector;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -190,6 +195,7 @@ static NSString *identifier = @"Cell";
 -(void)fillData
 {
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"ExampleListTable" withObjClass:[ExamplePaperInfo class]];
+    totalDataVector = [NSMutableArray arrayWithArray:array];
     if ([array count]) {
         [self cleanDataSource];
         for (ExamplePaperInfo * examInfo in array) {
@@ -197,19 +203,15 @@ static NSString *identifier = @"Cell";
             NSLog(@"%@",examInfo.KS_leixing);
             if ([examInfo.KS_leixing isEqualToString:@"1"]) {
                 [firstDataSource addObject:examInfo];
-//                [self downPaperListWithExamInfo:examInfo];
             }else if([examInfo.KS_leixing isEqualToString:@"2"])
             {
                 [secondDataSource addObject:examInfo];
-//                [self downPaperListWithExamInfo:examInfo];
             }else if([examInfo.KS_leixing isEqualToString:@"3"])
             {
                 [thirdDataSource addObject:examInfo];
-//                [self downPaperListWithExamInfo:examInfo];
             }else if([examInfo.KS_leixing isEqualToString:@"4"])
             {
                 [fourthDataSource addObject:examInfo];
-//                [self downPaperListWithExamInfo:examInfo];
             }
         }
     }
@@ -380,7 +382,7 @@ static NSString *identifier = @"Cell";
     if (markArray) {
         markArray =nil;
     }
-    markArray = [[[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable]mutableCopy];
+    markArray = [[[PersistentDataManager sharePersistenDataManager]readAlreadyMarkCaseTable]mutableCopy];
     [markArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSDictionary * dic = (NSDictionary *)obj;
         NSString *tempId = dic[@"ID"];
@@ -446,7 +448,7 @@ static NSString *identifier = @"Cell";
     if (selectedRow == indexPath.row&&selectedRow !=*preSelectedRow) {
         *preSelectedRow = indexPath.row;
         NSLog(@"do somethinghere");
-        __block SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(70, 0, 250, 40)];
+        __block SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(70, 0, 250, 40) withBtnImage1:nil btnImage2:nil btnImage3:nil text1:@"查看题干" test2:@"查看答案" test3:@"标注案例"];
         [popView setExamBlock:[self configureExamModelBlock]];
         [popView setPracticeBlock:[self configurePracticeModelBlock]];
         [popView setMarkBlock:[self configureMarkModelBlock]];
@@ -481,20 +483,24 @@ static NSString *identifier = @"Cell";
         switch (currentPage) {
             case 1:
             {
-//                ExamInfo * selectedInfo = [firstDataSource objectAtIndex:selectedRow1];
-//                NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"id"]];
-//                if ([paperList count]) {
-//                    PaperViewController * viewcontroller = [[PaperViewController alloc]initWithNibName:@"PaperViewController" bundle:nil];
-//                    [viewcontroller setQuestionDataSource:paperList];
-//                    [viewcontroller setExamInfo:selectedInfo];
-//                    viewcontroller.title = @"测试用户组的试卷";
-//                    [self.navigationController pushViewController:viewcontroller animated:YES];
-//                    viewcontroller = nil;
-//                    
-//                }
+                [self viewControllerActionWithDataSource:firstDataSource row:selectedRow1 exciseOrNot:NO];
             }
                 break;
-                
+            case 2:
+            {
+                [self viewControllerActionWithDataSource:secondDataSource row:selectedRow2 exciseOrNot:NO];
+            }
+                break;
+            case 3:
+            {
+                [self viewControllerActionWithDataSource:thirdDataSource row:selectedRow3 exciseOrNot:NO];
+            }
+                break;
+            case 4:
+            {
+                [self viewControllerActionWithDataSource:fourthDataSource row:selectedRow4 exciseOrNot:NO];
+            }
+                break;
             default:
                 break;
         }
@@ -502,6 +508,8 @@ static NSString *identifier = @"Cell";
     };
     return  block;
 }
+
+
 -(PracticeModelBlock )configurePracticeModelBlock
 {
     PracticeModelBlock  block = ^()
@@ -544,7 +552,24 @@ static NSString *identifier = @"Cell";
     return  block;
 }
 
-
+-(void)viewControllerActionWithDataSource:(NSArray *)dataSource row:(NSInteger)seletedRow exciseOrNot:(BOOL)exciseOrnot
+{
+    //对应的试卷信息
+//    ExamplePaperInfo * selectedInfo = [dataSource objectAtIndex:seletedRow];
+//    
+//    //根据id 拿出相应的试卷
+//    NSArray * paperList = [paper objectForKey:[selectedInfo valueForKey:@"ID"]];
+    
+    if (1) {
+        CasePaperViewController * viewcontroller = [[CasePaperViewController alloc]initWithNibName:@"CasePaperViewController" bundle:nil];
+        [viewcontroller setCaseDataSource:totalDataVector];
+//        [viewcontroller setExamInfo:selectedInfo];
+//        [viewcontroller setIsExciseOrnot:exciseOrnot];
+        viewcontroller.title = @"题目标题";
+        [self.navigationController pushViewController:viewcontroller animated:YES];
+        viewcontroller = nil;
+    }
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

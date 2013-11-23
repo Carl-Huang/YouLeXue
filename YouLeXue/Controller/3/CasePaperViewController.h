@@ -14,6 +14,8 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *contentScrollView;
 @property (weak, nonatomic) IBOutlet UIButton *canDoOrNotBtn;
 
+
+@property (strong ,nonatomic) NSArray * caseDataSource;
 - (IBAction)showAnswer:(id)sender;
 - (IBAction)saveQues:(id)sender;
 @end

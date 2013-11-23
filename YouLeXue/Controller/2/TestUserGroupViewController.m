@@ -410,12 +410,12 @@ static NSString *identifier = @"Cell";
     }];
 }
 
--(void)configureSpecificRowPopViewWithRow:(NSInteger)selectedRow preSelectedRow:(NSInteger *)preSelectedRow Cell:(UITableViewCell *)cell indexPath:(NSIndexPath*)indexPath
+-(void)configureSpecificRowPopViewWithRow:(NSInteger)selectedRow preSelectedRow:(NSInteger *)preSelectedRow Cell:(UITableViewCell *)cell indexPath:(NSIndexPath*)indexPath 
 {
     if (selectedRow == indexPath.row&&selectedRow !=*preSelectedRow) {
         *preSelectedRow = indexPath.row;
         NSLog(@"do somethinghere");
-        __block SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(70, 0, 250, 40)];
+        __block SelectedPaperPopupView * popView = [[SelectedPaperPopupView alloc]initWithFrame:CGRectMake(70, 0, 250, 40) withBtnImage1:nil btnImage2:nil btnImage3:nil text1:@"考试模式" test2:@"练习模式" test3:@"标注试卷"];
         [popView setExamBlock:[self configureExamModelBlock]];
         [popView setPracticeBlock:[self configurePracticeModelBlock]];
         [popView setMarkBlock:[self configureMarkModelBlock]];
