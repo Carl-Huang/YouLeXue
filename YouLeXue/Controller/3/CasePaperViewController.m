@@ -9,14 +9,31 @@
 #import "CasePaperViewController.h"
 #import "UIViewController+TabbarConfigure.h"
 #import "ExamplePaperInfo.h"
-@interface CasePaperViewController ()
+@interface CasePaperViewController ()<UIScrollViewDelegate>
 {
     NSInteger questionViewHeight;
+    
+    //滚动scrollview相关变量
+    BOOL isEndScrolling;
+    
+    NSInteger criticalPage;
+    NSInteger prePage;
+    NSInteger nextPage;
+    NSInteger shouldDeletedPageL;
+    NSInteger shouldDeletedPageR;
+    
+    NSInteger preOffsetX;
+    NSInteger previousPage;
+    PanDirection panDirectioin;
+    PanDirection prePanDirection;
+    NSMutableArray * currentDisplayItems; //保存着相对criticalPage，前一个数据，和后一个数据
+    NSInteger currentPage;
+
 }
 @end
 
 @implementation CasePaperViewController
-
+@synthesize caseDataSource;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -40,6 +57,25 @@
         questionViewHeight = 320;
     }
 
+    
+    //contentView
+
+    [self.contentScrollView setContentSize:CGSizeMake([caseDataSource count]*320+10, self.contentScrollView.frame.size.height)];
+    self.contentScrollView.pagingEnabled = YES;
+    self.contentScrollView.delegate = self;
+    self.contentScrollView.scrollEnabled = YES;
+    self.contentScrollView.showsHorizontalScrollIndicator = NO;
+
+    criticalPage = 2;
+    panDirectioin = PanDirectionNone;
+    prePanDirection= PanDirectionNone;
+    preOffsetX = 0.0;
+    isEndScrolling = YES;
+    previousPage = 1;
+    currentPage = 0;
+
+//    [self refreshScrollViewWithDirection:panDirectioin];
+
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -59,6 +95,7 @@
 
 - (IBAction)preQues:(id)sender {
 }
+
 - (void)viewDidUnload {
     [self setContentScrollView:nil];
     [self setCanDoOrNotBtn:nil];

@@ -284,7 +284,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     currentDisplayItems = [NSMutableArray array];
     
-    [self addObserver:self forKeyPath:@"criticalPage" options:NSKeyValueObservingOptionNew context:NULL];
+//    [self addObserver:self forKeyPath:@"criticalPage" options:NSKeyValueObservingOptionNew context:NULL];
     criticalPage = 2;
     panDirectioin = PanDirectionNone;
     prePanDirection= PanDirectionNone;
@@ -374,12 +374,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [super viewDidUnload];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"criticalPage"]) {
-        ;
-    }
-}
+//-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    if ([keyPath isEqualToString:@"criticalPage"]) {
+//        ;
+//    }
+//}
 
 -(void)descreaseTime
 {
