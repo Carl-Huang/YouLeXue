@@ -52,6 +52,8 @@ static NSString *identifier = @"Cell";
     
     //current reload tableview
     UITableView * currentTableview;
+    
+    NSMutableArray * markArray;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -285,6 +287,14 @@ static NSString *identifier = @"Cell";
             if ([item count]) {
                 [[PersistentDataManager sharePersistenDataManager]createExampleListTable:(NSArray *)item];
                 [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+                
+                //创建标注的信息表
+                NSArray * arr = [[PersistentDataManager sharePersistenDataManager]readAlreadyMarkCaseTable];
+                if ([arr count]==0) {
+                    [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkCaseTable:item];
+                }
+
+                
                 [weakSelf fillData];
             }else
             {
@@ -325,6 +335,8 @@ static NSString *identifier = @"Cell";
             NSString * detailStr = [self getDetailDateStr:tempInfo];
             cell.detailTextLabel.text = detailStr;
             [self configureSpecificRowPopViewWithRow:selectedRow1 preSelectedRow:&preSelectedRow1 Cell:cell indexPath:indexPath];
+            [self setMarkOrNot:cell info:tempInfo];
+            
         }
             break;
         case SecTableTag:
@@ -334,7 +346,9 @@ static NSString *identifier = @"Cell";
             NSString * detailStr = [self getDetailDateStr:tempInfo];
             cell.detailTextLabel.text = detailStr;
             [self configureSpecificRowPopViewWithRow:selectedRow2 preSelectedRow:&preSelectedRow2 Cell:cell indexPath:indexPath];
+            [self setMarkOrNot:cell info:tempInfo];
         }
+            
             break;
         case ThiTableTag:
         {
@@ -358,6 +372,54 @@ static NSString *identifier = @"Cell";
         default:
             break;
     }
+    
+}
+
+-(void)setMarkOrNot:(UITableViewCell *)cell  info:(ExamplePaperInfo *)tempExamInfo
+{
+    if (markArray) {
+        markArray =nil;
+    }
+    markArray = [[[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable]mutableCopy];
+    [markArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary * dic = (NSDictionary *)obj;
+        NSString *tempId = dic[@"ID"];
+        if ([tempId isEqualToString:[tempExamInfo valueForKey:@"ID"]]) {
+            if ([dic[@"isSelected"]isEqualToString:@"Yes"]) {
+                cell.textLabel.textColor = [UIColor orangeColor];
+                cell.detailTextLabel.textColor = [UIColor orangeColor];
+                
+            }else
+            {
+                cell.textLabel.textColor = [UIColor blackColor];
+                cell.detailTextLabel.textColor = [UIColor blackColor];
+                
+            }
+        }
+    }];
+}
+
+-(void)markPaperActionWithDataSource:(NSArray *)dataSource row:(NSInteger)selectedRow
+{
+    __weak CaseAnalysisViewController * weakSelf = self;
+    //对应的试卷信息
+    ExamplePaperInfo * selectedInfo = [dataSource objectAtIndex:selectedRow];
+    [markArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary * dic = (NSDictionary *)obj;
+        NSString *tempId = dic[@"ID"];
+        if ([tempId isEqualToString:[selectedInfo valueForKey:@"ID"]]) {
+            if ([dic[@"isSelected"]isEqualToString:@"Yes"]) {
+                [[PersistentDataManager sharePersistenDataManager]updateAlreadyMarkCaseTableWithKey:[selectedInfo valueForKey:@"ID"] value:@"No"];
+            }else
+            {
+                [[PersistentDataManager sharePersistenDataManager]updateAlreadyMarkCaseTableWithKey:[selectedInfo valueForKey:@"ID"] value:@"Yes"];
+            }
+            
+        }
+        if (stop) {
+            [weakSelf reloadAllTable];
+        }
+    }];
     
 }
 
@@ -453,6 +515,30 @@ static NSString *identifier = @"Cell";
 {
     MarkModelBlock  block = ^()
     {
+        switch (currentPage) {
+            case 1:
+            {
+                [self markPaperActionWithDataSource:firstDataSource row:selectedRow1];
+            }
+                break;
+            case 2:
+            {
+                [self markPaperActionWithDataSource:secondDataSource row:selectedRow2];
+            }
+                break;
+            case 3:
+            {
+                [self markPaperActionWithDataSource:thirdDataSource row:selectedRow3];
+            }
+                break;
+            case 4:
+            {
+                [self markPaperActionWithDataSource:thirdDataSource row:selectedRow4];
+            }
+                break;
+            default:
+                break;
+        }
         NSLog(@"%s",__func__);
     };
     return  block;

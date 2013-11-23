@@ -437,6 +437,62 @@
     [db close];
 }
 
+#pragma mark - 创建案例标注表
+-(void)createAlreadyMarkCaseTable:(NSArray *)array
+{
+    [db open];
+    NSMutableArray * idArray = [NSMutableArray array];
+    for (ExamplePaperInfo * info in array) {
+        NSString * str = [info valueForKey:@"ID"];
+        [idArray addObject:str];
+    }
+    
+    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists AlreadyMarkCaseTable (ID text primary key,isSelected text)"];
+    if ([db executeUpdate:cmdStr]) {
+        NSLog(@"create AlreadyMarkCaseTable successfully");
+        //插入数据
+        for (NSString *str  in idArray) {
+            NSString * cmdStr = [NSString stringWithFormat:@"INSERT INTO AlreadyMarkCaseTable values (?,?)"];
+            [db executeUpdate:cmdStr withArgumentsInArray:@[str,@"No"]];
+        }
+        
+    }else
+    {
+        NSLog(@"Failer to create AlreadyMarkCaseTable,Error: %@",[db lastError]);
+    }
+    [db close];
+}
+-(NSArray *)readAlreadyMarkCaseTable
+{
+    [db open];
+    NSString * sqlStr = [NSString stringWithFormat:@"select * from AlreadyMarkCaseTable"];
+    FMResultSet *rs = [db executeQuery:sqlStr];
+    NSMutableArray * tempArray = [NSMutableArray array];
+    while ([rs next]) {
+        NSString * idStr = [rs stringForColumn:@"ID"];
+        NSString * isCheckOrnot = [rs stringForColumn:@"isSelected"];
+        NSDictionary * tempDic =@{@"ID": idStr,@"isSelected":isCheckOrnot};
+        [tempArray addObject:tempDic];
+        tempDic = nil;
+    }
+    [rs close];
+    [db close];
+    if ([tempArray count]) {
+        return tempArray;
+    }
+    return nil;
+}
+
+-(void)updateAlreadyMarkCaseTableWithKey:(NSString *)key  value:(NSString *)value
+{
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update AlreadyMarkCaseTable set isSelected=? where ID=?"];
+    [db executeUpdate:cmdStr,value,key];
+    [db commit];
+    [db close];
+}
+
 #pragma mark - 创建保存提交试卷的表
 -(void)createEndExamPaperTable:(NSArray *)array
 {
@@ -760,8 +816,5 @@
     return filePath;
 }
 
--(void)dealloc
-{
-    
-}
+
 @end

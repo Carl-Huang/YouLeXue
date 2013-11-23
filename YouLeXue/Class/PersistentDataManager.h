@@ -44,5 +44,8 @@
 -(void)insertIntoEndExamPaperIndexTable:(SubmittedPaperIndex *)info;
 -(NSArray *)readEndExamPaperIndexTable;
 
+-(void)createAlreadyMarkCaseTable:(NSArray *)array;
+-(NSArray *)readAlreadyMarkCaseTable;
+-(void)updateAlreadyMarkCaseTableWithKey:(NSString *)key  value:(NSString *)value;
 
 @end

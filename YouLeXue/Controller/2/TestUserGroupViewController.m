@@ -528,12 +528,12 @@ static NSString *identifier = @"Cell";
                 break;
             case 3:
             {
-              
+              [self markPaperActionWithDataSource:thirdDataSource row:selectedRow3];
             }
                 break;
             case 4:
             {
-               
+               [self markPaperActionWithDataSource:thirdDataSource row:selectedRow4];
             }
                 break;
             default:

@@ -78,6 +78,8 @@
 		4E98DEF61837BAAD00D2703A /* ExamPaperInfoTimeStamp.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E98DEF51837BAAD00D2703A /* ExamPaperInfoTimeStamp.m */; };
 		4E98DEFA1837C9F700D2703A /* EndExamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E98DEF81837C9F700D2703A /* EndExamViewController.m */; };
 		4E98DEFB1837C9F700D2703A /* EndExamViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E98DEF91837C9F700D2703A /* EndExamViewController.xib */; };
+		4EA4DD8018404F5A00EB00E4 /* CasePaperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA4DD7E18404F5A00EB00E4 /* CasePaperViewController.m */; };
+		4EA4DD8118404F5A00EB00E4 /* CasePaperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EA4DD7F18404F5A00EB00E4 /* CasePaperViewController.xib */; };
 		4EA9A0BE183C574300F9C9CE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA9A0BD183C574300F9C9CE /* CoreTelephony.framework */; };
 		4EA9A0C0183C575400F9C9CE /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA9A0BF183C575400F9C9CE /* libicucore.dylib */; };
 		4EA9A0C2183C577300F9C9CE /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA9A0C1183C577300F9C9CE /* libz.1.2.5.dylib */; };
@@ -461,6 +463,9 @@
 		4E98DEF71837C9F700D2703A /* EndExamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamViewController.h; sourceTree = "<group>"; };
 		4E98DEF81837C9F700D2703A /* EndExamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamViewController.m; sourceTree = "<group>"; };
 		4E98DEF91837C9F700D2703A /* EndExamViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamViewController.xib; sourceTree = "<group>"; };
+		4EA4DD7D18404F5A00EB00E4 /* CasePaperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CasePaperViewController.h; sourceTree = "<group>"; };
+		4EA4DD7E18404F5A00EB00E4 /* CasePaperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CasePaperViewController.m; sourceTree = "<group>"; };
+		4EA4DD7F18404F5A00EB00E4 /* CasePaperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CasePaperViewController.xib; sourceTree = "<group>"; };
 		4EA9A0BD183C574300F9C9CE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		4EA9A0BF183C575400F9C9CE /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		4EA9A0C1183C577300F9C9CE /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
@@ -1313,6 +1318,9 @@
 				4E34D8AA182B8A7200965E55 /* CaseAnalysisViewController.h */,
 				4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */,
 				4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */,
+				4EA4DD7D18404F5A00EB00E4 /* CasePaperViewController.h */,
+				4EA4DD7E18404F5A00EB00E4 /* CasePaperViewController.m */,
+				4EA4DD7F18404F5A00EB00E4 /* CasePaperViewController.xib */,
 			);
 			path = 3;
 			sourceTree = "<group>";
@@ -1925,6 +1933,7 @@
 				4EA9A22C183CAA2600F9C9CE /* Section_Icon_CancelN@2x.png in Resources */,
 				4E0F9E40183D0AC300423864 /* BrowsePaperViewController.xib in Resources */,
 				4EEBA520183DDB750016BBFC /* EndExamViewController_M.xib in Resources */,
+				4EA4DD8118404F5A00EB00E4 /* CasePaperViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2007,6 +2016,7 @@
 				4EA9A222183C88C000F9C9CE /* UIImage+SaveToLocal.m in Sources */,
 				4E0F9E3F183D0AC300423864 /* BrowsePaperViewController.m in Sources */,
 				4EEBA51F183DDB750016BBFC /* EndExamViewController_M.m in Sources */,
+				4EA4DD8018404F5A00EB00E4 /* CasePaperViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
