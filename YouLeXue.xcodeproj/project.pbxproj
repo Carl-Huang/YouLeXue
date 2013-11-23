@@ -1686,8 +1686,6 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
-				4E2975EC1840D2C4009A6946 /* MapKit.framework */,
-				4E2975EA1840D2BC009A6946 /* ImageIO.framework */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
 				C32C214F1828912200FBF75C /* Products */,
@@ -1705,6 +1703,8 @@
 		C32C21501828912200FBF75C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E2975EC1840D2C4009A6946 /* MapKit.framework */,
+				4E2975EA1840D2BC009A6946 /* ImageIO.framework */,
 				4EA9A223183CA35100F9C9CE /* AudioToolbox.framework */,
 				4EA9A1A0183C5BC100F9C9CE /* ShareSDK_v2.6.0 */,
 				4EA9A0C1183C577300F9C9CE /* libz.1.2.5.dylib */,

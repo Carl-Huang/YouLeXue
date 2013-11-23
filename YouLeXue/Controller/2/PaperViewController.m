@@ -35,9 +35,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "EndExamScoreViewControllerNav.h"
 #import "UserSetting.h"
 #import <AudioToolbox/AudioToolbox.h>
-
-
-
+#import "SDWebImageDownloader.h"
+#import "SDWebImageManager.h"
+#import "MBProgressHUD.h"
+#import "UIImage+SaveToLocal.h"
 @interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
     NSArray * questTypes;
@@ -96,6 +97,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //点击选题时候，是否震动
     BOOL isVibrateWhenClick;
     
+    //下载图片 计数
+    NSInteger downlingImage;
+    NSInteger downloadedImage;
+    
+    //图片下载器
+    SDWebImageManager * manager;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -118,6 +125,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //初始化下载器
+    manager = [SDWebImageManager sharedManager];
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
     [self initializedInterface];
     [self initializedManipulateData];
     [self countPageInitializing];
@@ -130,6 +142,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //用于记录已经检查过的项目
     alreayCheckItemIndex = 0;
+    
     
 }
 
@@ -264,6 +277,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
             //正则表达式，用于去掉超链接
             NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<a href=\"[^\"]+\">([^<]+)</a>" options:NSRegularExpressionCaseInsensitive error:&error];
             descriptionStr = [regex stringByReplacingMatchesInString:descriptionStr options:0 range:NSMakeRange(0, [descriptionStr length]) withTemplate:@"$1"];
+            
+            [self downloadImageWithImageURL:descriptionStr];
             
             [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
         }
@@ -670,7 +685,22 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 [quesView setSelectButonStatus:tempAlphabet];
             }
             [quesView setBlock:[self buttonBlock]];
-            [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+            NSString * imageFolder = [UIImage getFolderName];
+            NSString * imageUrl = [self getImageName:tempStr];
+            NSURL *url =nil;
+            NSString *descrption =nil;
+            if (imageUrl) {
+                url = [NSURL fileURLWithPath:[imageFolder stringByAppendingPathComponent:imageUrl]];
+                NSString * replaceStr = [self getImageUrl:tempStr];
+                if (replaceStr) {
+                    descrption = [tempStr stringByReplacingOccurrencesOfString:replaceStr withString:imageUrl];
+                }
+                [quesView.quesTextView loadHTMLString:descrption baseURL:url];
+            }else
+            {
+                [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+            }
+
             [self.quesScrollView addSubview:quesView];
             quesView = nil;
         }else if (direction == PanDirectionRight)
@@ -686,7 +716,23 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 [quesView setSelectButonStatus:tempAlphabet];
             }
             [quesView setBlock:[self buttonBlock]];
-            [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+            
+            NSString * imageFolder = [UIImage getFolderName];
+            NSString * imageUrl = [self getImageName:tempStr];
+            NSURL *url =nil;
+            NSString *descrption =nil;
+            if (imageUrl) {
+                url = [NSURL fileURLWithPath:[imageFolder stringByAppendingPathComponent:imageUrl]];
+                NSString * replaceStr = [self getImageUrl:tempStr];
+                if (replaceStr) {
+                    descrption = [tempStr stringByReplacingOccurrencesOfString:replaceStr withString:imageUrl];
+                }
+                [quesView.quesTextView loadHTMLString:descrption baseURL:url];
+            }else
+            {
+                [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+            }
+
             [self.quesScrollView addSubview:quesView];
             quesView = nil;
         }else
@@ -702,7 +748,22 @@ typedef NS_ENUM(NSInteger, PanDirection)
 
                 [quesView setSelectButonStatus:[self getAlreadyChooseItem:questionIndex]];
                 [quesView setBlock:[self buttonBlock]];
-                [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+                
+                NSString * imageFolder = [UIImage getFolderName];
+                NSString * imageUrl = [self getImageName:tempStr];
+                NSURL *url =nil;
+                NSString *descrption =nil;
+                if (imageUrl) {
+                    url = [NSURL fileURLWithPath:[imageFolder stringByAppendingPathComponent:imageUrl]];
+                    NSString * replaceStr = [self getImageUrl:tempStr];
+                    if (replaceStr) {
+                        descrption = [tempStr stringByReplacingOccurrencesOfString:replaceStr withString:imageUrl];
+                    }
+                    [quesView.quesTextView loadHTMLString:descrption baseURL:url];
+                }else
+                {
+                    [quesView.quesTextView loadHTMLString:tempStr baseURL:nil];
+                }
                 
                 [self.quesScrollView addSubview:quesView];
                 quesView = nil;
@@ -712,6 +773,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
     }
     
 }
+
+
 
 -(NSString *)getAlreadyChooseItem:(NSInteger)index
 {
@@ -1069,6 +1132,64 @@ typedef NS_ENUM(NSInteger, PanDirection)
             break;
         default:
             break;
+    }
+}
+
+#pragma mark - 提取图片url
+-(NSString *)getImageUrl:(NSString *)searchStr
+{
+    NSError * error;
+    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"/\\S*\\d.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
+    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
+    
+    if ([compomentArray count]) {
+        for (NSTextCheckingResult * checktStr in compomentArray) {
+            NSRange range = [checktStr rangeAtIndex:0];
+            return [searchStr substringWithRange:range];
+        }
+        return searchStr;
+    }
+    return  nil;
+}
+
+-(NSString *)getImageName:(NSString *)searchStr
+{
+    
+    NSError * error;
+    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"\\d*.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
+    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
+    
+    for (NSTextCheckingResult * checktStr in compomentArray) {
+        NSRange range = [checktStr rangeAtIndex:0];
+        return [searchStr substringWithRange:range];
+    }
+    return nil;
+}
+
+-(void)downloadImageWithImageURL:(NSString *)imageurl
+{
+    __weak PaperViewController * weakSelf =self;
+    if (imageurl) {
+        NSString * imageName = [self getImageUrl:imageurl];
+        if (imageName) {
+            NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
+            NSURL *url = [NSURL URLWithString:imageUrl];
+            downlingImage ++;
+            [manager downloadWithURL:url options:0 progress:^(NSUInteger receivedSize, long long expectedSize) {
+                ;
+            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                [UIImage saveImage:image name:[self getImageName:[url absoluteString]]];
+                downloadedImage ++;
+                [weakSelf isAllImageDownload];
+            }];
+        }
+    }
+}
+
+-(void)isAllImageDownload
+{
+    if (downlingImage ==downloadedImage) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }
 }
 @end

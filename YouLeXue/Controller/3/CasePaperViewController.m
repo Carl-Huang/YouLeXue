@@ -14,6 +14,8 @@
 #import "SDWebImageDownloader.h"
 #import "SDWebImageManager.h"
 #import "UIImage+SaveToLocal.h"
+#import "MBProgressHUD.h"
+
 @interface CasePaperViewController ()<UIScrollViewDelegate>
 {
     NSInteger questionViewHeight;
@@ -42,6 +44,10 @@
 
     //downloader
     SDWebImageManager *manager;
+    
+    //Image counting
+    NSInteger downlingImage;
+    NSInteger downledImage;
 }
 @end
 
@@ -59,11 +65,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    
-    
-    
+    downledImage = 0;
+    downlingImage = 0;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     if (IS_SCREEN_4_INCH) {
         questionViewHeight = 408;
@@ -91,7 +95,6 @@
 
         }
     }
-    
     
     //contentView
     [self.contentScrollView setContentSize:CGSizeMake([caseDataSource count]*320+10, self.contentScrollView.frame.size.height)];
@@ -146,18 +149,28 @@
 
 -(void)downloadImageWithImageURL:(NSString *)imageurl
 {
+    __weak CasePaperViewController * weakSelf =self;
     if (imageurl) {
         NSString * imageName = [self getImageUrl:imageurl];
         if (imageName) {
             NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
             NSURL *url = [NSURL URLWithString:imageUrl];
-            
+            downlingImage ++;
             [manager downloadWithURL:url options:0 progress:^(NSUInteger receivedSize, long long expectedSize) {
                 ;
             } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
                 [UIImage saveImage:image name:[self getImageName:[url absoluteString]]];
+                downledImage ++;
+                [weakSelf isAllImageDownload];
             }];
         }
+    }
+}
+
+-(void)isAllImageDownload
+{
+    if (downlingImage == downledImage) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }
 }
 
@@ -222,7 +235,6 @@
     }
 
 }
-
 
 - (IBAction)saveQues:(id)sender {
     //收藏本题
