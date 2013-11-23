@@ -11,7 +11,9 @@
 #import "ExamplePaperInfo.h"
 #import "QuestionView.h"
 #import "CaseView.h"
-
+#import "SDWebImageDownloader.h"
+#import "SDWebImageManager.h"
+#import "UIImage+SaveToLocal.h"
 @interface CasePaperViewController ()<UIScrollViewDelegate>
 {
     NSInteger questionViewHeight;
@@ -38,6 +40,8 @@
     //答案解释
     NSMutableArray * answerArray;
 
+    //downloader
+    SDWebImageManager *manager;
 }
 @end
 
@@ -55,6 +59,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    
+    
+    
+    
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     if (IS_SCREEN_4_INCH) {
         questionViewHeight = 408;
@@ -68,13 +77,18 @@
     answerArray         = [NSMutableArray array];
     currentDisplayItems = [NSMutableArray array];
     caseQuestionArray   = [NSMutableArray array];
+    manager = [SDWebImageManager sharedManager];
     for (ExamplePaperInfo * info in caseDataSource) {
         @autoreleasepool {
+
             NSString * descripitionStr = [NSString stringWithFormat:@"%@%@",[info valueForKey:@"Title"],[info valueForKey:@"ArticleContent"]];
             [caseQuestionArray addObject:descripitionStr];
+            [self downloadImageWithImageURL:descripitionStr];
             
             NSString * answerStr = [NSString stringWithFormat:@"%@",[info valueForKey:@"KS_daan"]];
             [answerArray addObject:answerStr];
+            [self downloadImageWithImageURL:answerStr];
+
         }
     }
     
@@ -97,6 +111,54 @@
     [self refreshScrollViewWithDirection:panDirectioin];
 
     // Do any additional setup after loading the view from its nib.
+}
+
+#pragma mark - 提取图片url
+-(NSString *)getImageUrl:(NSString *)searchStr
+{
+    NSError * error;
+    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"/\\S*\\d.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
+    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
+    
+    if ([compomentArray count]) {
+        for (NSTextCheckingResult * checktStr in compomentArray) {
+            NSRange range = [checktStr rangeAtIndex:0];
+            return [searchStr substringWithRange:range];
+        }
+        return searchStr;
+    }
+    return  nil;
+}
+
+-(NSString *)getImageName:(NSString *)searchStr
+{
+    
+    NSError * error;
+    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"\\d*.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
+    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
+    
+    for (NSTextCheckingResult * checktStr in compomentArray) {
+        NSRange range = [checktStr rangeAtIndex:0];
+        return [searchStr substringWithRange:range];
+    }
+    return nil;
+}
+
+-(void)downloadImageWithImageURL:(NSString *)imageurl
+{
+    if (imageurl) {
+        NSString * imageName = [self getImageUrl:imageurl];
+        if (imageName) {
+            NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
+            NSURL *url = [NSURL URLWithString:imageUrl];
+            
+            [manager downloadWithURL:url options:0 progress:^(NSUInteger receivedSize, long long expectedSize) {
+                ;
+            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                [UIImage saveImage:image name:[self getImageName:[url absoluteString]]];
+            }];
+        }
+    }
 }
 
 -(void)back
@@ -144,27 +206,24 @@
                 //显示答案
                 CaseView * questionView = (CaseView *)view;
                 NSString * str = [answerArray objectAtIndex:currentPage];
-                
-                NSURL * url = [NSURL URLWithString:@"http://www.55280.com/UploadFiles/2013/2/2013090923361629055.jpg"];
-                NSString* basePath = [[NSBundle mainBundle] bundlePath];
-                [questionView.contentView loadHTMLString:str baseURL:[NSURL fileURLWithPath:basePath]];
+                NSString * imageFolder = [UIImage getFolderName];
+                NSString * imageUrl = [self getImageName:str];
+                if (imageUrl) {
+                    NSURL *url = [NSURL fileURLWithPath:[imageFolder stringByAppendingPathComponent:imageUrl]];
+                    str = [str stringByReplacingOccurrencesOfString:[self getImageUrl:str] withString:imageUrl];
+                    [questionView.contentView loadHTMLString:str baseURL:url];
+
+                }else
+                {
+                    [questionView.contentView loadHTMLString:str baseURL:nil];
+                }
             }
         }
     }
 
 }
 
--(NSString *)getImageUrl:(NSString *)searchStr
-{
-    NSError * error;
-    NSRegularExpression * regex = [[NSRegularExpression alloc]initWithPattern:@"/\\S*\\d.jpg" options:NSRegularExpressionAllowCommentsAndWhitespace error:&error];
-    NSArray * compomentArray =[regex matchesInString:searchStr options:NSMatchingReportProgress range:NSMakeRange(0, [searchStr length])];
-    for (NSTextCheckingResult * checktStr in compomentArray) {
-        NSRange range = [checktStr rangeAtIndex:0];
-        NSLog(@"%@",[searchStr substringWithRange:range]);
-    }
-    return searchStr;
-}
+
 - (IBAction)saveQues:(id)sender {
     //收藏本题
 }
@@ -295,6 +354,20 @@
     
     
     CaseView * quesView = [[CaseView alloc]initWithFrame:CGRectMake(320*index, 0, 320, questionViewHeight) withDescriptionStr:descrption time:timeStr];
+    
+
+    NSString * imageFolder = [UIImage getFolderName];
+    NSString * imageUrl = [self getImageName:descrption];
+    NSURL *url =nil;
+    if (imageUrl) {
+        url = [NSURL fileURLWithPath:[imageFolder stringByAppendingPathComponent:imageUrl]];
+        NSString * replaceStr = [self getImageUrl:descrption];
+        if (replaceStr) {
+             descrption = [descrption stringByReplacingOccurrencesOfString:replaceStr withString:imageUrl];
+        }
+        [quesView.contentView loadHTMLString:descrption baseURL:url];
+    }
+    
     
     [self.contentScrollView addSubview:quesView];
     quesView = nil;

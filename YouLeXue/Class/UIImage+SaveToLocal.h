@@ -11,4 +11,5 @@
 @interface UIImage (SaveToLocal)
 +(BOOL)saveImage:(UIImage *)image name:(NSString *)name;
 +(UIImage *)readImageWithName:(NSString *)name;
++(NSString *)getFolderName;
 @end
