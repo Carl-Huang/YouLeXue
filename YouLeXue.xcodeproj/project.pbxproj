@@ -60,7 +60,6 @@
 		4E2975E81840CF14009A6946 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2975D81840CF14009A6946 /* UIImageView+WebCache.m */; };
 		4E2975EB1840D2BC009A6946 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E2975EA1840D2BC009A6946 /* ImageIO.framework */; };
 		4E2975ED1840D2C4009A6946 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E2975EC1840D2C4009A6946 /* MapKit.framework */; };
-		4E2975EF1840F328009A6946 /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2975EE1840F328009A6946 /* loading.png */; };
 		4E2975F11840F364009A6946 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2975F01840F364009A6946 /* Default@2x.png */; };
 		4E2975F31840F370009A6946 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2975F21840F36F009A6946 /* Default.png */; };
 		4E2975F91840FA98009A6946 /* Case_Button_Submit_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2975F41840FA98009A6946 /* Case_Button_Submit_blue@2x.png */; };
@@ -446,6 +445,9 @@
 		4E1E4289183BC43A00CDE577 /* EndExamScoreViewControllerNav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamScoreViewControllerNav.h; sourceTree = "<group>"; };
 		4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamScoreViewControllerNav.m; sourceTree = "<group>"; };
 		4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamScoreViewControllerNav.xib; sourceTree = "<group>"; };
+		4E20F6B01842496100DCA5AC /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		4E20F6B11842497600DCA5AC /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		4E20F6B2184249C100DCA5AC /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		4E2975B91840CF14009A6946 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		4E2975BA1840CF14009A6946 /* .gitmodules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitmodules; sourceTree = "<group>"; };
 		4E2975BC1840CF14009A6946 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
@@ -479,7 +481,6 @@
 		4E2975D81840CF14009A6946 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		4E2975EA1840D2BC009A6946 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		4E2975EC1840D2C4009A6946 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		4E2975EE1840F328009A6946 /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = loading.png; path = ../../../loading.png; sourceTree = "<group>"; };
 		4E2975F01840F364009A6946 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../../Default@2x.png"; sourceTree = "<group>"; };
 		4E2975F21840F36F009A6946 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../../Default.png; sourceTree = "<group>"; };
 		4E2975F41840FA98009A6946 /* Case_Button_Submit_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Case_Button_Submit_blue@2x.png"; sourceTree = "<group>"; };
@@ -1069,7 +1070,6 @@
 			children = (
 				4E2975F21840F36F009A6946 /* Default.png */,
 				4E2975F01840F364009A6946 /* Default@2x.png */,
-				4E2975EE1840F328009A6946 /* loading.png */,
 				4E3D8713183904D20073CD47 /* checkmark.png */,
 				4E3D8714183904D20073CD47 /* cross.png */,
 			);
@@ -1725,6 +1725,9 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
+				4E20F6B2184249C100DCA5AC /* Default.png */,
+				4E20F6B11842497600DCA5AC /* Default@2x.png */,
+				4E20F6B01842496100DCA5AC /* Default-568h@2x.png */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
 				C32C214F1828912200FBF75C /* Products */,
@@ -2077,7 +2080,6 @@
 				4EA4DD8118404F5A00EB00E4 /* CasePaperViewController.xib in Resources */,
 				4E2975D91840CF14009A6946 /* .gitignore in Resources */,
 				4E2975DA1840CF14009A6946 /* .gitmodules in Resources */,
-				4E2975EF1840F328009A6946 /* loading.png in Resources */,
 				4E2975F11840F364009A6946 /* Default@2x.png in Resources */,
 				4E2975F31840F370009A6946 /* Default.png in Resources */,
 				4E2975F91840FA98009A6946 /* Case_Button_Submit_blue@2x.png in Resources */,
@@ -2295,7 +2297,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Connection\"",
@@ -2331,7 +2332,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Connection\"",

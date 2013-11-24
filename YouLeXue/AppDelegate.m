@@ -155,12 +155,14 @@
         
     self.containerViewController.delegate=self;
     
-    UIImageView * delayImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"loading"]];
+    UIImageView * delayImage = nil;
     if (IS_SCREEN_4_INCH) {
-        [delayImage setFrame:CGRectMake(0, 20, 320, 548)];
+        delayImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Default-568h"]];
+        [delayImage setFrame:CGRectMake(0, 0, 320, 568)];
     }else
     {
-        [delayImage setFrame:CGRectMake(0, 20, 320, 460)];
+        delayImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Default@2x"]];
+        [delayImage setFrame:CGRectMake(0, 0, 320, 480)];
     }
 
     [UIView animateWithDuration:6 animations:^{
