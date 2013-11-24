@@ -128,8 +128,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //初始化下载器
     manager = [SDWebImageManager sharedManager];
     
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
     [self initializedInterface];
     [self initializedManipulateData];
     [self countPageInitializing];
@@ -1174,6 +1172,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
         if (imageName) {
             NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
             NSURL *url = [NSURL URLWithString:imageUrl];
+            if (downlingImage == 0) {
+                [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            }
             downlingImage ++;
             [manager downloadWithURL:url options:0 progress:^(NSUInteger receivedSize, long long expectedSize) {
                 ;
