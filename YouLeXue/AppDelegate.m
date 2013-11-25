@@ -165,7 +165,7 @@
         [delayImage setFrame:CGRectMake(0, 0, 320, 480)];
     }
 
-    [UIView animateWithDuration:6 animations:^{
+    [UIView animateWithDuration:3 animations:^{
         [delayImage setAlpha:0.0];
         [delayImage removeFromSuperview];
     }];
