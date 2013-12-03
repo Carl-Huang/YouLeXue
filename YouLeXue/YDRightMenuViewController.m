@@ -481,6 +481,7 @@
 
 - (IBAction)updatePaperAction:(id)sender {
 //案例题目列表
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [HttpHelper getExampleListWithGroupId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             [[PersistentDataManager sharePersistenDataManager]createExampleListTable:(NSArray *)item];
@@ -490,10 +491,12 @@
             if ([arr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkCaseTable:item];
             }
+
         }
         if (error) {
             NSLog(@"%@",[error description]);
         }
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }];
 
 }

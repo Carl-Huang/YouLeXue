@@ -103,6 +103,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //图片下载器
     SDWebImageManager * manager;
+    
+    //标志是否可以开始答卷
+    BOOL isShouldBeginExam;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -127,10 +130,11 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [super viewDidLoad];
     //初始化下载器
     manager = [SDWebImageManager sharedManager];
-    
+    isShouldBeginExam = NO;
     [self initializedInterface];
     [self initializedManipulateData];
-    [self countPageInitializing];
+    
+
     
     [self.popUpTable setHidden:YES];
     [self.view bringSubviewToFront:self.popUpTable];
@@ -1191,6 +1195,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     if (downlingImage ==downloadedImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self countPageInitializing];
     }
 }
 @end

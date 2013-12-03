@@ -445,14 +445,14 @@
 		4E1545CA1839A06C0037AE02 /* UserSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetting.m; sourceTree = "<group>"; };
 		4E1928E3183B04FE00236EF4 /* SubmittedPaperIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubmittedPaperIndex.h; sourceTree = "<group>"; };
 		4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubmittedPaperIndex.m; sourceTree = "<group>"; };
-		4E1AFF6E18434A88008333F1 /* 114x114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 114x114.png; sourceTree = "<group>"; };
-		4E1AFF7018434A8E008333F1 /* 57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 57x57.png; sourceTree = "<group>"; };
+		4E1AFF6E18434A88008333F1 /* 114x114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 114x114.png; path = ../../114x114.png; sourceTree = "<group>"; };
+		4E1AFF7018434A8E008333F1 /* 57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 57x57.png; path = ../../57x57.png; sourceTree = "<group>"; };
 		4E1E4289183BC43A00CDE577 /* EndExamScoreViewControllerNav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamScoreViewControllerNav.h; sourceTree = "<group>"; };
 		4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamScoreViewControllerNav.m; sourceTree = "<group>"; };
 		4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamScoreViewControllerNav.xib; sourceTree = "<group>"; };
-		4E20F6B01842496100DCA5AC /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		4E20F6B11842497600DCA5AC /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		4E20F6B2184249C100DCA5AC /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		4E20F6B01842496100DCA5AC /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
+		4E20F6B11842497600DCA5AC /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../Default@2x.png"; sourceTree = "<group>"; };
+		4E20F6B2184249C100DCA5AC /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../Default.png; sourceTree = "<group>"; };
 		4E2975B91840CF14009A6946 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		4E2975BA1840CF14009A6946 /* .gitmodules */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitmodules; sourceTree = "<group>"; };
 		4E2975BC1840CF14009A6946 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
@@ -1490,6 +1490,11 @@
 		4EF18697182A9A0F00E5EEA8 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				4E1AFF7018434A8E008333F1 /* 57x57.png */,
+				4E1AFF6E18434A88008333F1 /* 114x114.png */,
+				4E20F6B2184249C100DCA5AC /* Default.png */,
+				4E20F6B11842497600DCA5AC /* Default@2x.png */,
+				4E20F6B01842496100DCA5AC /* Default-568h@2x.png */,
 				4E3D8712183904D20073CD47 /* OtherImages */,
 				4EF18698182A9A0F00E5EEA8 /* 1x */,
 				4EF186ED182A9A0F00E5EEA8 /* 2x */,
@@ -1730,11 +1735,6 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
-				4E1AFF7018434A8E008333F1 /* 57x57.png */,
-				4E1AFF6E18434A88008333F1 /* 114x114.png */,
-				4E20F6B2184249C100DCA5AC /* Default.png */,
-				4E20F6B11842497600DCA5AC /* Default@2x.png */,
-				4E20F6B01842496100DCA5AC /* Default-568h@2x.png */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
 				C32C214F1828912200FBF75C /* Products */,
