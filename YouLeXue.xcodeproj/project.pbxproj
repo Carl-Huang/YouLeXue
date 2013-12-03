@@ -40,6 +40,8 @@
 		4E1306E0182D3A090099B6CC /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1306DF182D3A090099B6CC /* libsqlite3.0.dylib */; };
 		4E1545CB1839A06C0037AE02 /* UserSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1545CA1839A06C0037AE02 /* UserSetting.m */; };
 		4E1928E5183B04FE00236EF4 /* SubmittedPaperIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */; };
+		4E1AFF6F18434A88008333F1 /* 114x114.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E1AFF6E18434A88008333F1 /* 114x114.png */; };
+		4E1AFF7118434A8E008333F1 /* 57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E1AFF7018434A8E008333F1 /* 57x57.png */; };
 		4E1E428C183BC43A00CDE577 /* EndExamScoreViewControllerNav.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */; };
 		4E1E428D183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */; };
 		4E2975D91840CF14009A6946 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 4E2975B91840CF14009A6946 /* .gitignore */; };
@@ -384,6 +386,7 @@
 		4EF187EE182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187ED182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m */; };
 		4EF187F3182AA70500E5EEA8 /* SVPullToRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4EF187F0182AA70500E5EEA8 /* SVPullToRefresh.bundle */; };
 		4EF187F4182AA70500E5EEA8 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */; };
+		4EF8F5A5184C2F3400EC8928 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E20F6B2184249C100DCA5AC /* Default.png */; };
 		4EFAA04918408D4A000AB053 /* CaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFAA04818408D4A000AB053 /* CaseView.m */; };
 		4EFF03AC18339C3B005B13BA /* PaperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF03AA18339C3B005B13BA /* PaperViewController.m */; };
 		4EFF03AD18339C3B005B13BA /* PaperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4EFF03AB18339C3B005B13BA /* PaperViewController.xib */; };
@@ -442,6 +445,8 @@
 		4E1545CA1839A06C0037AE02 /* UserSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetting.m; sourceTree = "<group>"; };
 		4E1928E3183B04FE00236EF4 /* SubmittedPaperIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubmittedPaperIndex.h; sourceTree = "<group>"; };
 		4E1928E4183B04FE00236EF4 /* SubmittedPaperIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubmittedPaperIndex.m; sourceTree = "<group>"; };
+		4E1AFF6E18434A88008333F1 /* 114x114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 114x114.png; sourceTree = "<group>"; };
+		4E1AFF7018434A8E008333F1 /* 57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 57x57.png; sourceTree = "<group>"; };
 		4E1E4289183BC43A00CDE577 /* EndExamScoreViewControllerNav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndExamScoreViewControllerNav.h; sourceTree = "<group>"; };
 		4E1E428A183BC43A00CDE577 /* EndExamScoreViewControllerNav.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndExamScoreViewControllerNav.m; sourceTree = "<group>"; };
 		4E1E428B183BC43A00CDE577 /* EndExamScoreViewControllerNav.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EndExamScoreViewControllerNav.xib; sourceTree = "<group>"; };
@@ -1725,6 +1730,8 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
+				4E1AFF7018434A8E008333F1 /* 57x57.png */,
+				4E1AFF6E18434A88008333F1 /* 114x114.png */,
 				4E20F6B2184249C100DCA5AC /* Default.png */,
 				4E20F6B11842497600DCA5AC /* Default@2x.png */,
 				4E20F6B01842496100DCA5AC /* Default-568h@2x.png */,
@@ -2092,6 +2099,9 @@
 				4E2976051840FA9E009A6946 /* Case_Icon_rect_clear@2x.png in Resources */,
 				4E2976061840FA9E009A6946 /* Setting_Icon_Check@2x.png in Resources */,
 				4E2976071840FA9E009A6946 /* Setting_Icon_UnCheck@2x.png in Resources */,
+				4E1AFF6F18434A88008333F1 /* 114x114.png in Resources */,
+				4E1AFF7118434A8E008333F1 /* 57x57.png in Resources */,
+				4EF8F5A5184C2F3400EC8928 /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

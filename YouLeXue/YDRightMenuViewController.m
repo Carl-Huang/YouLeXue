@@ -39,12 +39,16 @@
     
     //downloader
     SDWebImageManager * manager;
+    NSMutableDictionary * paper;
+    BOOL isShouldDownExamPaper;
 }
+@property (assign ,nonatomic) NSInteger downloadedPaperCount;
+
 @end
 
 @implementation YDRightMenuViewController
 @synthesize userInfo;
-
+@synthesize downloadedPaperCount;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -92,7 +96,13 @@
     [self fillData];
     [self refreshStatus];
     
-
+    isShouldDownExamPaper = NO;
+    paper = [NSMutableDictionary dictionary];
+    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+    if ([paper count]==0) {
+        isShouldDownExamPaper = YES;
+    }
+    [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 -(void)fillData
@@ -415,9 +425,11 @@
 }
 
 - (IBAction)reloadQuesBankAction:(id)sender {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [HttpHelper getGroupExamListWithId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             //保存数据数据库
+            self.downloadedPaperCount = [item count];
             NSArray * tempArr = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
             if ([tempArr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
@@ -428,9 +440,35 @@
             if ([arr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
             }
+            if (isShouldDownExamPaper) {
+                for (ExamInfo * examInfo in item) {
+                    [self downPaperListWithExamInfo:examInfo];
+                }
+
+            }else
+            {
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+            }
+        }else
+        {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
         }
     }];
 
+}
+
+-(void)downPaperListWithExamInfo:(ExamInfo *)tempExamInfo
+{
+   
+    [HttpHelper getExamPaperListWithExamId:[tempExamInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+        NSArray * arr = (NSArray *)item;
+        self.downloadedPaperCount --;
+        if([arr count])
+        {
+            [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
+        }
+    }];
+    
 }
 
 - (IBAction)userInfoAction:(id)sender {
@@ -480,6 +518,17 @@
     if ([keyPath isEqual:@"isShouldShowLoginView"]) {
         //登陆
         [self refreshStatus];
+    }
+    if ([keyPath isEqualToString:@"downloadedPaperCount"]) {
+        NSLog(@"%d",self.downloadedPaperCount);
+        if (self.downloadedPaperCount == 0) {
+            //保存数据到数据库
+            NSMutableArray * tempArray = [NSMutableArray array];
+            NSArray *tempPaperArr = [paper allValues];
+            [tempArray addObjectsFromArray:tempPaperArr];
+            [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+        }
     }
 }
 

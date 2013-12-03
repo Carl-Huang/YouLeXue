@@ -199,6 +199,7 @@ static NSString *identifier = @"Cell";
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
     if ([array count]) {
         [self cleanDataSource];
+        [currentTableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:30];
         for (ExamInfo * examInfo in array) {
             downloadedPaperCount = [array count];
             NSLog(@"%@",examInfo.KS_leixing);
@@ -236,11 +237,10 @@ static NSString *identifier = @"Cell";
     if (isShouldDownExamPaper) {
         [HttpHelper getExamPaperListWithExamId:[tempExamInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
             NSArray * arr = (NSArray *)item;
-            
+            self.downloadedPaperCount --;
             if([arr count])
             {
                 [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
-                self.downloadedPaperCount --;
             }
         }];
 
