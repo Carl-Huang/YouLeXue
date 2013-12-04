@@ -254,4 +254,7 @@
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
+- (IBAction)phoneCallAction:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://40086-55280"]];
+}
 @end

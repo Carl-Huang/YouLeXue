@@ -22,7 +22,9 @@
 
 #import "AKTabBarController.h"
 #import "UIViewController+AKTabBarController.h"
-
+#import "PersistentDataManager.h"
+#import "UserLoginInfo.h"
+#import "VDAlertView.h"
 // Default height of the tab bar
 static const int kDefaultTabBarHeight = 50;
 
@@ -357,19 +359,46 @@ typedef enum {
 
 - (void)tabBar:(AKTabBar *)AKTabBarDelegate didSelectTabAtIndex:(NSInteger)index
 {
-    UIViewController *vc = (self.viewControllers)[index];
+   
+        NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+        if (![array count]) {
+            NSLog(@"请登陆");
+            UILabel * textLabel = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 100, 30)];
+            [textLabel setBackgroundColor:[UIColor clearColor]];
+            textLabel.font = [UIFont systemFontOfSize:18];
+            textLabel.textAlignment = NSTextAlignmentCenter;
+            textLabel.text = @"请登录";
+            
+            UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 280, 50)];
+            [bgView setBackgroundColor:[UIColor clearColor]];
+            [bgView addSubview:textLabel];
+            textLabel = nil;
+            
+            VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView setCustomSubview:bgView];
+            bgView = nil;
+            [alertView show];
+            
+            //因为用户始终有一个，所以只读取第零个元素
+           
+        }else
+        {
+            UIViewController *vc = (self.viewControllers)[index];
+            if (self.selectedViewController == vc)
+            {
+                if ([vc isKindOfClass:[UINavigationController class]])
+                    [(UINavigationController *)self.selectedViewController popToRootViewControllerAnimated:YES];
+            }
+            else
+            {
+                [[self navigationItem] setTitle:[vc title]];
+                self.selectedViewController = vc;
+            }
+
+        }
+        
     
-    if (self.selectedViewController == vc)
-    {
-        if ([vc isKindOfClass:[UINavigationController class]])
-            [(UINavigationController *)self.selectedViewController popToRootViewControllerAnimated:YES];
-    }
-    else
-    {
-        [[self navigationItem] setTitle:[vc title]];
-        self.selectedViewController = vc;
-    }
-}
+   }
 
 #pragma mark - Rotation Events
 

@@ -125,17 +125,13 @@
     // Override point for customization after application launch.
     akTabBarController = [[AKTabBarController alloc] initWithTabBarHeight:49.0];
     MainViewController * firstViewController = [[MainViewController alloc]initWithNibName:@"MainViewController" bundle:nil];
-//    UINavigationController * nav_a = [[UINavigationController alloc] initWithRootViewController:firstViewController];
     
     TestUserGroupViewController *secondViewController = [[TestUserGroupViewController alloc]initWithNibName:@"TestUserGroupViewController" bundle:nil];
-//     UINavigationController * nav_b = [[UINavigationController alloc] initWithRootViewController:secondViewController];
     
     CaseAnalysisViewController * thirdViewController = [[CaseAnalysisViewController alloc]initWithNibName:@"CaseAnalysisViewController" bundle:nil];
-//     UINavigationController * nav_c = [[UINavigationController alloc] initWithRootViewController:thirdViewController];
     
     WrongBookViewController * fourthViewController = [[WrongBookViewController alloc]initWithNibName:@"WrongBookViewController" bundle:nil];
-//     UINavigationController * nav_d = [[UINavigationController alloc] initWithRootViewController:fourthViewController];
-    
+
     SettingViewController * fifthViewController = [[SettingViewController alloc]initWithNibName:@"SettingViewController" bundle:nil];
     akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:firstViewController,secondViewController,thirdViewController,fourthViewController,fifthViewController,nil];
     akTabBarController.tabWidth = 320.0/5;
@@ -248,11 +244,14 @@
 +(NSString *)getServerURL
 {
     NSString * serverUrl = nil;
-    serverUrl = [NSString stringWithFormat:@"%@/jsonapi/",[[NSUserDefaults standardUserDefaults]stringForKey:ServerURLKey]];
-    
-    if (!serverUrl) {
+    serverUrl = [[NSUserDefaults standardUserDefaults]stringForKey:ServerURLKey];
+    if ([serverUrl length]) {
+        serverUrl = [NSString stringWithFormat:@"%@/jsonapi/",serverUrl];
+    }else
+    {
         return @"http://www.55280.com/jsonapi/";
     }
+    
     return serverUrl;
 }
 

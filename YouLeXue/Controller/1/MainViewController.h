@@ -16,5 +16,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *messageCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *NotLoignLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImgeView;
+- (IBAction)phoneCallAction:(id)sender;
 
 @end

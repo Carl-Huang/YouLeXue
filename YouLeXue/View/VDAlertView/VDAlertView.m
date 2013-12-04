@@ -394,13 +394,13 @@ const CGFloat kTSAlertView_ColumnMargin = 10.0;
 		_messageLabel = [[UILabel alloc] init];
 		_messageLabel.font = [UIFont systemFontOfSize: 16];
 		_messageLabel.backgroundColor = [UIColor clearColor];
-        if ([self CurrentVersionIsIOS7]) {
-            _messageLabel.textColor = [UIColor blackColor];
-        }else
-        {
-            _messageLabel.textColor = [UIColor whiteColor];
-        }
-		
+//        if ([self CurrentVersionIsIOS7]) {
+//            _messageLabel.textColor = [UIColor blackColor];
+//        }else
+//        {
+//            _messageLabel.textColor = [UIColor whiteColor];
+//        }
+		_messageLabel.textColor = [UIColor blackColor];
 		_messageLabel.textAlignment = NSTextAlignmentCenter;
 		_messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 		_messageLabel.numberOfLines = 0;
