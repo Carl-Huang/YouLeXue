@@ -531,11 +531,11 @@ const CGFloat kTSAlertView_ColumnMargin = 10.0;
 	UIButton* b = [UIButton buttonWithType: UIButtonTypeCustom];
 	[b setTitle: t forState: UIControlStateNormal];
 	
-	UIImage* buttonBgNormal = [UIImage imageNamed: @"TSAlertViewButtonBackground.png"];
+	UIImage* buttonBgNormal = [UIImage imageNamed: @"VDAlertViewCancelButtonBackground.png"];
 	buttonBgNormal = [buttonBgNormal stretchableImageWithLeftCapWidth: buttonBgNormal.size.width / 2.0 topCapHeight: buttonBgNormal.size.height / 2.0];
 	[b setBackgroundImage: buttonBgNormal forState: UIControlStateNormal];
 	
-	UIImage* buttonBgPressed = [UIImage imageNamed: @"TSAlertViewButtonBackground_Highlighted.png"];
+	UIImage* buttonBgPressed = [UIImage imageNamed: @"VDAlertViewButtonBackground_Highlighted.png"];
 	buttonBgPressed = [buttonBgPressed stretchableImageWithLeftCapWidth: buttonBgPressed.size.width / 2.0 topCapHeight: buttonBgPressed.size.height / 2.0];
 	[b setBackgroundImage: buttonBgPressed forState: UIControlStateHighlighted];
 	

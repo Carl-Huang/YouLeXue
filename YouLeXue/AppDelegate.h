@@ -22,7 +22,10 @@
 @property(strong,nonatomic)YDLeftMenuViewController* leftMenuViewController;
 @property(strong,nonatomic)YDRightMenuViewController* rightMenuViewController;
 @property (strong ,nonatomic) UserLoginInfo * userInfo;
-
+@property (strong ,nonatomic) NSString * Server_URL;
 -(void)toggleLeftMenu;
 -(void)toggleRightMenu;
+
++(NSString *)getServerURL;
++(NSString *)getServerAddress;
 @end

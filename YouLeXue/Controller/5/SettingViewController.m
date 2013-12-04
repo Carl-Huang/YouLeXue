@@ -12,8 +12,10 @@
 #import "UserSetting.h"
 #import <objc/runtime.h>
 #import "PersistentDataManager.h"
+#import "Constant.h"
+#import "VDAlertView.h"
 
-@interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate,VDAlertViewDelegate,UITextFieldDelegate>
 {
     NSArray *firSectionDataSource;
     
@@ -26,6 +28,10 @@
     
     //记录cell的选中状态
     NSMutableDictionary * checkItems;
+    
+    //服务器修改地址框
+    UIView * textFieldBg;
+    UITextField * alterServerUrlTextField;
 }
 @end
 
@@ -81,7 +87,21 @@
         }
    
     }
-
+    textFieldBg = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+    [textFieldBg setBackgroundColor:[UIColor clearColor]];
+    alterServerUrlTextField = [[UITextField alloc]initWithFrame:CGRectMake(10, 10, 260, 35)];
+    [alterServerUrlTextField setBorderStyle:UITextBorderStyleRoundedRect];
+    [alterServerUrlTextField setBackgroundColor:[UIColor clearColor]];
+    alterServerUrlTextField.delegate = self;
+    NSString * tempUrl = [AppDelegate getServerAddress];
+    if (![tempUrl length]) {
+         alterServerUrlTextField.text = @"http://www.55280.com";
+    }else
+    {
+        alterServerUrlTextField.text = tempUrl;
+    }
+    
+    [textFieldBg addSubview:alterServerUrlTextField];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -178,6 +198,12 @@
             }
         }
         [tableView reloadData];
+    }else if (indexPath.section == 2)
+    {
+        VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"请输入" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];
+        [alert setCustomSubview:textFieldBg];
+        alert.delegate = self;
+        [alert show];
     }
 }
 
@@ -229,7 +255,7 @@
         case 2:
         {
             cell.textLabel.text = @"服务器地址设置";
-            cell.detailTextLabel.text = @"http://www.55280.com";
+            cell.detailTextLabel.text = alterServerUrlTextField.text;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;
@@ -278,5 +304,35 @@
     [[NSUserDefaults standardUserDefaults]setFloat:tempSlider.value forKey:@"APP_BRIGHTNESS"];
     [UIScreen mainScreen].brightness = tempSlider.value;
     NSLog(@"%f",tempSlider.value);
+}
+
+#pragma mark - VDAlertView delegate
+-(void)alertView:(VDAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+        {
+            //修改服务器地址
+            NSString * serverUrl = alterServerUrlTextField.text;
+            [[NSUserDefaults standardUserDefaults]setObject:serverUrl forKey:ServerURLKey];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+
+        }
+            break;
+        case 1:
+            ;
+            break;
+        default:
+            break;
+    }
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@"\n"]) {
+        [textField resignFirstResponder];
+        return NO;
+    }
+    return YES;
 }
 @end

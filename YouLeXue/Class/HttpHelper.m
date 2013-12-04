@@ -18,13 +18,13 @@
 #import "ExamplePaperInfo.h"
 #import "FetchDataInfo.h"
 #import "FetchUserMessageInfo.h"
-
+#import "AppDelegate.h"
 
 @implementation HttpHelper
 +(void)userLoginWithName:(NSString *)name pwd:(NSString *)password completedBlock:(void (^)(id item,NSError * error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"CheckUserLogin.asp?username=%@&password=%@",name,password];
-    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
 
      AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -42,7 +42,7 @@
 +(void)getGroupExamListWithId:(NSString *)groupId completedBlock:(void (^)(id item,NSError * error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"exam/search.asp?groupid=%@",groupId];
-    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if ([responseObject count]) {
@@ -59,7 +59,7 @@
 +(void)getExamPaperListWithExamId:(NSString *)examId completedBlock:(void (^)(id item,NSError * error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"exam/question.asp?examId=%@",examId];
-    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if ([responseObject count]) {
@@ -75,7 +75,7 @@
 +(void)getExampleListWithGroupId:(NSString *)groupId completedBlock:(void (^)(id item,NSError * error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"case.asp?KS_leixing=1&groupid=%@",groupId];
-    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if ([responseObject count]) {
@@ -109,7 +109,7 @@
 +(void)getUserMessageWithUserName:(NSString *)name completedBlock:(void (^)(id item,NSError * error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"usermessage.asp?username=%@",name];
-    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
@@ -132,7 +132,7 @@
                  completedBlock:(void (^)(id item,NSError *error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"updateUser.asp?UserID=%@&realnam=%@&qq=%@&mobile=%@&email=%@",userId,realName,qqNum,mobile,email];
-    cmdStr = [Server_URL stringByAppendingString:cmdStr];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:cmdStr]];
     [request setHTTPMethod:@"GET"];

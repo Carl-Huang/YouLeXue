@@ -351,7 +351,7 @@
 
 -(void)showAlertView:(NSString *)message
 {
-    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alert show];
     alert = nil;
 }
@@ -514,6 +514,13 @@
     }];
     [self.afterLoginView setHidden:YES];
     [self.beforeLoginView setHidden:NO];
+}
+
+- (IBAction)registerAction:(id)sender {
+    NSString * tempServerUrl = [AppDelegate getServerAddress];
+    
+    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/3g/reg.asp",tempServerUrl]];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

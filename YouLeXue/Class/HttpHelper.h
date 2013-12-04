@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
-
 @interface HttpHelper : NSObject
 //用户登陆验证
 +(void)userLoginWithName:(NSString *)name pwd:(NSString *)password completedBlock:(void (^)(id item,NSError * error))block;
