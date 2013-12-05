@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "SDWebImageManager.h"
 #import "MBProgressHUD.h"
 #import "UIImage+SaveToLocal.h"
+#import "VDAlertView.h"
 @interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
 {
     NSArray * questTypes;
@@ -106,6 +107,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     
     //标志是否可以开始答卷
     BOOL isShouldBeginExam;
+    BOOL isDownloadAllImage;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -131,6 +133,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //初始化下载器
     manager = [SDWebImageManager sharedManager];
     isShouldBeginExam = NO;
+    isDownloadAllImage = NO;
     [self initializedInterface];
     [self initializedManipulateData];
     
@@ -294,8 +297,14 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
         
     }
-
+    isShouldBeginExam = YES;
+    if (isDownloadAllImage) {
+        [self countPageInitializing];
+    }
+    
+    NSLog(@"som");
 }
+
 
 -(void)countPageInitializing
 {
@@ -940,6 +949,25 @@ typedef NS_ENUM(NSInteger, PanDirection)
         timeStr = nil;
         free(vars);
         [wrongExamPaperInfoArray addObject:info];
+        
+        
+        UILabel * textLabel = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 120, 30)];
+        [textLabel setBackgroundColor:[UIColor clearColor]];
+        textLabel.font = [UIFont systemFontOfSize:15];
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        textLabel.text = @"成功加入错题本";
+        
+        UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 280, 50)];
+        [bgView setBackgroundColor:[UIColor clearColor]];
+        [bgView addSubview:textLabel];
+        textLabel = nil;
+        
+        VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView setCustomSubview:bgView];
+        bgView = nil;
+        [alertView show];
+
+
     }
     
     
@@ -1195,7 +1223,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     if (downlingImage ==downloadedImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
-        [self countPageInitializing];
+        isDownloadAllImage = YES;
+        if (isShouldBeginExam) {
+            [self countPageInitializing];
+        }
     }
 }
 @end
