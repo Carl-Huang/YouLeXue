@@ -53,4 +53,7 @@
 -(NSArray *)readAlreadyMarkCaseTable;
 -(void)updateAlreadyMarkCaseTableWithKey:(NSString *)key  value:(NSString *)value;
 
+-(void)createMessageTable:(NSArray *)array;
+-(void)deleteMessageFromMessageTableWithID:(NSString *)MessageId;
+-(NSArray *)readMessageTableData;
 @end

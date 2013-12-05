@@ -18,6 +18,7 @@
 #import "UserSetting.h"
 #import "SubmittedPaperInfo.h"
 #import "SubmittedPaperIndex.h"
+#import "FetchUserMessageInfo.h"
 
 @implementation PersistentDataManager
 @synthesize db;
@@ -612,6 +613,44 @@
     return array;
 }
 
+#pragma  mark - 创建短信表
+-(void)createMessageTable:(NSArray *)array
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists MessageTable %@",[self enumerateObjectConverToStr:[FetchUserMessageInfo class] withPrimarykey:@"ID"]];
+    if ([db executeUpdate:cmdStr]) {
+        NSLog(@"create MessageTable successfully");
+        if ([array count]) {
+            for (FetchUserMessageInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"MessageTable" Arguments:info primaryKey:@"ID"];
+            }
+        }
+    }else
+    {
+        NSLog(@"Failer to create MessageTable,Error: %@",[db lastError]);
+    }
+    [db close];
+}
+
+//-(void)isertDataIntoMessageTable
+
+-(void)deleteMessageFromMessageTableWithID:(NSString *)MessageId
+{
+    //
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update MessageTable set isDelete=1 where ID=?"];
+    [db executeUpdate:cmdStr,MessageId];
+    [db commit];
+    [db close];
+}
+
+-(NSArray *)readMessageTableData
+{
+    
+   NSArray * array = [self readDataWithTableName:@"MessageTable" withObjClass:[FetchUserMessageInfo class]];
+    return array;
+}
 
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName

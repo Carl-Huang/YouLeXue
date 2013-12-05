@@ -8,6 +8,7 @@
 
 #import "DetailPhoneNotiViewController.h"
 #import "FetchUserMessageInfo.h"
+#import "PersistentDataManager.h"
 @interface DetailPhoneNotiViewController ()
 
 @end
@@ -28,7 +29,7 @@
     [super viewDidLoad];
     self.titleLabel.text = [info valueForKey:@"Title"];
     self.timeLabel.text = [info valueForKey:@"Sendtime"];
-    self.contentTextView.text = [info valueForKey:@"Content"];
+    [self.contentTextView loadHTMLString:[info valueForKey:@"Content"] baseURL:nil];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -48,5 +49,7 @@
     [super viewDidUnload];
 }
 - (IBAction)deleteAction:(id)sender {
+    [[PersistentDataManager sharePersistenDataManager]deleteMessageFromMessageTableWithID:[info valueForKey:@"ID"]];
+     [self dismissModalViewControllerAnimated:YES];
 }
 @end
