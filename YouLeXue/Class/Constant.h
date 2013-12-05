@@ -7,7 +7,7 @@
 //
 
 #define ServerURLKey  @"ServerURLKey"
-
+#define PassWordKey   @"PassWordKey"
 #ifndef YouLeXue_Constant_h
 #define YouLeXue_Constant_h
 

@@ -12,7 +12,11 @@
 #import "UIImageView+AFNetworking.h"
 #import "HttpHelper.h"
 #import "PersistentDataManager.h"
-@interface UserInfoViewController ()<UITableViewDelegate>
+#import "UserLoginInfo.h"
+#import "PersistentDataManager.h"
+#import "Constant.h"
+#import "VDAlertView.h"
+@interface UserInfoViewController ()<UITableViewDelegate,UITextFieldDelegate>
 {
     AppDelegate * myDelegate;
     BOOL isEditingTableView;
@@ -20,6 +24,10 @@
     UITextField * qqTextField;
     UITextField * mobileTextField;
     UITextField * emailTextField;
+    
+    
+    //用户登陆消息
+    UserLoginInfo * loginInfo;
 }
 @end
 
@@ -69,7 +77,16 @@
 
     isEditingTableView=  NO;
     [self configureTextField];
-
+    
+   
+    NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        //因为用户始终有一个，所以只读取第零个元素
+         loginInfo = (UserLoginInfo *)[array objectAtIndex:0];
+    }else
+    {
+        loginInfo = nil;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -107,8 +124,16 @@
 -(void)confirmAlter
 {
     //更新用户个人信息
-    [HttpHelper updateUserInfoWithUserId:[myDelegate.userInfo valueForKey:@"UserID"] realName:userNameTextField.text qqNum:qqTextField.text mobile:mobileTextField.text email:emailTextField.text completedBlock:^(id item, NSError *error) {
-        ;
+    __weak UserInfoViewController *weakSelf = self;
+    [HttpHelper updateUserInfoWithUserId:[loginInfo valueForKey:@"UserID"] realName:userNameTextField.text qqNum:qqTextField.text mobile:mobileTextField.text email:emailTextField.text completedBlock:^(id item, NSError *error) {
+        if ([item isEqualToString:@"1"]) {
+            NSLog(@"更新成功");
+            [weakSelf reloadUserInfo];
+        }
+        
+        if (error) {
+            NSLog(@"%@",[error description]);
+        }
     }];
     [self.btnBackGround setHidden:NO];
     self.btnBackGround.alpha = 0.1;
@@ -120,6 +145,44 @@
     }];
     isEditingTableView = NO;
     [self.userInfoTable reloadData];
+}
+
+-(NSString *)md5:(NSString *)str
+{
+    const char *cStr = [str UTF8String];
+    unsigned char result[16];
+    CC_MD5(cStr, strlen(cStr), result); // This is the md5 call
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
+}
+
+-(void)reloadUserInfo
+{
+    NSString *passwordStr = [[NSUserDefaults standardUserDefaults]stringForKey:PassWordKey];
+    
+    [HttpHelper userLoginWithName:[loginInfo valueForKey:@"UserName"] pwd:passwordStr completedBlock:^(id item, NSError *error) {
+        if (item) {
+            if ([[item valueForKey:@"UserName"] length]) {
+                loginInfo = item;
+                [[PersistentDataManager sharePersistenDataManager]createUserLoginInfoTable:loginInfo];
+                [self.userInfoTable reloadData];
+            }
+        }
+        if (error) {
+            
+            if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
+                UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"与服务器连接失败，请检查" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alertView show];
+                alertView = nil;
+            }
+        }
+        
+    }];
 }
 
 -(void)alterUserInfoAction
@@ -148,6 +211,19 @@
 -(void)myServiceAction
 {
     NSLog(@"%s",__func__);
+    VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    NSString * servicePersonInfo = [loginInfo valueForKey:@"KS_kefu"];
+    UIWebView *webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 10, 250, 80)];
+    [webView loadHTMLString:servicePersonInfo baseURL:nil];
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 260, 100)];
+    [bgView setBackgroundColor:[UIColor clearColor]];
+    [bgView addSubview:webView];
+    webView = nil;
+    
+    [alertView setCustomSubview:bgView];
+    bgView =nil;
+    [alertView show];
+    
 }
 
 -(void)cleanSubViewInCell:(UITableViewCell *)cell
@@ -179,6 +255,11 @@
     [userNameTextField setHidden:!isEditingTableView];
     [qqTextField setHidden:!isEditingTableView];
     [emailTextField setHidden: !isEditingTableView];
+    
+    mobileTextField.delegate = self;
+    userNameTextField.delegate = self;
+    qqTextField.delegate = self;
+    emailTextField.delegate = self;
 }
 
 #pragma mark -
@@ -213,12 +294,12 @@
     UILabel * descriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, 120, 25)];
     UILabel * detailDescriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(125, 5, 130, 25)];
     if (indexPath.row == 0) {
-        detailDescriptionLabel.text = [myDelegate.userInfo valueForKey:@"UserName"];
+        detailDescriptionLabel.text = [loginInfo valueForKey:@"UserName"];
         descriptionLabel.text = [NSString stringWithFormat:@"用户名: "];
         [cell.contentView addSubview:detailDescriptionLabel];
     }else if(indexPath.row == 1)
     {
-        NSString *str = [myDelegate.userInfo valueForKey:@"RealName"];
+        NSString *str = [loginInfo valueForKey:@"RealName"];
         detailDescriptionLabel.text = str;
         descriptionLabel.text =[NSString stringWithFormat:@"姓名: "];
         if (!isEditingTableView) {
@@ -231,18 +312,18 @@
         }
     }else if(indexPath.row == 2)
     {
-        detailDescriptionLabel.text = [myDelegate.userInfo valueForKey:@"GroupName"];
+        detailDescriptionLabel.text = [loginInfo valueForKey:@"GroupName"];
         descriptionLabel.text = [NSString stringWithFormat:@"报考专业: "];
         [cell.contentView addSubview:detailDescriptionLabel];
     }else if(indexPath.row == 3)
     {
-        NSString * beginData = [myDelegate.userInfo valueForKey:@"BeginDate"];
+        NSString * beginData = [loginInfo valueForKey:@"BeginDate"];
         beginData = [beginData stringByReplacingOccurrencesOfString:@"-" withString:@""];
         beginData = [beginData substringToIndex:8];
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"yyyyMMdd"];
         NSDate *date = [dateFormat dateFromString:beginData];
-        NSString * validateDays = [myDelegate.userInfo valueForKey:@"EDays"];
+        NSString * validateDays = [loginInfo valueForKey:@"EDays"];
         int daysToAdd = [validateDays integerValue];
         NSDate *newDate1 = [date dateByAddingTimeInterval:60*60*24*daysToAdd];
         NSDateFormatter* fmt = [[NSDateFormatter alloc] init];
@@ -254,7 +335,7 @@
         [cell.contentView addSubview:detailDescriptionLabel];
     }else if(indexPath.row == 4)
     {
-        NSString *str = [myDelegate.userInfo valueForKey:@"QQ"];
+        NSString *str = [loginInfo valueForKey:@"QQ"];
         detailDescriptionLabel.text = str;
         descriptionLabel.text = [NSString stringWithFormat:@"QQ: "];
         if (!isEditingTableView) {
@@ -267,7 +348,7 @@
         }
     }else if(indexPath.row == 5)
     {
-        NSString * str = [myDelegate.userInfo valueForKey:@"Mobile"];
+        NSString * str = [loginInfo valueForKey:@"Mobile"];
         detailDescriptionLabel.text = str;
         descriptionLabel.text = [NSString stringWithFormat:@"联系电话或手机: "];
         if (!isEditingTableView) {
@@ -280,8 +361,8 @@
         }
     }else if(indexPath.row == 6)
     {
-        NSString * str = [myDelegate.userInfo valueForKey:@"Email"];
-        detailDescriptionLabel.text = [myDelegate.userInfo valueForKey:@"Email"];
+        NSString * str = [loginInfo valueForKey:@"Email"];
+        detailDescriptionLabel.text = [loginInfo valueForKey:@"Email"];
         descriptionLabel.text = [NSString stringWithFormat:@"电子邮箱: "];
         if (!isEditingTableView) {
             [cell.contentView addSubview:detailDescriptionLabel];
@@ -374,5 +455,14 @@
 -(void)dealloc
 {
     [self removeObserver:self.proxy forKeyPath:@"isShouldShowLoginView"];
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@"\n"]) {
+        [textField resignFirstResponder];
+        return  NO;
+    }
+    return YES;
 }
 @end

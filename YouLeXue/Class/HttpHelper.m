@@ -135,7 +135,7 @@
     cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:cmdStr]];
-    [request setHTTPMethod:@"GET"];
+    [request setHTTPMethod:@"POST"];
     [request setTimeoutInterval:10.0];
     
     NSOperationQueue *queue = [[NSOperationQueue alloc]init];

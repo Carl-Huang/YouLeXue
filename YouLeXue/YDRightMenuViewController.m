@@ -28,6 +28,8 @@
 #import "UIImage+SaveToLocal.h"
 #import "MBProgressHUD.h"
 #import "SDWebImageManager.h"
+#import "Constant.h"
+
 
 @interface YDRightMenuViewController ()
 {
@@ -88,7 +90,6 @@
     self.passwordTextField.tag = PassWordTextFieldTag;
     self.userNameTextField.delegate = self;
     self.passwordTextField.delegate = self;
-    self.userNameTextField.returnKeyType = UIReturnKeyNext;
     self.passwordTextField.returnKeyType = UIReturnKeyDone;
     self.userNameTextField.text = @"";
     self.passwordTextField.text = @"";
@@ -103,6 +104,11 @@
         isShouldDownExamPaper = YES;
     }
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self refreshStatus];
 }
 
 -(void)fillData
@@ -140,16 +146,11 @@
     NSLog(@"%s",__func__);
     dispatch_async(dispatch_get_main_queue(), ^{
    
-        if (userInfo==nil) {
-            NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
-            if ([array count]) {
-                //因为用户始终有一个，所以只读取第零个元素
-                self.userInfo = (UserLoginInfo *)[array objectAtIndex:0];
-            }else
-                self.userInfo = nil;
-            
-        }
-        
+    NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        //因为用户始终有一个，所以只读取第零个元素
+        self.userInfo = (UserLoginInfo *)[array objectAtIndex:0];
+    }
         if (userInfo) {
             [self.afterLoginView setHidden:NO];
             NSString * imageStr = [userInfo valueForKey:@"UserFace"];
@@ -302,7 +303,6 @@
                 [alert setCustomSubview:contentView];
                 [alert show];
 
-//                NSLog(@"%@",obj.ArticleContent);
             }
         }
     }
@@ -325,19 +325,17 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if (textField.tag == UserNameTextFieldTag) {
-        [self.passwordTextField becomeFirstResponder];
-         return NO;
-    }
+//    if (textField.tag == UserNameTextFieldTag) {
+//        [self.passwordTextField becomeFirstResponder];
+//         return NO;
+//    }
+//    
+    [self.passwordTextField resignFirstResponder];
     [self.userNameTextField resignFirstResponder];
+    
     return  YES;
 }
 
-
--(void)textFieldDidEndEditing:(UITextField *)textField
-{
-    
-}
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
@@ -373,7 +371,8 @@
     if (self.passwordTextField.text.length == 0) {
         [self showAlertView:@"密码不能为空"];
     }
-    
+    [[NSUserDefaults standardUserDefaults]setObject:self.passwordTextField.text forKey:PassWordKey];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak YDRightMenuViewController * weakSelf = self;
     [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
