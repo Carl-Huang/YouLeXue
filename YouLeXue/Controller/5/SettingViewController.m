@@ -16,6 +16,7 @@
 #import "VDAlertView.h"
 #import "WrongRuleViewController.h"
 #import "MainViewController.h"
+#import "PopUpWrongRuleViewController.h"
 @interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate,VDAlertViewDelegate,UITextFieldDelegate>
 {
     NSArray *firSectionDataSource;
@@ -200,15 +201,19 @@
             [tableView reloadData];
         }else
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                WrongRuleViewController * viewController = [[WrongRuleViewController alloc]initWithNibName:@"WrongRuleViewController" bundle:nil];
-                [self presentViewController:viewController animated:YES completion:^{
-                    ;
-                }];
-                viewController = nil;
-            });
-           
+         
+            PopUpWrongRuleViewController * viewController = [[PopUpWrongRuleViewController alloc]initWithNibName:@"PopUpWrongRuleViewController" bundle:nil];
+            [viewController setBlock:[self didSelectedItemBlock]];
+            [self.view addSubview:viewController.view];
+            [self addChildViewController:viewController];
+            viewController.view.alpha= 0.0;
+            [UIView animateWithDuration:0.3 animations:^{
+               viewController.view.alpha = 1.0;
+            } completion:^(BOOL finished) {
     
+            }];
+            viewController = nil;
+           
         }
         
     }else if (indexPath.section == 2)
@@ -219,6 +224,18 @@
         [alert show];
     }
 }
+
+-(DidSelectedItemBlock)didSelectedItemBlock
+{
+    DidSelectedItemBlock block = ^(NSInteger item)
+    {
+        NSLog(@"%d",item);
+        [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%d",item] forKey:WrongTextRuleTime];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    };
+    return block;
+}
+
 
 -(void)configureCheckItemWithIndexPath:(NSIndexPath *)indexPath
 {

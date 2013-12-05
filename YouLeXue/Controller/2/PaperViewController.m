@@ -285,7 +285,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
             
             [self downloadImageWithImageURL:descriptionStr];
             
-            [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
+            for (NSString * str in [answerDictionary allKeys]) {
+                if (![str isEqualToString:[tempPaperInfo valueForKey:@"num"]]) {
+                    [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
+                }
+            }
+        
         }
         [questionStrArray addObject:descriptionStr];
         NSString * answerStr = [NSString stringWithFormat:@"%@",[tempPaperInfo valueForKey:@"DAJS"]];
@@ -337,15 +342,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
 -(void)back
 {
     NSLog(@"%s",__func__);
-    NSArray * tempData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
-    if (![tempData count]) {
-        NSLog(@"创建并插入错题本");
-         [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:wrongExamPaperInfoArray];
-    }else
-    {
-        NSLog(@"插入错题本");
-        [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:wrongExamPaperInfoArray];
-    }
    
     if (!isJustBrowse) {
         UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
@@ -946,10 +942,27 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [dateFormat setDateFormat:@"yyyy-MM-dd"];
         NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
         info.timeStamp = timeStr;
+        NSString * wrongTextRule = [[NSUserDefaults standardUserDefaults]stringForKey:WrongTextRuleTime];
+        if ([wrongTextRule length]) {
+            info.wrongRule = wrongTextRule;
+        }else
+        {
+            info.wrongRule = @"1";
+        }
+        
+        
         timeStr = nil;
         free(vars);
         [wrongExamPaperInfoArray addObject:info];
-        
+        NSArray * tempData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+        if (![tempData count]) {
+            NSLog(@"创建并插入错题本");
+            [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:@[info]];
+        }else
+        {
+            NSLog(@"插入错题本");
+            [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:@[info]];
+        }
         
         UILabel * textLabel = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 120, 30)];
         [textLabel setBackgroundColor:[UIColor clearColor]];
@@ -1035,11 +1048,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
         int second = lastTime % 60;
         NSString * usedTime = [NSString stringWithFormat:@"%d分%d秒",minute,second];
         
+        //读取错题本
+         NSArray * tempWrongTextBookData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+        
         //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
-//            if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
                 NSString *number = [examInfo valueForKey:@"num"];
-                
                 SubmittedPaperInfo * submittedInfo = [[SubmittedPaperInfo alloc]init];
                 unsigned int varCount = 0;
                 Ivar *vars = class_copyIvarList([ExamPaperInfo class], &varCount);
@@ -1070,6 +1084,24 @@ typedef NS_ENUM(NSInteger, PanDirection)
                         }
                     }
                     if (isRight) {
+                        NSString * questionId = [NSString stringWithFormat:@"%@",[examInfo valueForKey:@"id"]];
+                        for (ExamPaperInfoTimeStamp * tempObj in tempWrongTextBookData) {
+                            NSString * tempID = [NSString stringWithFormat:@"%@",[tempObj valueForKey:@"id"]];
+                            NSString * keyId = [NSString stringWithFormat:@"%@",[tempObj valueForKey:@"id"]];
+                            if ([tempID isEqual:questionId]) {
+                                 NSInteger num = [[tempObj valueForKey:@"wrongRule"]integerValue];
+                                if (num==1) {
+                                    NSLog(@"删");
+                                    [[PersistentDataManager sharePersistenDataManager]deleteWrongTextBookRecordID:keyId];
+                                }else
+                                {
+                                    num--;
+                                    [[PersistentDataManager sharePersistenDataManager]updateWrongTextBookItemCount:[NSString stringWithFormat:@"%d",num] key:keyId];
+                                }
+                                
+                            }
+                        }
+                        
                         score += [[examInfo valueForKey:@"tmfs"]integerValue];
                     }
                 }
@@ -1077,7 +1109,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 submittedInfo.uuid          = uuid;
                 [endExamData addObject:submittedInfo];
                 submittedInfo = nil;
-//            }
         }
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
         endExamData = nil;

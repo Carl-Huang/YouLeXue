@@ -193,6 +193,25 @@
     [db close];
 }
 
+-(void)deleteWrongTextBookRecordID:(NSString*)idStr
+{
+    [self deleteRecordWithPrimaryKey:@"id" keyValue:idStr tableName:@"WrongTextBookTable"];
+}
+
+-(void)updateWrongTextBookItemCount:(NSString *)countStr key:(NSString *)keyID
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"update WrongTextBookTable set wrongRule=? where id=%@",keyID];
+    if ([db executeUpdate:cmdStr,countStr]) {
+        NSLog(@"update WrongTextBookTable successfully");
+    }else
+    {
+        NSLog(@"Failer to update value to WrongTextBookTable,Error: %@",[db lastError]);
+    }
+    [db close];
+
+}
+
 #pragma mark - 创建案例的表
 -(void)createExampleListTable:(NSArray *)array
 {

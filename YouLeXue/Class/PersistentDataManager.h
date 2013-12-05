@@ -24,8 +24,13 @@
 -(void)createExampleListTable:(NSArray *)array;
 -(void)createOtherInformationTable:(NSArray *)array;
 -(void)createExamPaperTable:(NSArray *)array;
+
+
 -(void)createWrongTextBook:(NSArray *)array;
 -(void)insertValueIntoWrongTextBookTable:(NSArray *)array;
+-(void)deleteWrongTextBookRecordID:(NSString*)idStr;
+-(void)updateWrongTextBookItemCount:(NSString *)countStr key:(NSString *)keyID;
+
 -(void)createUserSettingTable;
 -(void)updateUserSettingTableWithkey:(NSString *)key value:(NSString *)value;
 -(UserSetting *)readUserSettingData;

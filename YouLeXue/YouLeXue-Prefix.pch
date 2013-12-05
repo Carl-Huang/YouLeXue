@@ -18,6 +18,7 @@
 //服务器
 #define ServerPrefix @"http://www.55280.com"
 
+#define WrongTextRuleTime  @"wrongTextruleTime"
 #import <Availability.h>
 
 #ifndef __IPHONE_5_0

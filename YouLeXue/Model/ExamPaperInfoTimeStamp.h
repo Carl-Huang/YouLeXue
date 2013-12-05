@@ -29,4 +29,7 @@
 @property (strong , nonatomic) NSString * glyy;
 @property (strong , nonatomic) NSString * Difficulty;
 @property (strong , nonatomic) NSString * timeStamp;
+
+//错题规则
+@property (strong , nonatomic) NSString * wrongRule;
 @end
