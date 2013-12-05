@@ -14,7 +14,8 @@
 #import "PersistentDataManager.h"
 #import "Constant.h"
 #import "VDAlertView.h"
-
+#import "WrongRuleViewController.h"
+#import "MainViewController.h"
 @interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate,VDAlertViewDelegate,UITextFieldDelegate>
 {
     NSArray *firSectionDataSource;
@@ -196,8 +197,20 @@
                 default:
                     break;
             }
+            [tableView reloadData];
+        }else
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                WrongRuleViewController * viewController = [[WrongRuleViewController alloc]initWithNibName:@"WrongRuleViewController" bundle:nil];
+                [self presentViewController:viewController animated:YES completion:^{
+                    ;
+                }];
+                viewController = nil;
+            });
+           
+    
         }
-        [tableView reloadData];
+        
     }else if (indexPath.section == 2)
     {
         VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"请输入" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];

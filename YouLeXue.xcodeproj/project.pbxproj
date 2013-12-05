@@ -74,6 +74,8 @@
 		4E2976051840FA9E009A6946 /* Case_Icon_rect_clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2976001840FA9E009A6946 /* Case_Icon_rect_clear@2x.png */; };
 		4E2976061840FA9E009A6946 /* Setting_Icon_Check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2976011840FA9E009A6946 /* Setting_Icon_Check@2x.png */; };
 		4E2976071840FA9E009A6946 /* Setting_Icon_UnCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E2976021840FA9E009A6946 /* Setting_Icon_UnCheck@2x.png */; };
+		4E2A640D185078CA00D5D158 /* WrongRuleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2A640B185078CA00D5D158 /* WrongRuleViewController.m */; };
+		4E2A640E185078CA00D5D158 /* WrongRuleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E2A640C185078CA00D5D158 /* WrongRuleViewController.xib */; };
 		4E317C10182C940D0009FEC3 /* UserLoginInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */; };
 		4E34D8AC182B8A7200965E55 /* CaseAnalysisViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */; };
 		4E34D8AD182B8A7200965E55 /* CaseAnalysisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E34D8AB182B8A7200965E55 /* CaseAnalysisViewController.m */; };
@@ -498,6 +500,9 @@
 		4E2976001840FA9E009A6946 /* Case_Icon_rect_clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Case_Icon_rect_clear@2x.png"; sourceTree = "<group>"; };
 		4E2976011840FA9E009A6946 /* Setting_Icon_Check@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Setting_Icon_Check@2x.png"; sourceTree = "<group>"; };
 		4E2976021840FA9E009A6946 /* Setting_Icon_UnCheck@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Setting_Icon_UnCheck@2x.png"; sourceTree = "<group>"; };
+		4E2A640A185078CA00D5D158 /* WrongRuleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WrongRuleViewController.h; sourceTree = "<group>"; };
+		4E2A640B185078CA00D5D158 /* WrongRuleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WrongRuleViewController.m; sourceTree = "<group>"; };
+		4E2A640C185078CA00D5D158 /* WrongRuleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WrongRuleViewController.xib; sourceTree = "<group>"; };
 		4E317C0E182C940D0009FEC3 /* UserLoginInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginInfo.h; sourceTree = "<group>"; };
 		4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginInfo.m; sourceTree = "<group>"; };
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
@@ -1339,6 +1344,9 @@
 				4E0DB1311839F9E900D3031E /* WrongTextView.m */,
 				4EFAA04718408D4A000AB053 /* CaseView.h */,
 				4EFAA04818408D4A000AB053 /* CaseView.m */,
+				4E2A640A185078CA00D5D158 /* WrongRuleViewController.h */,
+				4E2A640B185078CA00D5D158 /* WrongRuleViewController.m */,
+				4E2A640C185078CA00D5D158 /* WrongRuleViewController.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2102,6 +2110,7 @@
 				4E1AFF6F18434A88008333F1 /* 114x114.png in Resources */,
 				4E1AFF7118434A8E008333F1 /* 57x57.png in Resources */,
 				4EF8F5A5184C2F3400EC8928 /* Default.png in Resources */,
+				4E2A640E185078CA00D5D158 /* WrongRuleViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2200,6 +2209,7 @@
 				4E2975E61840CF14009A6946 /* UIImage+MultiFormat.m in Sources */,
 				4E2975E71840CF14009A6946 /* UIImage+WebP.m in Sources */,
 				4E2975E81840CF14009A6946 /* UIImageView+WebCache.m in Sources */,
+				4E2A640D185078CA00D5D158 /* WrongRuleViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
