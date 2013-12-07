@@ -13,7 +13,7 @@
 #import "PersistentDataManager.h"
 #import "HttpHelper.h"
 #import "UIImage+SaveToLocal.h"
-
+#import "RightPhontNotiViewController.h"
 
 #define Ad1 @"http://www.55280.com//UploadFiles/2013/0/2013091210340360268.jpg"
 #define Ad2 @"http://www.55280.com//UploadFiles/2013/0/2013091210504240285.jpg"
@@ -176,12 +176,23 @@
         NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
         self.countTimeLabel.text = timeText;
         self.messageCountLabel.text = messageText;
+        self.messageCountLabel.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pushToRightPhontNotiViewController:)];
+        [self.messageCountLabel addGestureRecognizer:tapGesture];
+        tapGesture = nil;
     }else
     {
         [self.afterLoginView setHidden:YES];
         [self.NotLoignLabel setHidden:NO];
     }
 
+}
+
+-(void)pushToRightPhontNotiViewController:(UITapGestureRecognizer *)gesuture
+{
+    RightPhontNotiViewController * viewcontroller = [[RightPhontNotiViewController alloc]initWithNibName:nil bundle:nil];
+    [self presentViewController:viewcontroller animated:YES completion:nil];
+    viewcontroller = nil;
 }
 
 

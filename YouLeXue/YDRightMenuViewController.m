@@ -409,6 +409,8 @@
 {
     [MBProgressHUD  hideHUDForView:self.view animated:YES];
 }
+
+//手机通知
 - (IBAction)phoneAlertBtnAction:(id)sender {
     
     AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
