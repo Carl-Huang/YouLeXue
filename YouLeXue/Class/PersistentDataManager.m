@@ -632,8 +632,6 @@
     [db close];
 }
 
-//-(void)isertDataIntoMessageTable
-
 -(void)deleteMessageFromMessageTableWithID:(NSString *)MessageId
 {
     //
@@ -643,6 +641,17 @@
     [db executeUpdate:cmdStr,MessageId];
     [db commit];
     [db close];
+}
+
+-(void)setMessageIsRead:(NSString *)MessageId
+{
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update MessageTable set IsRead=1 where ID=?"];
+    [db executeUpdate:cmdStr,MessageId];
+    [db commit];
+    [db close];
+
 }
 
 -(NSArray *)readMessageTableData

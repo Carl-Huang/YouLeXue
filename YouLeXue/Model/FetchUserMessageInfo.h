@@ -20,5 +20,5 @@
 @property (strong ,nonatomic) NSString * DelS;
 @property (strong ,nonatomic) NSString * IsSend;
 @property (strong ,nonatomic) NSString * isDelete;
-
+@property (strong ,nonatomic) NSString * isRead;
 @end

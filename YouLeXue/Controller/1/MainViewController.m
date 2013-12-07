@@ -14,6 +14,7 @@
 #import "HttpHelper.h"
 #import "UIImage+SaveToLocal.h"
 #import "RightPhontNotiViewController.h"
+#import "FetchUserMessageInfo.h"
 
 #define Ad1 @"http://www.55280.com//UploadFiles/2013/0/2013091210340360268.jpg"
 #define Ad2 @"http://www.55280.com//UploadFiles/2013/0/2013091210504240285.jpg"
@@ -48,7 +49,7 @@
     
     [self animation];
     [self.afterLoginView setHidden:YES];
-    [self updateInterface];
+//    [self updateInterface];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LogoutNotification" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LoginNotification" object:nil];
     imageArray = [NSMutableArray array];
@@ -75,6 +76,11 @@
     tapGesture = nil;
     count = 0;
 
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self updateInterface];
 }
 
 -(void)openAdUrl
@@ -173,9 +179,19 @@
         }
         NSString * timeText = [NSString stringWithFormat:@"离考试时间还有%d天",lastDate];
         
-        NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
+//        NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
+        
+        //读取数据库未读信息
+        NSInteger messageCount = 0 ;
+        NSArray * tempMessageInfo = [[PersistentDataManager sharePersistenDataManager]readMessageTableData];
+        for (FetchUserMessageInfo * tempInfo in tempMessageInfo) {
+            NSString * key = [tempInfo valueForKey:@"isRead"];
+            if (![key isEqualToString:@"1"]) {
+                messageCount++;
+            }
+        }
         self.countTimeLabel.text = timeText;
-        self.messageCountLabel.text = messageText;
+        self.messageCountLabel.text = [NSString stringWithFormat:@"未读消息%d",messageCount];
         self.messageCountLabel.userInteractionEnabled = YES;
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pushToRightPhontNotiViewController:)];
         [self.messageCountLabel addGestureRecognizer:tapGesture];

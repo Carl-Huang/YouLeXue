@@ -58,7 +58,7 @@
         __weak RightPhontNotiViewController * weakSelf= self;
         [HttpHelper getUserMessageWithUserName:[myDeleate.userInfo valueForKey:@"UserName"] completedBlock:^(id item, NSError *error) {
             [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
-            tempData = item;
+            tempData = [item mutableCopy];
             
             [weakSelf eliminateRedundanceData];
             
@@ -75,6 +75,9 @@
 {
     //对比本地与网络数据，排除已经删除选项
     if (![localMessageData count]) {
+        for (FetchUserMessageInfo * obj in tempData) {
+            obj.IsSend = @"0";
+        }
         [[PersistentDataManager sharePersistenDataManager]createMessageTable:tempData];
         dataSource = tempData;
     }else
@@ -142,6 +145,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FetchUserMessageInfo *info = [dataSource objectAtIndex:indexPath.row];
+    NSString *messageId = [info valueForKey:@"ID"];
+    [[PersistentDataManager sharePersistenDataManager]setMessageIsRead:messageId];
     DetailPhoneNotiViewController * viewcontroller = [[DetailPhoneNotiViewController alloc]initWithNibName:@"DetailPhoneNotiViewController" bundle:nil];
     [viewcontroller setInfo:info];
     [self presentModalViewController:viewcontroller animated:YES];

@@ -56,4 +56,5 @@
 -(void)createMessageTable:(NSArray *)array;
 -(void)deleteMessageFromMessageTableWithID:(NSString *)MessageId;
 -(NSArray *)readMessageTableData;
+-(void)setMessageIsRead:(NSString *)MessageId;
 @end
