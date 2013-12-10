@@ -94,7 +94,7 @@
     self.userNameTextField.text = @"";
     self.passwordTextField.text = @"";
     
-    [self fillData];
+   
     [self refreshStatus];
     
     isShouldDownExamPaper = NO;
@@ -108,6 +108,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+     [self fillData];
     [self refreshStatus];
 }
 

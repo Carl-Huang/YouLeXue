@@ -890,7 +890,7 @@
 		4EFF03AB18339C3B005B13BA /* PaperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaperViewController.xib; sourceTree = "<group>"; };
 		4EFF03B11833C129005B13BA /* QuestionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionView.h; sourceTree = "<group>"; };
 		4EFF03B21833C129005B13BA /* QuestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionView.m; sourceTree = "<group>"; };
-		C32C214E1828912200FBF75C /* YouLeXue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouLeXue.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C32C214E1828912200FBF75C /* 优乐学.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "优乐学.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C32C21511828912200FBF75C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C32C21531828912200FBF75C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		C32C21551828912200FBF75C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1757,7 +1757,7 @@
 		C32C214F1828912200FBF75C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C32C214E1828912200FBF75C /* YouLeXue.app */,
+				C32C214E1828912200FBF75C /* 优乐学.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1835,7 +1835,7 @@
 			);
 			name = YouLeXue;
 			productName = YouLeXue;
-			productReference = C32C214E1828912200FBF75C /* YouLeXue.app */;
+			productReference = C32C214E1828912200FBF75C /* 优乐学.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2345,7 +2345,7 @@
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Extend/TencentWeiboSDK\"",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Extend/WeChatSDK\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "优乐学";
 				SDKROOT = iphoneos6.1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = armv7;
@@ -2380,7 +2380,7 @@
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Extend/TencentWeiboSDK\"",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Extend/WeChatSDK\"",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "优乐学";
 				SDKROOT = iphoneos6.1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = armv7;

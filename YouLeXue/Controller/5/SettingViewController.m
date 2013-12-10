@@ -222,6 +222,35 @@
         [alert setCustomSubview:textFieldBg];
         alert.delegate = self;
         [alert show];
+    }else if (indexPath.section == 3)
+    {
+        if (indexPath.row == 1) {
+            NSLog(@"%s",__func__);
+            VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+
+//            UIWebView *webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 10, 250, 80)];
+//            [webView loadHTMLString:servicePersonInfo baseURL:nil];
+            UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 200, 30)];
+            [textLabel1 setBackgroundColor:[UIColor clearColor]];
+            textLabel1.font = [UIFont systemFontOfSize:13];
+            textLabel1.text = @"版权所有:优乐学网校";
+            
+            UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
+            [textLabel2 setBackgroundColor:[UIColor clearColor]];
+            textLabel2.font = [UIFont systemFontOfSize:13];
+            textLabel2.text = @"客服热线：40086-55280";
+            
+            UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 260, 100)];
+            [bgView setBackgroundColor:[UIColor clearColor]];
+            [bgView addSubview:textLabel1];
+            [bgView addSubview:textLabel2];
+            textLabel1 = nil;
+            textLabel2 = nil;
+            
+            [alertView setCustomSubview:bgView];
+            bgView =nil;
+            [alertView show];
+        }
     }
 }
 
@@ -285,7 +314,13 @@
         case 2:
         {
             cell.textLabel.text = @"服务器地址设置";
-            cell.detailTextLabel.text = alterServerUrlTextField.text;
+            if ([alterServerUrlTextField.text length]) {
+                cell.detailTextLabel.text = alterServerUrlTextField.text;
+            }else
+            {
+                cell.detailTextLabel.text = @"http://www55280.com";
+            }
+            
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;
@@ -346,6 +381,9 @@
             NSString * serverUrl = alterServerUrlTextField.text;
             [[NSUserDefaults standardUserDefaults]setObject:serverUrl forKey:ServerURLKey];
             [[NSUserDefaults standardUserDefaults]synchronize];
+
+            [self.settingTable reloadData];
+            
 
         }
             break;

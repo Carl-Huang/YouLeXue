@@ -259,6 +259,9 @@
 {
     NSString * serverUrl = nil;
     serverUrl = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]stringForKey:ServerURLKey]];
+    if ([serverUrl isEqualToString:@"(null)"]) {
+        return nil;
+    }
     return serverUrl;
 }
 @end
