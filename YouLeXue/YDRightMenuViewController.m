@@ -124,16 +124,19 @@
     
     
     if ([dataSource count] == 0) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             __weak YDRightMenuViewController *weakSelf = self;
             [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
              {
                  if ([item count]) {
                      [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
-                     dataSource  = item;
+                     dataSource  = dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
+                     [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
                      [weakSelf.rightTable reloadData];
                  }
                  if (error) {
+                     [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
                      NSLog(@"%@",error);
                  }
              }];
@@ -214,6 +217,9 @@
 }
 
 - (IBAction)upgrateVersionAction:(id)sender {
+    NSString * serverlUrl = [AppDelegate getServerAddress];
+    NSString * requireStr = [NSString stringWithFormat:@"%@/Item/list.asp?id=1518",serverlUrl];
+    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:requireStr]];
 }
 - (void)viewDidUnload {
     [self setRightTable:nil];
@@ -266,8 +272,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     for (FetchDataInfo * obj in dataSource) {
-        
-        if ([obj.KS_phoneSeq isKindOfClass:[NSString class]]) {
+        NSString * str = [NSString stringWithFormat:@"%@",obj.KS_phoneSeq];
+        if ([str isKindOfClass:[NSString class]]) {
             if (obj.KS_phoneSeq.integerValue == indexPath.row+1) {
                 UIWebView * contentView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, 280, 150)];
                 [contentView stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 10.0;"];

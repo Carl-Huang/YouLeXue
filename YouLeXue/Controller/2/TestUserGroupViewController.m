@@ -170,6 +170,7 @@ static NSString *identifier = @"Cell";
 }
 -(void)stopReloadData
 {
+    currentTableview.userInteractionEnabled = YES;
      [currentTableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
 }
 
@@ -285,6 +286,8 @@ static NSString *identifier = @"Cell";
 
 -(void)pullToUpdateWithTable:(UITableView *)tableview
 {
+    //禁止用户点击
+    tableview.userInteractionEnabled = NO;
     __weak TestUserGroupViewController *weakSelf = self;
     if (info) {
         [HttpHelper getGroupExamListWithId:[info valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {

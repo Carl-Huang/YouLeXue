@@ -101,6 +101,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //下载图片 计数
     NSInteger downlingImage;
     NSInteger downloadedImage;
+    BOOL  hasImageToDown;
     
     //图片下载器
     SDWebImageManager * manager;
@@ -108,6 +109,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //标志是否可以开始答卷
     BOOL isShouldBeginExam;
     BOOL isDownloadAllImage;
+    
+    //
+    NSInteger itemCount;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -134,6 +138,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     manager = [SDWebImageManager sharedManager];
     isShouldBeginExam = NO;
     isDownloadAllImage = NO;
+    hasImageToDown = NO;
     [self initializedInterface];
     [self initializedManipulateData];
     
@@ -239,6 +244,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     questionStrArray    = [NSMutableArray array];
     QAStrArray          = [NSMutableArray array];
     answerDictionary    = [NSMutableDictionary dictionary];
+    itemCount           = [questionDataSource count];
     for (int i = 0;i< [questionDataSource count];i++) {
         NSString * tempTitle = nil;
         NSString * descriptionStr = nil;
@@ -303,6 +309,9 @@ typedef NS_ENUM(NSInteger, PanDirection)
         
     }
     isShouldBeginExam = YES;
+    if (!hasImageToDown) {
+        [self countPageInitializing];
+    }
     if (isDownloadAllImage) {
         [self countPageInitializing];
     }
@@ -1233,6 +1242,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     if (imageurl) {
         NSString * imageName = [self getImageUrl:imageurl];
         if (imageName) {
+            hasImageToDown = YES;
             NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
             NSURL *url = [NSURL URLWithString:imageUrl];
             if (downlingImage == 0) {

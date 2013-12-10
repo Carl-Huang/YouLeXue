@@ -215,7 +215,7 @@
         {
             objc_property_t property = properties[i];
             NSString * propertyName = [NSString stringWithUTF8String:property_getName(property)];
-            [model setValue:[info objectForKey:propertyName] forKeyPath:propertyName];
+            [model setValue:[info valueForKey:propertyName] forKeyPath:propertyName];
         }
         [models addObject:model];
     }
