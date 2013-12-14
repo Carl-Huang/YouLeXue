@@ -465,4 +465,11 @@
     }
     return YES;
 }
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField.text length]) {
+        [textField resignFirstResponder];
+    }
+    return YES;
+}
 @end

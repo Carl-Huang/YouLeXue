@@ -98,7 +98,7 @@
             [viewcontroller setExamInfo:examInfo];
         }
     }
-    [viewcontroller setIsExciseOrnot:NO];
+    [viewcontroller setIsExciseOrnot:YES];
     [viewcontroller setIsJustBrowse:NO];
     [viewcontroller setTitle:info.paperTitleStr];
     [self.navigationController pushViewController:viewcontroller animated:YES];

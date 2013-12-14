@@ -40,7 +40,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "MBProgressHUD.h"
 #import "UIImage+SaveToLocal.h"
 #import "VDAlertView.h"
-@interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
+@interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate,VDAlertViewDelegate>
 {
     NSArray * questTypes;
     
@@ -353,9 +353,10 @@ typedef NS_ENUM(NSInteger, PanDirection)
     NSLog(@"%s",__func__);
    
     if (!isJustBrowse) {
-        UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
-        [alertview show];
-        alertview = nil;
+//        UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+//        [alertview show];
+//        alertview = nil;
+        [self showVDAlertViewWithTitle:@"提示" message:@"确定退出考试吗？"];
     }else
     {
         [self.navigationController popViewControllerAnimated:YES];
@@ -1190,7 +1191,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 #pragma mark AlertView Deleaget
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)alertView:(VDAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 {
     switch (buttonIndex) {
         case 0:
@@ -1269,6 +1270,35 @@ typedef NS_ENUM(NSInteger, PanDirection)
             [self countPageInitializing];
         }
     }
+}
+
+-(void)showVDAlertViewWithTitle:(NSString *)title message:(NSString *)msg
+{
+    VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];
+    
+    UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 250, 30)];
+    [textLabel1 setBackgroundColor:[UIColor clearColor]];
+    textLabel1.font = [UIFont systemFontOfSize:16];
+    textLabel1.textAlignment = NSTextAlignmentCenter;
+    textLabel1.text = msg;
+    
+    //    UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
+    //    [textLabel2 setBackgroundColor:[UIColor clearColor]];
+    //    textLabel2.font = [UIFont systemFontOfSize:13];
+    //    textLabel2.text = @"客服热线：40086-55280";
+    
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 250, 100)];
+    [bgView setBackgroundColor:[UIColor clearColor]];
+    [bgView addSubview:textLabel1];
+    //    [bgView addSubview:textLabel2];
+    textLabel1 = nil;
+    //    textLabel2 = nil;
+    
+    [alertView setCustomSubview:bgView];
+    bgView =nil;
+    alertView.delegate = self;
+    [alertView show];
+    alertView = nil;
 }
 @end
 

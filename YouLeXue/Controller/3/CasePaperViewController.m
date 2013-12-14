@@ -48,7 +48,11 @@
     //Image counting
     NSInteger downlingImage;
     NSInteger downledImage;
-}
+    
+    BOOL isShouldBeginExam;
+    BOOL isDownloadAllImage;
+    BOOL hasImagesToDown;
+} 
 @end
 
 @implementation CasePaperViewController
@@ -67,6 +71,9 @@
     [super viewDidLoad];
     downledImage = 0;
     downlingImage = 0;
+    isShouldBeginExam = NO;
+    isDownloadAllImage = NO;
+    hasImagesToDown = NO;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     if (IS_SCREEN_4_INCH) {
@@ -110,8 +117,14 @@
     isEndScrolling = YES;
     previousPage = 1;
     currentPage = 0;
-
-    [self refreshScrollViewWithDirection:panDirectioin];
+    
+    isShouldBeginExam = YES;
+    if (!hasImagesToDown) {
+        [self refreshScrollViewWithDirection:panDirectioin];
+    }
+    if (isDownloadAllImage) {
+        [self refreshScrollViewWithDirection:panDirectioin];
+    }
 
     // Do any additional setup after loading the view from its nib.
 }
@@ -151,6 +164,7 @@
 {
     __weak CasePaperViewController * weakSelf =self;
     if (imageurl) {
+        hasImagesToDown = YES;
         NSString * imageName = [self getImageUrl:imageurl];
         if (imageName) {
             NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
@@ -171,6 +185,10 @@
 {
     if (downlingImage == downledImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
+        isDownloadAllImage = YES;
+        if (isShouldBeginExam) {
+           [self refreshScrollViewWithDirection:panDirectioin];
+        }
     }
 }
 

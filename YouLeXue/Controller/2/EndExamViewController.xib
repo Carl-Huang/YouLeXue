@@ -640,7 +640,7 @@
 			<string key="Case_Button_Status@2x.png">{36, 36}</string>
 			<string key="Case_Button_Submit_blue@2x">{16, 16}</string>
 			<string key="Case_Icon_rect_blue@2x.png">{16, 16}</string>
-			<string key="Case_Icon_rect_clear@2x.png">{16, 16}</string>
+			<string key="Case_Icon_rect_clear@2x.png">{8, 8}</string>
 			<string key="Exercise_bg@2x.png">{570, 58}</string>
 			<string key="Grade_Button_Make-Up@2x.png">{32, 32}</string>
 			<string key="User Edit_Button_Cancel@2x.png">{114, 48}</string>

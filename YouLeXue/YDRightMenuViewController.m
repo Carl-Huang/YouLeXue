@@ -43,6 +43,7 @@
     SDWebImageManager * manager;
     NSMutableDictionary * paper;
     BOOL isShouldDownExamPaper;
+    NSInteger paperCount;
 }
 @property (assign ,nonatomic) NSInteger downloadedPaperCount;
 
@@ -428,22 +429,24 @@
 
 - (IBAction)adviceBtnAction:(id)sender {
     NSString * str = [NSString stringWithFormat:@"http://www.55280.com/shoujijianyi.html/username=%@",[userInfo valueForKey:@"UserName"]];
-    NSURL * url = [NSURL URLWithString:str];
+    NSURL * url = [NSURL URLWithString:@"http://www.55280.com/3g/yijian.asp"];
      [[UIApplication sharedApplication] openURL:url];
 }
 
 - (IBAction)reloadQuesBankAction:(id)sender {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    __weak YDRightMenuViewController * weakSelf =self;
     [HttpHelper getGroupExamListWithId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             //保存数据数据库
             self.downloadedPaperCount = [item count];
+            paperCount = [item count];
+            NSString * desStr = [NSString stringWithFormat:@"已下载试卷%d",paperCount];
             NSArray * tempArr = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
             if ([tempArr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
             }
-            
-            //TODO:创建标注的信息表
+        
             NSArray * arr = [[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable];
             if ([arr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
@@ -455,6 +458,7 @@
 
             }else
             {
+                [weakSelf showVDAlertViewWithTitle:@"提示" message:desStr];
                 [MBProgressHUD hideHUDForView:self.view animated:YES];
             }
         }else
@@ -525,10 +529,10 @@
 }
 
 - (IBAction)registerAction:(id)sender {
-    NSString * tempServerUrl = [AppDelegate getServerAddress];
+//    NSString * tempServerUrl = [AppDelegate getServerAddress];
     
-    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/3g/reg.asp",tempServerUrl]];
-    [[UIApplication sharedApplication] openURL:url];
+//    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/3g/reg.asp",tempServerUrl]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.55280.com/3g/reg.asp"]];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -546,6 +550,8 @@
             [tempArray addObjectsFromArray:tempPaperArr];
             [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
             [MBProgressHUD hideHUDForView:self.view animated:YES];
+
+            [self showVDAlertViewWithTitle:@"提示" message:[NSString stringWithFormat:@"成功更新%d 套试卷",paperCount]];
         }
     }
 }
@@ -606,5 +612,32 @@
     if (downloadedImage ==downloadedImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     }
+}
+
+-(void)showVDAlertViewWithTitle:(NSString *)title message:(NSString *)msg
+{
+    VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    
+    UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 180, 30)];
+    [textLabel1 setBackgroundColor:[UIColor clearColor]];
+    textLabel1.font = [UIFont systemFontOfSize:16];
+    textLabel1.textAlignment = NSTextAlignmentCenter;
+    textLabel1.text = msg;
+    
+//    UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
+//    [textLabel2 setBackgroundColor:[UIColor clearColor]];
+//    textLabel2.font = [UIFont systemFontOfSize:13];
+//    textLabel2.text = @"客服热线：40086-55280";
+    
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 180, 100)];
+    [bgView setBackgroundColor:[UIColor clearColor]];
+    [bgView addSubview:textLabel1];
+//    [bgView addSubview:textLabel2];
+    textLabel1 = nil;
+//    textLabel2 = nil;
+    
+    [alertView setCustomSubview:bgView];
+    bgView =nil;
+    [alertView show];
 }
 @end

@@ -100,6 +100,15 @@ static NSString *identifier = @"Cell";
     //默认选中第一页
     currentPage = 1;
     [self.firstBtn setSelected:YES];
+    
+    
+    //
+    isShouldDownExamPaper = NO;
+    paper = [NSMutableDictionary dictionary];
+    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+    if ([paper count]==0) {
+        isShouldDownExamPaper = YES;
+    }
     [self dataSourceSetting];
     [self settingPullRefreshAction];
     
@@ -115,13 +124,7 @@ static NSString *identifier = @"Cell";
     preSelectedRow3 = -1;
     preSelectedRow4 = -1;
     
-    //
-    isShouldDownExamPaper = NO;
-    paper = [NSMutableDictionary dictionary];
-    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
-    if ([paper count]==0) {
-        isShouldDownExamPaper = YES;
-    }
+   
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadUserInfo) name:@"LoginNotification" object:nil];
