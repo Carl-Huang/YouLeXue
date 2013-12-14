@@ -239,14 +239,14 @@ typedef NSUInteger SVPullToRefreshState;
     
     switch (newState) {
         case SVPullToRefreshStateHidden:
-            titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+            titleLabel.text = NSLocalizedString(@"下拉刷新列表...",);
             [self.activityIndicatorView stopAnimating];
             [self setScrollViewContentInset:self.originalScrollViewContentInset];
             [self rotateArrow:0 hide:NO];
             break;
             
         case SVPullToRefreshStateVisible:
-            titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
+            titleLabel.text = NSLocalizedString(@"下拉刷新列表...",);
             arrow.alpha = 1;
             [self.activityIndicatorView stopAnimating];
             [self setScrollViewContentInset:self.originalScrollViewContentInset];
@@ -254,12 +254,12 @@ typedef NSUInteger SVPullToRefreshState;
             break;
             
         case SVPullToRefreshStateTriggered:
-            titleLabel.text = NSLocalizedString(@"Release to refresh...",);
+            titleLabel.text = NSLocalizedString(@"松开后刷新...",);
             [self rotateArrow:M_PI hide:NO];
             break;
             
         case SVPullToRefreshStateLoading:
-            titleLabel.text = NSLocalizedString(@"Loading...",);
+            titleLabel.text = NSLocalizedString(@"载入中...",);
             [self.activityIndicatorView startAnimating];
             [self setScrollViewContentInset:UIEdgeInsetsMake(self.frame.origin.y*-1+self.originalScrollViewContentInset.top, 0, 0, 0)];
             [self rotateArrow:0 hide:YES];
