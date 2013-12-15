@@ -44,6 +44,8 @@
     NSMutableDictionary * paper;
     BOOL isShouldDownExamPaper;
     NSInteger paperCount;
+    
+    BOOL isLogout;
 }
 @property (assign ,nonatomic) NSInteger downloadedPaperCount;
 
@@ -105,12 +107,30 @@
         isShouldDownExamPaper = YES;
     }
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
+    isLogout = NO;
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(isUserLoginout) name:LogoutNotification object:nil];
+}
+
+-(void)isUserLoginout
+{
+    isLogout = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
-     [self fillData];
-    [self refreshStatus];
+    if (!isLogout) {
+        self.userInfo = nil;
+        [self fillData];
+        [self refreshStatus];
+    }else
+    {
+        self.beforeLoginView.alpha = 1.0;
+        self.userNameTextField.text = @"";
+        self.passwordTextField.text = @"";
+        [self.beforeLoginView setHidden:NO];
+        [self.afterLoginView setHidden:YES];
+        [self cleanInterface];
+    }
 }
 
 -(void)fillData
@@ -132,7 +152,7 @@
              {
                  if ([item count]) {
                      [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
-                     dataSource  = dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
+                     dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
                      [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
                      [weakSelf.rightTable reloadData];
                  }
@@ -200,10 +220,16 @@
     });
 }
 
-
+-(void)cleanInterface
+{
+    self.userImage = nil;
+    self.userNamelabel.text = @"";
+    self.userDesclabel.text = @"";
+    self.userDetailDescLabel.text = @"";
+}
 - (NSDate *)dateFromString:(NSString *)dateString{
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat: @"yyyy-MM-dd"];
     NSDate *destDate= [dateFormatter dateFromString:dateString];
     return destDate;
     
@@ -218,9 +244,13 @@
 }
 
 - (IBAction)upgrateVersionAction:(id)sender {
-    NSString * serverlUrl = [AppDelegate getServerAddress];
-    NSString * requireStr = [NSString stringWithFormat:@"%@/Item/list.asp?id=1518",serverlUrl];
-    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:requireStr]];
+//    NSString * serverlUrl = [AppDelegate getServerAddress];
+//    NSString * requireStr = [NSString stringWithFormat:@"%@/Item/list.asp?id=1518",serverlUrl];
+    NSURL  *url = [NSURL URLWithString:[[NSString stringWithFormat:@"%@",userInfo.vipurl] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    if (url) {
+        [[UIApplication sharedApplication]openURL:url];
+    }
+
 }
 - (void)viewDidUnload {
     [self setRightTable:nil];
@@ -385,6 +415,7 @@
     __weak YDRightMenuViewController * weakSelf = self;
     [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
         if (item) {
+            isLogout = NO;
             userInfo = (UserLoginInfo *)item;
             [weakSelf saveDataTolocal];
             [weakSelf refreshStatus];
@@ -639,5 +670,10 @@
     [alertView setCustomSubview:bgView];
     bgView =nil;
     [alertView show];
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 @end

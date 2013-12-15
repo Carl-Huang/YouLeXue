@@ -157,7 +157,7 @@
             return 4;
             break;
         case 3:
-            return 2;
+            return 1;
             break;
             
         default:
@@ -224,7 +224,7 @@
         [alert show];
     }else if (indexPath.section == 3)
     {
-        if (indexPath.row == 1) {
+        if (indexPath.row == 0) {
             NSLog(@"%s",__func__);
             VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
 
@@ -326,13 +326,13 @@
             break;
         case 3:
         {
-            if (index.row ==0) {
-                cell.textLabel.text = @"分享";
-            }else
-            {
-                cell.textLabel.text = @"关于";
-            }
-
+//            if (index.row ==0) {
+//                cell.textLabel.text = @"分享";
+//            }else
+//            {
+//                cell.textLabel.text = @"关于";
+//            }
+            cell.textLabel.text = @"关于";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;

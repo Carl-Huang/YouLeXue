@@ -16,6 +16,7 @@
 #import "PersistentDataManager.h"
 #import "Constant.h"
 #import "VDAlertView.h"
+#import "MBProgressHUD.h"
 @interface UserInfoViewController ()<UITableViewDelegate,UITextFieldDelegate>
 {
     AppDelegate * myDelegate;
@@ -125,6 +126,7 @@
 {
     //更新用户个人信息
     __weak UserInfoViewController *weakSelf = self;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [HttpHelper updateUserInfoWithUserId:[loginInfo valueForKey:@"UserID"] realName:userNameTextField.text qqNum:qqTextField.text mobile:mobileTextField.text email:emailTextField.text completedBlock:^(id item, NSError *error) {
         if ([item isEqualToString:@"1"]) {
             NSLog(@"更新成功");
@@ -132,6 +134,7 @@
         }
         
         if (error) {
+            [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
             NSLog(@"%@",[error description]);
         }
     }];
@@ -164,17 +167,18 @@
 -(void)reloadUserInfo
 {
     NSString *passwordStr = [[NSUserDefaults standardUserDefaults]stringForKey:PassWordKey];
-    
+
     [HttpHelper userLoginWithName:[loginInfo valueForKey:@"UserName"] pwd:passwordStr completedBlock:^(id item, NSError *error) {
         if (item) {
             if ([[item valueForKey:@"UserName"] length]) {
                 loginInfo = item;
                 [[PersistentDataManager sharePersistenDataManager]createUserLoginInfoTable:loginInfo];
                 [self.userInfoTable reloadData];
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
             }
         }
         if (error) {
-            
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
             if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
                 UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"与服务器连接失败，请检查" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                 [alertView show];
@@ -203,8 +207,10 @@
 -(void)logout
 {
     NSLog(@"%s",__func__);
+    NSString * str = [myDelegate.userInfo valueForKey:@"UserID"];
     [[PersistentDataManager sharePersistenDataManager]deleteRecordWithPrimaryKey:@"UserID" keyValue:[myDelegate.userInfo valueForKey:@"UserID"] tableName:@"UserLoginInfoTable"];
     self.isShouldShowLoginView = YES;
+    [[NSNotificationCenter defaultCenter]postNotificationName:LogoutNotification object:nil];
     [self dismissModalViewControllerAnimated:YES];
 }
 
@@ -318,21 +324,25 @@
     }else if(indexPath.row == 3)
     {
         NSString * beginData = [loginInfo valueForKey:@"BeginDate"];
-        beginData = [beginData stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        beginData = [beginData substringToIndex:8];
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyyMMdd"];
-        NSDate *date = [dateFormat dateFromString:beginData];
-        NSString * validateDays = [loginInfo valueForKey:@"EDays"];
-        int daysToAdd = [validateDays integerValue];
-        NSDate *newDate1 = [date dateByAddingTimeInterval:60*60*24*daysToAdd];
-        NSDateFormatter* fmt = [[NSDateFormatter alloc] init];
-        fmt.dateStyle = kCFDateFormatterLongStyle;
-        fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
-        NSString* dateString = [fmt stringFromDate:newDate1];
-        detailDescriptionLabel.text = dateString;
-        descriptionLabel.text = [NSString stringWithFormat:@"有效期: "];
-        [cell.contentView addSubview:detailDescriptionLabel];
+        if ([beginData length]) {
+            beginData = [beginData stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            beginData = [beginData substringToIndex:8];
+            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"yyyyMMdd"];
+            NSDate *date = [dateFormat dateFromString:beginData];
+            NSString * validateDays = [loginInfo valueForKey:@"EDays"];
+            int daysToAdd = [validateDays integerValue];
+            NSDate *newDate1 = [date dateByAddingTimeInterval:60*60*24*daysToAdd];
+            NSDateFormatter* fmt = [[NSDateFormatter alloc] init];
+            fmt.dateStyle = kCFDateFormatterLongStyle;
+            fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
+            NSString* dateString = [fmt stringFromDate:newDate1];
+            detailDescriptionLabel.text = dateString;
+            descriptionLabel.text = [NSString stringWithFormat:@"有效期: "];
+            [cell.contentView addSubview:detailDescriptionLabel];
+        }
+        
+       
     }else if(indexPath.row == 4)
     {
         NSString *str = [loginInfo valueForKey:@"QQ"];
