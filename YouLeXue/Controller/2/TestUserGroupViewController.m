@@ -57,6 +57,8 @@ static NSString *identifier = @"Cell";
     
     //保存标志
     NSMutableArray * markArray;
+    
+    BOOL isFirstShow;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -101,29 +103,8 @@ static NSString *identifier = @"Cell";
     currentPage = 1;
     [self.firstBtn setSelected:YES];
     
-    
-    //
-    isShouldDownExamPaper = NO;
-    paper = [NSMutableDictionary dictionary];
-    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
-    if ([paper count]==0) {
-        isShouldDownExamPaper = YES;
-    }
-    [self dataSourceSetting];
-    [self settingPullRefreshAction];
-    
-    
-    
-    //标记选中的项
-    selectedRow1 = -1;
-    selectedRow2 = -1;
-    selectedRow3 = -1;
-    selectedRow4 = -1;
-    preSelectedRow1 = -1;
-    preSelectedRow2 = -1;
-    preSelectedRow3 = -1;
-    preSelectedRow4 = -1;
-    
+    isFirstShow = YES;
+        
    
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
@@ -149,14 +130,35 @@ static NSString *identifier = @"Cell";
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
     if ([array count]) {
         info = [array objectAtIndex:0];
+        isShouldDownExamPaper = NO;
+        paper = [NSMutableDictionary dictionary];
+        paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+        if ([paper count]==0) {
+            isShouldDownExamPaper = YES;
+        }
+        [self dataSourceSetting];
+        [self settingPullRefreshAction];
+        
+        
+        //标记选中的项
+        selectedRow1 = -1;
+        selectedRow2 = -1;
+        selectedRow3 = -1;
+        selectedRow4 = -1;
+        preSelectedRow1 = -1;
+        preSelectedRow2 = -1;
+        preSelectedRow3 = -1;
+        preSelectedRow4 = -1;
     }
+
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"downloadedPaperCount"]) {
-        NSLog(@"%d",self.downloadedPaperCount);
+
         if (downloadedPaperCount == 0) {
+            isShouldDownExamPaper = NO;
             //保存数据到数据库
             NSMutableArray * tempArray = [NSMutableArray array];
             NSArray *tempPaperArr = [paper allValues];
@@ -242,12 +244,15 @@ static NSString *identifier = @"Cell";
         [HttpHelper getExamPaperListWithExamId:[tempExamInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
             NSArray * arr = (NSArray *)item;
             self.downloadedPaperCount --;
+            NSLog(@"%d",self.downloadedPaperCount);
             if([arr count])
             {
                 [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
             }
         }];
-
+    }else
+    {
+        [self stopReloadData];
     }
 }
 
@@ -305,14 +310,15 @@ static NSString *identifier = @"Cell";
                 if ([arr count]==0) {
                     [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
                 }
-                
-                [self fillData];
+                isShouldDownExamPaper = YES;
                 if (isShouldDownExamPaper) {
                     currentTableview = tableview;
                 }else
                 {
                     [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
                 }
+                [self fillData];
+                
                 [weakSelf reloadAllTable];
             }
             
@@ -566,6 +572,12 @@ static NSString *identifier = @"Cell";
         viewcontroller.title = [selectedInfo valueForKey:@"title"];
         [self.navigationController pushViewController:viewcontroller animated:YES];
         viewcontroller = nil;
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"没有数据" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show
+         ];
+        alert = nil;
     }
 }
 

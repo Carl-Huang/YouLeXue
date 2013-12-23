@@ -249,6 +249,9 @@
     NSURL  *url = [NSURL URLWithString:[[NSString stringWithFormat:@"%@",userInfo.vipurl] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     if (url) {
         [[UIApplication sharedApplication]openURL:url];
+    }else
+    {
+        [self showAlertView:@"指定URL 为空"];
     }
 
 }
@@ -466,13 +469,13 @@
 
 - (IBAction)reloadQuesBankAction:(id)sender {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    __weak YDRightMenuViewController * weakSelf =self;
+//    __weak YDRightMenuViewController * weakSelf =self;
     [HttpHelper getGroupExamListWithId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             //保存数据数据库
             self.downloadedPaperCount = [item count];
             paperCount = [item count];
-            NSString * desStr = [NSString stringWithFormat:@"已下载试卷%d",paperCount];
+//            NSString * desStr = [NSString stringWithFormat:@"已下载试卷%d",paperCount];
             NSArray * tempArr = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
             if ([tempArr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
@@ -482,15 +485,18 @@
             if ([arr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
             }
-            if (isShouldDownExamPaper) {
-                for (ExamInfo * examInfo in item) {
-                    [self downPaperListWithExamInfo:examInfo];
-                }
-
-            }else
-            {
-                [weakSelf showVDAlertViewWithTitle:@"提示" message:desStr];
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
+//            if (isShouldDownExamPaper) {
+//                for (ExamInfo * examInfo in item) {
+//                    [self downPaperListWithExamInfo:examInfo];
+//                }
+//
+//            }else
+//            {
+//                [weakSelf showVDAlertViewWithTitle:@"提示" message:desStr];
+//                [MBProgressHUD hideHUDForView:self.view animated:YES];
+//            }
+            for (ExamInfo * examInfo in item) {
+                [self downPaperListWithExamInfo:examInfo];
             }
         }else
         {

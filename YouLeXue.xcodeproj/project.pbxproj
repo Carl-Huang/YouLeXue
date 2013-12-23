@@ -1793,8 +1793,6 @@
 				4E317C0D182C92FC0009FEC3 /* Model */,
 				4EF18664182A8BCE00E5EEA8 /* Controller */,
 				4EF1862A182A8B3800E5EEA8 /* Lib */,
-				C32C21601828912200FBF75C /* AppDelegate.h */,
-				C32C21611828912200FBF75C /* AppDelegate.m */,
 				4EF18687182A949100E5EEA8 /* YDRightMenuViewController.h */,
 				4EF18688182A949100E5EEA8 /* YDRightMenuViewController.m */,
 				4E0C26EA182AB02D00AC0611 /* YDRightMenuViewController.xib */,
@@ -1810,6 +1808,8 @@
 		C32C21581828912200FBF75C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C32C21601828912200FBF75C /* AppDelegate.h */,
+				C32C21611828912200FBF75C /* AppDelegate.m */,
 				C32C21591828912200FBF75C /* YouLeXue-Info.plist */,
 				C32C215A1828912200FBF75C /* InfoPlist.strings */,
 				C32C215D1828912200FBF75C /* main.m */,

@@ -59,7 +59,7 @@
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         ;
     }];
-    [self.backScrollView setContentSize:CGSizeMake(320, 600)];
+    [self.backScrollView setContentSize:CGSizeMake(320, 700)];
     
     [self.alertUserInfo setUserInteractionEnabled:YES];
     UITapGestureRecognizer *tapGesture1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(alterUserInfoAction)];
@@ -465,6 +465,25 @@
 -(void)dealloc
 {
     [self removeObserver:self.proxy forKeyPath:@"isShouldShowLoginView"];
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    CGRect  rect = self.backScrollView.frame;
+    if ([textField isEqual:emailTextField]) {
+        
+        rect.origin.y +=160;
+        [self.backScrollView scrollRectToVisible:rect animated:YES];
+    }else if([textField isEqual:mobileTextField])
+    {
+        rect.origin.y +=120;
+        [self.backScrollView scrollRectToVisible:rect animated:YES];
+    }else if ([textField isEqual:qqTextField])
+    {
+        rect.origin.y += 90;
+        [self.backScrollView scrollRectToVisible:rect animated:YES];
+        
+    }
 }
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string

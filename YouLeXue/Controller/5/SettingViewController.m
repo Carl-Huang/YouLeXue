@@ -66,6 +66,10 @@
     sliderLabel.font = [UIFont systemFontOfSize:FontSize];
     slider = [[UISlider alloc]initWithFrame:CGRectMake(10, 20, 280, 40)];
     [slider addTarget:self action:@selector(intensityControl:) forControlEvents:UIControlEventTouchUpInside];
+
+    CGFloat  brightness = [[NSUserDefaults standardUserDefaults]floatForKey:@"APP_BRIGHTNESS"];
+    slider.value = brightness;
+    
     regulationStr = @"1";
     
     //设置这个页面，不能左右滑动。
@@ -367,6 +371,7 @@
 {
     UISlider * tempSlider = (UISlider *)sender;
     [[NSUserDefaults standardUserDefaults]setFloat:tempSlider.value forKey:@"APP_BRIGHTNESS"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     [UIScreen mainScreen].brightness = tempSlider.value;
     NSLog(@"%f",tempSlider.value);
 }
