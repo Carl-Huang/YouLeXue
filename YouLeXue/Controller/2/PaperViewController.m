@@ -39,7 +39,8 @@ typedef NS_ENUM(NSInteger, PanDirection)
 #import "SDWebImageManager.h"
 #import "MBProgressHUD.h"
 #import "UIImage+SaveToLocal.h"
-@interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate>
+#import "VDAlertView.h"
+@interface PaperViewController ()<UIScrollViewDelegate,UIAlertViewDelegate,VDAlertViewDelegate>
 {
     NSArray * questTypes;
     
@@ -100,9 +101,17 @@ typedef NS_ENUM(NSInteger, PanDirection)
     //下载图片 计数
     NSInteger downlingImage;
     NSInteger downloadedImage;
+    BOOL  hasImageToDown;
     
     //图片下载器
     SDWebImageManager * manager;
+    
+    //标志是否可以开始答卷
+    BOOL isShouldBeginExam;
+    BOOL isDownloadAllImage;
+    
+    //
+    NSInteger itemCount;
 }
 @property (assign ,nonatomic) NSInteger criticalPage;
 @end
@@ -127,10 +136,13 @@ typedef NS_ENUM(NSInteger, PanDirection)
     [super viewDidLoad];
     //初始化下载器
     manager = [SDWebImageManager sharedManager];
-    
+    isShouldBeginExam = NO;
+    isDownloadAllImage = NO;
+    hasImageToDown = NO;
     [self initializedInterface];
     [self initializedManipulateData];
-    [self countPageInitializing];
+    
+
     
     [self.popUpTable setHidden:YES];
     [self.view bringSubviewToFront:self.popUpTable];
@@ -232,6 +244,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     questionStrArray    = [NSMutableArray array];
     QAStrArray          = [NSMutableArray array];
     answerDictionary    = [NSMutableDictionary dictionary];
+    itemCount           = [questionDataSource count];
     for (int i = 0;i< [questionDataSource count];i++) {
         NSString * tempTitle = nil;
         NSString * descriptionStr = nil;
@@ -278,7 +291,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
             
             [self downloadImageWithImageURL:descriptionStr];
             
-            [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
+            for (NSString * str in [answerDictionary allKeys]) {
+                if (![str isEqualToString:[tempPaperInfo valueForKey:@"num"]]) {
+                    [answerDictionary setObject:@"" forKey:[tempPaperInfo valueForKey:@"num"]];
+                }
+            }
+        
         }
         [questionStrArray addObject:descriptionStr];
         NSString * answerStr = [NSString stringWithFormat:@"%@",[tempPaperInfo valueForKey:@"DAJS"]];
@@ -290,8 +308,17 @@ typedef NS_ENUM(NSInteger, PanDirection)
         }
         
     }
-
+    isShouldBeginExam = YES;
+    if (!hasImageToDown) {
+        [self countPageInitializing];
+    }
+    if (isDownloadAllImage) {
+        [self countPageInitializing];
+    }
+    
+    NSLog(@"som");
 }
+
 
 -(void)countPageInitializing
 {
@@ -324,20 +351,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
 -(void)back
 {
     NSLog(@"%s",__func__);
-    NSArray * tempData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
-    if (![tempData count]) {
-        NSLog(@"创建并插入错题本");
-         [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:wrongExamPaperInfoArray];
-    }else
-    {
-        NSLog(@"插入错题本");
-        [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:wrongExamPaperInfoArray];
-    }
    
     if (!isJustBrowse) {
-        UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
-        [alertview show];
-        alertview = nil;
+//        UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定退出考试吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+//        [alertview show];
+//        alertview = nil;
+        [self showVDAlertViewWithTitle:@"提示" message:@"确定退出考试吗？"];
     }else
     {
         [self.navigationController popViewControllerAnimated:YES];
@@ -933,9 +952,45 @@ typedef NS_ENUM(NSInteger, PanDirection)
         [dateFormat setDateFormat:@"yyyy-MM-dd"];
         NSString * timeStr = [dateFormat stringFromDate:[NSDate date]];
         info.timeStamp = timeStr;
+        NSString * wrongTextRule = [[NSUserDefaults standardUserDefaults]stringForKey:WrongTextRuleTime];
+        if ([wrongTextRule length]) {
+            info.wrongRule = wrongTextRule;
+        }else
+        {
+            info.wrongRule = @"1";
+        }
+        
+        
         timeStr = nil;
         free(vars);
         [wrongExamPaperInfoArray addObject:info];
+        NSArray * tempData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+        if (![tempData count]) {
+            NSLog(@"创建并插入错题本");
+            [[PersistentDataManager sharePersistenDataManager]createWrongTextBook:@[info]];
+        }else
+        {
+            NSLog(@"插入错题本");
+            [[PersistentDataManager sharePersistenDataManager]insertValueIntoWrongTextBookTable:@[info]];
+        }
+        
+        UILabel * textLabel = [[UILabel alloc]initWithFrame:CGRectMake(90, 10, 120, 30)];
+        [textLabel setBackgroundColor:[UIColor clearColor]];
+        textLabel.font = [UIFont systemFontOfSize:15];
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        textLabel.text = @"成功加入错题本";
+        
+        UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 280, 50)];
+        [bgView setBackgroundColor:[UIColor clearColor]];
+        [bgView addSubview:textLabel];
+        textLabel = nil;
+        
+        VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView setCustomSubview:bgView];
+        bgView = nil;
+        [alertView show];
+
+
     }
     
     
@@ -1003,11 +1058,12 @@ typedef NS_ENUM(NSInteger, PanDirection)
         int second = lastTime % 60;
         NSString * usedTime = [NSString stringWithFormat:@"%d分%d秒",minute,second];
         
+        //读取错题本
+         NSArray * tempWrongTextBookData = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+        
         //保存提交的试卷
         for (ExamPaperInfo * examInfo in questionDataSource) {
-//            if ([[examInfo valueForKey:@"IsRnd"]integerValue]!=0) {
                 NSString *number = [examInfo valueForKey:@"num"];
-                
                 SubmittedPaperInfo * submittedInfo = [[SubmittedPaperInfo alloc]init];
                 unsigned int varCount = 0;
                 Ivar *vars = class_copyIvarList([ExamPaperInfo class], &varCount);
@@ -1038,6 +1094,24 @@ typedef NS_ENUM(NSInteger, PanDirection)
                         }
                     }
                     if (isRight) {
+                        NSString * questionId = [NSString stringWithFormat:@"%@",[examInfo valueForKey:@"id"]];
+                        for (ExamPaperInfoTimeStamp * tempObj in tempWrongTextBookData) {
+                            NSString * tempID = [NSString stringWithFormat:@"%@",[tempObj valueForKey:@"id"]];
+                            NSString * keyId = [NSString stringWithFormat:@"%@",[tempObj valueForKey:@"id"]];
+                            if ([tempID isEqual:questionId]) {
+                                 NSInteger num = [[tempObj valueForKey:@"wrongRule"]integerValue];
+                                if (num==1) {
+                                    NSLog(@"删");
+                                    [[PersistentDataManager sharePersistenDataManager]deleteWrongTextBookRecordID:keyId];
+                                }else
+                                {
+                                    num--;
+                                    [[PersistentDataManager sharePersistenDataManager]updateWrongTextBookItemCount:[NSString stringWithFormat:@"%d",num] key:keyId];
+                                }
+                                
+                            }
+                        }
+                        
                         score += [[examInfo valueForKey:@"tmfs"]integerValue];
                     }
                 }
@@ -1045,7 +1119,6 @@ typedef NS_ENUM(NSInteger, PanDirection)
                 submittedInfo.uuid          = uuid;
                 [endExamData addObject:submittedInfo];
                 submittedInfo = nil;
-//            }
         }
         [[PersistentDataManager sharePersistenDataManager]createEndExamPaperTable:endExamData];
         endExamData = nil;
@@ -1118,7 +1191,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 #pragma mark AlertView Deleaget
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)alertView:(VDAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 {
     switch (buttonIndex) {
         case 0:
@@ -1170,6 +1243,7 @@ typedef NS_ENUM(NSInteger, PanDirection)
     if (imageurl) {
         NSString * imageName = [self getImageUrl:imageurl];
         if (imageName) {
+            hasImageToDown = YES;
             NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
             NSURL *url = [NSURL URLWithString:imageUrl];
             if (downlingImage == 0) {
@@ -1191,7 +1265,40 @@ typedef NS_ENUM(NSInteger, PanDirection)
 {
     if (downlingImage ==downloadedImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
+        isDownloadAllImage = YES;
+        if (isShouldBeginExam) {
+            [self countPageInitializing];
+        }
     }
+}
+
+-(void)showVDAlertViewWithTitle:(NSString *)title message:(NSString *)msg
+{
+    VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];
+    
+    UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 250, 30)];
+    [textLabel1 setBackgroundColor:[UIColor clearColor]];
+    textLabel1.font = [UIFont systemFontOfSize:16];
+    textLabel1.textAlignment = NSTextAlignmentCenter;
+    textLabel1.text = msg;
+    
+    //    UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
+    //    [textLabel2 setBackgroundColor:[UIColor clearColor]];
+    //    textLabel2.font = [UIFont systemFontOfSize:13];
+    //    textLabel2.text = @"客服热线：40086-55280";
+    
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 250, 100)];
+    [bgView setBackgroundColor:[UIColor clearColor]];
+    [bgView addSubview:textLabel1];
+    //    [bgView addSubview:textLabel2];
+    textLabel1 = nil;
+    //    textLabel2 = nil;
+    
+    [alertView setCustomSubview:bgView];
+    bgView =nil;
+    alertView.delegate = self;
+    [alertView show];
+    alertView = nil;
 }
 @end
 

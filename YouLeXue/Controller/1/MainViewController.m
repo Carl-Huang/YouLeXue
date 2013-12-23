@@ -13,7 +13,8 @@
 #import "PersistentDataManager.h"
 #import "HttpHelper.h"
 #import "UIImage+SaveToLocal.h"
-
+#import "RightPhontNotiViewController.h"
+#import "FetchUserMessageInfo.h"
 
 #define Ad1 @"http://www.55280.com//UploadFiles/2013/0/2013091210340360268.jpg"
 #define Ad2 @"http://www.55280.com//UploadFiles/2013/0/2013091210504240285.jpg"
@@ -48,7 +49,7 @@
     
     [self animation];
     [self.afterLoginView setHidden:YES];
-    [self updateInterface];
+//    [self updateInterface];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LogoutNotification" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(updateInterface) name:@"LoginNotification" object:nil];
     imageArray = [NSMutableArray array];
@@ -67,7 +68,7 @@
     }
     
     
-    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(changeImage) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(changeImage) userInfo:nil repeats:YES];
 
     self.backgroundImgeView.userInteractionEnabled = YES;
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(openAdUrl)];
@@ -75,6 +76,11 @@
     tapGesture = nil;
     count = 0;
 
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self updateInterface];
 }
 
 -(void)openAdUrl
@@ -173,15 +179,36 @@
         }
         NSString * timeText = [NSString stringWithFormat:@"离考试时间还有%d天",lastDate];
         
-        NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
+//        NSString * messageText = [NSString stringWithFormat:@"未读消息%@",[info valueForKey:@"MsgNum"]];
+        
+        //读取数据库未读信息
+        NSInteger messageCount = 0 ;
+        NSArray * tempMessageInfo = [[PersistentDataManager sharePersistenDataManager]readMessageTableData];
+        for (FetchUserMessageInfo * tempInfo in tempMessageInfo) {
+            NSString * key = [tempInfo valueForKey:@"isRead"];
+            if (![key isEqualToString:@"1"]) {
+                messageCount++;
+            }
+        }
         self.countTimeLabel.text = timeText;
-        self.messageCountLabel.text = messageText;
+        self.messageCountLabel.text = [NSString stringWithFormat:@"未读消息%d",messageCount];
+        self.messageCountLabel.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pushToRightPhontNotiViewController:)];
+        [self.messageCountLabel addGestureRecognizer:tapGesture];
+        tapGesture = nil;
     }else
     {
         [self.afterLoginView setHidden:YES];
         [self.NotLoignLabel setHidden:NO];
     }
 
+}
+
+-(void)pushToRightPhontNotiViewController:(UITapGestureRecognizer *)gesuture
+{
+    RightPhontNotiViewController * viewcontroller = [[RightPhontNotiViewController alloc]initWithNibName:nil bundle:nil];
+    [self presentViewController:viewcontroller animated:YES completion:nil];
+    viewcontroller = nil;
 }
 
 
@@ -253,5 +280,8 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+- (IBAction)phoneCallAction:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://40086-55280"]];
 }
 @end

@@ -18,6 +18,7 @@
 #import "UserSetting.h"
 #import "SubmittedPaperInfo.h"
 #import "SubmittedPaperIndex.h"
+#import "FetchUserMessageInfo.h"
 
 @implementation PersistentDataManager
 @synthesize db;
@@ -193,6 +194,25 @@
     [db close];
 }
 
+-(void)deleteWrongTextBookRecordID:(NSString*)idStr
+{
+    [self deleteRecordWithPrimaryKey:@"id" keyValue:idStr tableName:@"WrongTextBookTable"];
+}
+
+-(void)updateWrongTextBookItemCount:(NSString *)countStr key:(NSString *)keyID
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"update WrongTextBookTable set wrongRule=? where id=%@",keyID];
+    if ([db executeUpdate:cmdStr,countStr]) {
+        NSLog(@"update WrongTextBookTable successfully");
+    }else
+    {
+        NSLog(@"Failer to update value to WrongTextBookTable,Error: %@",[db lastError]);
+    }
+    [db close];
+
+}
+
 #pragma mark - 创建案例的表
 -(void)createExampleListTable:(NSArray *)array
 {
@@ -210,7 +230,7 @@
         NSLog(@"ExampleListTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists ExampleListTable %@",[self enumerateObjectConverToStr:[ExamplePaperInfo class] withPrimarykey:@"TID"]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
+            NSLog(@"create ExampleListTable successfully");
             if ([array count]) {
                 for (ExamplePaperInfo * info in array) {
                     [self insertValueToExistedTableWithTableName:@"ExampleListTable" Arguments:info primaryKey:@"TID"];
@@ -222,6 +242,16 @@
         }
         
     }
+    [db close];
+}
+
+-(void)updateExampleListTableWithKey:(NSString *)key value:(NSString *)value
+{
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update ExampleListTable set canDoOrNot=? where ID=?"];
+    [db executeUpdate:cmdStr,value,key];
+    [db commit];
     [db close];
 }
 
@@ -243,7 +273,7 @@
         NSLog(@"OtherInformationTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists OtherInformationTable %@",[self enumerateObjectConverToStr:[FetchDataInfo class] withPrimarykey:@"KS_phoneSeq"]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create table successfully");
+            NSLog(@"create OtherInformationTable successfully");
             if ([array count]) {
                 for (FetchDataInfo * info in array) {
                     [self insertValueToExistedTableWithTableName:@"OtherInformationTable" Arguments:info primaryKey:@"KS_phoneSeq"];
@@ -321,7 +351,7 @@
     NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists UserSettingTable %@",[self enumerateObjectConverToStr:[UserSetting class] withPrimarykey:nil]];
     if ([db executeUpdate:cmdStr]) {
         
-        NSLog(@"create table successfully");
+        NSLog(@"create createUserSettingTable successfully");
         [self eraseTableData:@"UserSettingTable"];
         NSMutableArray * objectValueArray = [NSMutableArray array];
         unsigned int varCount;
@@ -510,7 +540,7 @@
         NSLog(@"ExamPaperTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists EndExamPaperTable %@",[self enumerateObjectConverToStr:[SubmittedPaperInfo class] withPrimarykey:nil]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create ExamPaperTable successfully");
+            NSLog(@"create EndExamPaper successfully");
             if ([array count]) {
                 for (SubmittedPaperInfo * info in array) {
                     [self insertValueToExistedTableWithTableName:@"EndExamPaperTable" Arguments:info primaryKey:nil];
@@ -567,7 +597,7 @@
         NSLog(@"EndExamPaperIndexTable不存在");
         NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists EndExamPaperIndexTable %@",[self enumerateObjectConverToStr:[SubmittedPaperIndex class] withPrimarykey:@"uuid"]];
         if ([db executeUpdate:cmdStr]) {
-            NSLog(@"create ExamPaperTable successfully");
+            NSLog(@"create EndExamPaper successfully");
 
             [self insertValueToExistedTableWithTableName:@"EndExamPaperIndexTable" Arguments:info primaryKey:@"uuid"];
  
@@ -593,6 +623,53 @@
     return array;
 }
 
+#pragma  mark - 创建短信表
+-(void)createMessageTable:(NSArray *)array
+{
+    [db open];
+    NSString * cmdStr = [NSString stringWithFormat:@"create table if not exists MessageTable %@",[self enumerateObjectConverToStr:[FetchUserMessageInfo class] withPrimarykey:@"ID"]];
+    if ([db executeUpdate:cmdStr]) {
+        NSLog(@"create MessageTable successfully");
+        if ([array count]) {
+            for (FetchUserMessageInfo * info in array) {
+                [self insertValueToExistedTableWithTableName:@"MessageTable" Arguments:info primaryKey:@"ID"];
+            }
+        }
+    }else
+    {
+        NSLog(@"Failer to create MessageTable,Error: %@",[db lastError]);
+    }
+    [db close];
+}
+
+-(void)deleteMessageFromMessageTableWithID:(NSString *)MessageId
+{
+    //
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update MessageTable set isDelete=1 where ID=?"];
+    [db executeUpdate:cmdStr,MessageId];
+    [db commit];
+    [db close];
+}
+
+-(void)setMessageIsRead:(NSString *)MessageId
+{
+    [db open];
+    [db beginTransaction];
+    NSString * cmdStr = [NSString stringWithFormat:@"update MessageTable set IsRead=1 where ID=?"];
+    [db executeUpdate:cmdStr,MessageId];
+    [db commit];
+    [db close];
+
+}
+
+-(NSArray *)readMessageTableData
+{
+    
+   NSArray * array = [self readDataWithTableName:@"MessageTable" withObjClass:[FetchUserMessageInfo class]];
+    return array;
+}
 
 #pragma mark - 清除表的所有信息
 -(BOOL)eraseTableData:(NSString *)tableName

@@ -57,6 +57,8 @@ static NSString *identifier = @"Cell";
     
     //保存标志
     NSMutableArray * markArray;
+    
+    BOOL isFirstShow;
 }
 @property (assign,nonatomic)NSInteger downloadedPaperCount; //记录需要下载的试卷数目
 @end
@@ -100,28 +102,10 @@ static NSString *identifier = @"Cell";
     //默认选中第一页
     currentPage = 1;
     [self.firstBtn setSelected:YES];
-    [self dataSourceSetting];
-    [self settingPullRefreshAction];
     
-    
-    
-    //标记选中的项
-    selectedRow1 = -1;
-    selectedRow2 = -1;
-    selectedRow3 = -1;
-    selectedRow4 = -1;
-    preSelectedRow1 = -1;
-    preSelectedRow2 = -1;
-    preSelectedRow3 = -1;
-    preSelectedRow4 = -1;
-    
-    //
-    isShouldDownExamPaper = NO;
-    paper = [NSMutableDictionary dictionary];
-    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
-    if ([paper count]==0) {
-        isShouldDownExamPaper = YES;
-    }
+    isFirstShow = YES;
+        
+   
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadUserInfo) name:@"LoginNotification" object:nil];
@@ -146,14 +130,35 @@ static NSString *identifier = @"Cell";
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
     if ([array count]) {
         info = [array objectAtIndex:0];
+        isShouldDownExamPaper = NO;
+        paper = [NSMutableDictionary dictionary];
+        paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+        if ([paper count]==0) {
+            isShouldDownExamPaper = YES;
+        }
+        [self dataSourceSetting];
+        [self settingPullRefreshAction];
+        
+        
+        //标记选中的项
+        selectedRow1 = -1;
+        selectedRow2 = -1;
+        selectedRow3 = -1;
+        selectedRow4 = -1;
+        preSelectedRow1 = -1;
+        preSelectedRow2 = -1;
+        preSelectedRow3 = -1;
+        preSelectedRow4 = -1;
     }
+
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"downloadedPaperCount"]) {
-        NSLog(@"%d",self.downloadedPaperCount);
+
         if (downloadedPaperCount == 0) {
+            isShouldDownExamPaper = NO;
             //保存数据到数据库
             NSMutableArray * tempArray = [NSMutableArray array];
             NSArray *tempPaperArr = [paper allValues];
@@ -170,6 +175,7 @@ static NSString *identifier = @"Cell";
 }
 -(void)stopReloadData
 {
+    currentTableview.userInteractionEnabled = YES;
      [currentTableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
 }
 
@@ -199,6 +205,7 @@ static NSString *identifier = @"Cell";
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
     if ([array count]) {
         [self cleanDataSource];
+        [currentTableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:30];
         for (ExamInfo * examInfo in array) {
             downloadedPaperCount = [array count];
             NSLog(@"%@",examInfo.KS_leixing);
@@ -236,14 +243,16 @@ static NSString *identifier = @"Cell";
     if (isShouldDownExamPaper) {
         [HttpHelper getExamPaperListWithExamId:[tempExamInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
             NSArray * arr = (NSArray *)item;
-            
+            self.downloadedPaperCount --;
+            NSLog(@"%d",self.downloadedPaperCount);
             if([arr count])
             {
                 [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
-                self.downloadedPaperCount --;
             }
         }];
-
+    }else
+    {
+        [self stopReloadData];
     }
 }
 
@@ -285,6 +294,8 @@ static NSString *identifier = @"Cell";
 
 -(void)pullToUpdateWithTable:(UITableView *)tableview
 {
+    //禁止用户点击
+    tableview.userInteractionEnabled = NO;
     __weak TestUserGroupViewController *weakSelf = self;
     if (info) {
         [HttpHelper getGroupExamListWithId:[info valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
@@ -299,14 +310,15 @@ static NSString *identifier = @"Cell";
                 if ([arr count]==0) {
                     [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
                 }
-                
-                [self fillData];
+                isShouldDownExamPaper = YES;
                 if (isShouldDownExamPaper) {
                     currentTableview = tableview;
                 }else
                 {
                     [tableview.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
                 }
+                [self fillData];
+                
                 [weakSelf reloadAllTable];
             }
             
@@ -560,6 +572,12 @@ static NSString *identifier = @"Cell";
         viewcontroller.title = [selectedInfo valueForKey:@"title"];
         [self.navigationController pushViewController:viewcontroller animated:YES];
         viewcontroller = nil;
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"没有数据" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show
+         ];
+        alert = nil;
     }
 }
 

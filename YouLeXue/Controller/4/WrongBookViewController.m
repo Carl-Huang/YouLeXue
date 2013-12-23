@@ -42,14 +42,17 @@
 
 -(void)pullToUpdate
 {
-    if (![dataSource count]) {
-         dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
-        [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
-        [self.wrongBookTable reloadData];
-    }else
-    {
-        [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
-    }
+    dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+    [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+    [self.wrongBookTable reloadData];
+//    if (![dataSource count]) {
+//         dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"WrongTextBookTable" withObjClass:[ExamPaperInfoTimeStamp class]];
+//        [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:2];
+//        [self.wrongBookTable reloadData];
+//    }else
+//    {
+//        [self.wrongBookTable.pullToRefreshView performSelector:@selector(stopAnimating) withObject:nil afterDelay:1];
+//    }
     
 }
 

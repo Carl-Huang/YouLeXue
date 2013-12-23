@@ -115,13 +115,6 @@ static NSString *identifier = @"Cell";
     preSelectedRow3 = -1;
     preSelectedRow4 = -1;
     
-    //
-    isShouldDownExamPaper = NO;
-    paper = [NSMutableDictionary dictionary];
-    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
-    if ([paper count]==0) {
-        isShouldDownExamPaper = YES;
-    }
     [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(reloadUserInfo) name:@"LoginNotification" object:nil];
@@ -141,6 +134,15 @@ static NSString *identifier = @"Cell";
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    //
+    isShouldDownExamPaper = NO;
+    paper = [NSMutableDictionary dictionary];
+    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+    if ([paper count]==0) {
+        isShouldDownExamPaper = YES;
+    }
+
+    
     NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
     if ([array count]) {
         info = [array objectAtIndex:0];

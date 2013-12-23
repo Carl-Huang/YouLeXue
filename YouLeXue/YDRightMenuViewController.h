@@ -26,12 +26,7 @@
 //afterLoginView    outlet
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *phoneAlertBtnAction;
-- (IBAction)phoneAlertBtnAction:(id)sender;
-- (IBAction)adviceBtnAction:(id)sender;
-- (IBAction)reloadQuesBankAction:(id)sender;
-- (IBAction)userInfoAction:(id)sender;
-- (IBAction)updatePaperAction:(id)sender;
-- (IBAction)logoutAction:(id)sender;
+
 @property (weak, nonatomic) IBOutlet UILabel *userNamelabel;
 @property (weak, nonatomic) IBOutlet UILabel *userDesclabel;
 @property (weak, nonatomic) IBOutlet UILabel *userDetailDescLabel;
@@ -40,4 +35,12 @@
 
 
 @property (strong ,nonatomic) __block UserLoginInfo * userInfo;
+
+- (IBAction)phoneAlertBtnAction:(id)sender;
+- (IBAction)adviceBtnAction:(id)sender;
+- (IBAction)reloadQuesBankAction:(id)sender;
+- (IBAction)userInfoAction:(id)sender;
+- (IBAction)updatePaperAction:(id)sender;
+- (IBAction)logoutAction:(id)sender;
+- (IBAction)registerAction:(id)sender;
 @end

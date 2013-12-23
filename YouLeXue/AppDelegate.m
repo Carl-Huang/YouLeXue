@@ -19,13 +19,18 @@
 #import "PersistentDataManager.h"
 #import "VDAlertView.h"
 #import <ShareSDK/ShareSDK.h>
+#import "Constant.h"
 
 @implementation AppDelegate
 @synthesize akTabBarController;
 @synthesize userInfo;
-
+@synthesize Server_URL;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //服务器地址
+    Server_URL = [AppDelegate getServerURL];
+    
+    
     //shareSDK
     [ShareSDK registerApp:@"d116da0a16e"];   
     //添加新浪微博应用
@@ -120,17 +125,13 @@
     // Override point for customization after application launch.
     akTabBarController = [[AKTabBarController alloc] initWithTabBarHeight:49.0];
     MainViewController * firstViewController = [[MainViewController alloc]initWithNibName:@"MainViewController" bundle:nil];
-//    UINavigationController * nav_a = [[UINavigationController alloc] initWithRootViewController:firstViewController];
     
     TestUserGroupViewController *secondViewController = [[TestUserGroupViewController alloc]initWithNibName:@"TestUserGroupViewController" bundle:nil];
-//     UINavigationController * nav_b = [[UINavigationController alloc] initWithRootViewController:secondViewController];
     
     CaseAnalysisViewController * thirdViewController = [[CaseAnalysisViewController alloc]initWithNibName:@"CaseAnalysisViewController" bundle:nil];
-//     UINavigationController * nav_c = [[UINavigationController alloc] initWithRootViewController:thirdViewController];
     
     WrongBookViewController * fourthViewController = [[WrongBookViewController alloc]initWithNibName:@"WrongBookViewController" bundle:nil];
-//     UINavigationController * nav_d = [[UINavigationController alloc] initWithRootViewController:fourthViewController];
-    
+
     SettingViewController * fifthViewController = [[SettingViewController alloc]initWithNibName:@"SettingViewController" bundle:nil];
     akTabBarController.viewControllers = [NSMutableArray arrayWithObjects:firstViewController,secondViewController,thirdViewController,fourthViewController,fifthViewController,nil];
     akTabBarController.tabWidth = 320.0/5;
@@ -240,4 +241,27 @@
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"Top_Bar"] forBarMetrics:UIBarMetricsDefault];
 }
 
++(NSString *)getServerURL
+{
+    NSString * serverUrl = nil;
+    serverUrl = [[NSUserDefaults standardUserDefaults]stringForKey:ServerURLKey];
+    if ([serverUrl length]) {
+        serverUrl = [NSString stringWithFormat:@"%@/jsonapi/",serverUrl];
+    }else
+    {
+        return @"http://www.55280.com/jsonapi/";
+    }
+    
+    return serverUrl;
+}
+
++(NSString *)getServerAddress
+{
+    NSString * serverUrl = nil;
+    serverUrl = [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]stringForKey:ServerURLKey]];
+    if ([serverUrl isEqualToString:@"(null)"]) {
+        return nil;
+    }
+    return serverUrl;
+}
 @end

@@ -40,6 +40,10 @@
         examText.font = [UIFont systemFontOfSize:12];
         [examText setTextColor:[UIColor colorWithRed:66.0/255.0 green:183.0/255.0 blue:201.0/255.0 alpha:1.0]];
         examText.text = str1;
+        UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(examModelAction)];
+        [examText addGestureRecognizer:tapGesture];
+        examText.userInteractionEnabled = YES;
+        tapGesture = nil;
         [self addSubview:examText];
         [self addSubview:examModel];
         
@@ -59,6 +63,10 @@
         practiceText.font = [UIFont systemFontOfSize:12];
         [practiceText setTextColor:[UIColor colorWithRed:66.0/255.0 green:183.0/255.0 blue:201.0/255.0 alpha:1.0]];
         practiceText.text = str2;
+        UITapGestureRecognizer * practiceTextTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(practiceModelAction)];
+        [practiceText addGestureRecognizer:practiceTextTapGesture];
+        practiceText.userInteractionEnabled = YES;
+        practiceTextTapGesture = nil;
         [self addSubview:practiceText];
         [self addSubview:practiceModel];
         
@@ -77,6 +85,10 @@
         markText.font = [UIFont systemFontOfSize:12];
         [markText setTextColor:[UIColor colorWithRed:66.0/255.0 green:183.0/255.0 blue:201.0/255.0 alpha:1.0]];
         markText.text = str3;
+        UITapGestureRecognizer *markTextTapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(markModelAction)];
+        [markText addGestureRecognizer:markTextTapGesture];
+        markText.userInteractionEnabled = YES;
+        markTextTapGesture = nil;
         [self addSubview:markText];
         [self addSubview:markModel];
 
@@ -100,6 +112,8 @@
 {
     self.markBlock();
 }
+
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

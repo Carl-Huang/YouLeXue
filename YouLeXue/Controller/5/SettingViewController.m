@@ -12,8 +12,12 @@
 #import "UserSetting.h"
 #import <objc/runtime.h>
 #import "PersistentDataManager.h"
-
-@interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate>
+#import "Constant.h"
+#import "VDAlertView.h"
+#import "WrongRuleViewController.h"
+#import "MainViewController.h"
+#import "PopUpWrongRuleViewController.h"
+@interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate,VDAlertViewDelegate,UITextFieldDelegate>
 {
     NSArray *firSectionDataSource;
     
@@ -26,6 +30,10 @@
     
     //记录cell的选中状态
     NSMutableDictionary * checkItems;
+    
+    //服务器修改地址框
+    UIView * textFieldBg;
+    UITextField * alterServerUrlTextField;
 }
 @end
 
@@ -58,6 +66,10 @@
     sliderLabel.font = [UIFont systemFontOfSize:FontSize];
     slider = [[UISlider alloc]initWithFrame:CGRectMake(10, 20, 280, 40)];
     [slider addTarget:self action:@selector(intensityControl:) forControlEvents:UIControlEventTouchUpInside];
+
+    CGFloat  brightness = [[NSUserDefaults standardUserDefaults]floatForKey:@"APP_BRIGHTNESS"];
+    slider.value = brightness;
+    
     regulationStr = @"1";
     
     //设置这个页面，不能左右滑动。
@@ -81,7 +93,21 @@
         }
    
     }
-
+    textFieldBg = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+    [textFieldBg setBackgroundColor:[UIColor clearColor]];
+    alterServerUrlTextField = [[UITextField alloc]initWithFrame:CGRectMake(10, 10, 260, 35)];
+    [alterServerUrlTextField setBorderStyle:UITextBorderStyleRoundedRect];
+    [alterServerUrlTextField setBackgroundColor:[UIColor clearColor]];
+    alterServerUrlTextField.delegate = self;
+    NSString * tempUrl = [AppDelegate getServerAddress];
+    if (![tempUrl length]) {
+         alterServerUrlTextField.text = @"http://www.55280.com";
+    }else
+    {
+        alterServerUrlTextField.text = tempUrl;
+    }
+    
+    [textFieldBg addSubview:alterServerUrlTextField];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -135,7 +161,7 @@
             return 4;
             break;
         case 3:
-            return 2;
+            return 1;
             break;
             
         default:
@@ -176,10 +202,73 @@
                 default:
                     break;
             }
+            [tableView reloadData];
+        }else
+        {
+         
+            PopUpWrongRuleViewController * viewController = [[PopUpWrongRuleViewController alloc]initWithNibName:@"PopUpWrongRuleViewController" bundle:nil];
+            [viewController setBlock:[self didSelectedItemBlock]];
+            [self.view addSubview:viewController.view];
+            [self addChildViewController:viewController];
+            viewController.view.alpha= 0.0;
+            [UIView animateWithDuration:0.3 animations:^{
+               viewController.view.alpha = 1.0;
+            } completion:^(BOOL finished) {
+    
+            }];
+            viewController = nil;
+           
         }
-        [tableView reloadData];
+        
+    }else if (indexPath.section == 2)
+    {
+        VDAlertView * alert = [[VDAlertView alloc]initWithTitle:@"请输入" message:@"" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:@"取消",nil];
+        [alert setCustomSubview:textFieldBg];
+        alert.delegate = self;
+        [alert show];
+    }else if (indexPath.section == 3)
+    {
+        if (indexPath.row == 0) {
+            NSLog(@"%s",__func__);
+            VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+
+//            UIWebView *webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 10, 250, 80)];
+//            [webView loadHTMLString:servicePersonInfo baseURL:nil];
+            UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 200, 30)];
+            [textLabel1 setBackgroundColor:[UIColor clearColor]];
+            textLabel1.font = [UIFont systemFontOfSize:13];
+            textLabel1.text = @"版权所有:优乐学网校";
+            
+            UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
+            [textLabel2 setBackgroundColor:[UIColor clearColor]];
+            textLabel2.font = [UIFont systemFontOfSize:13];
+            textLabel2.text = @"客服热线：40086-55280";
+            
+            UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 260, 100)];
+            [bgView setBackgroundColor:[UIColor clearColor]];
+            [bgView addSubview:textLabel1];
+            [bgView addSubview:textLabel2];
+            textLabel1 = nil;
+            textLabel2 = nil;
+            
+            [alertView setCustomSubview:bgView];
+            bgView =nil;
+            [alertView show];
+        }
     }
 }
+
+-(DidSelectedItemBlock)didSelectedItemBlock
+{
+    DidSelectedItemBlock block = ^(NSInteger item)
+    {
+        NSLog(@"%d",item);
+        [[NSUserDefaults standardUserDefaults]setObject:[NSString stringWithFormat:@"%d",item] forKey:WrongTextRuleTime];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    };
+    return block;
+}
+
 
 -(void)configureCheckItemWithIndexPath:(NSIndexPath *)indexPath
 {
@@ -229,19 +318,25 @@
         case 2:
         {
             cell.textLabel.text = @"服务器地址设置";
-            cell.detailTextLabel.text = @"http://www.55280.com";
+            if ([alterServerUrlTextField.text length]) {
+                cell.detailTextLabel.text = alterServerUrlTextField.text;
+            }else
+            {
+                cell.detailTextLabel.text = @"http://www55280.com";
+            }
+            
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;
         case 3:
         {
-            if (index.row ==0) {
-                cell.textLabel.text = @"分享";
-            }else
-            {
-                cell.textLabel.text = @"关于";
-            }
-
+//            if (index.row ==0) {
+//                cell.textLabel.text = @"分享";
+//            }else
+//            {
+//                cell.textLabel.text = @"关于";
+//            }
+            cell.textLabel.text = @"关于";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;
@@ -276,7 +371,41 @@
 {
     UISlider * tempSlider = (UISlider *)sender;
     [[NSUserDefaults standardUserDefaults]setFloat:tempSlider.value forKey:@"APP_BRIGHTNESS"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     [UIScreen mainScreen].brightness = tempSlider.value;
     NSLog(@"%f",tempSlider.value);
+}
+
+#pragma mark - VDAlertView delegate
+-(void)alertView:(VDAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+        {
+            //修改服务器地址
+            NSString * serverUrl = alterServerUrlTextField.text;
+            [[NSUserDefaults standardUserDefaults]setObject:serverUrl forKey:ServerURLKey];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+
+            [self.settingTable reloadData];
+            
+
+        }
+            break;
+        case 1:
+            ;
+            break;
+        default:
+            break;
+    }
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if ([string isEqualToString:@"\n"]) {
+        [textField resignFirstResponder];
+        return NO;
+    }
+    return YES;
 }
 @end

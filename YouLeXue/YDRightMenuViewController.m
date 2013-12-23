@@ -28,6 +28,8 @@
 #import "UIImage+SaveToLocal.h"
 #import "MBProgressHUD.h"
 #import "SDWebImageManager.h"
+#import "Constant.h"
+
 
 @interface YDRightMenuViewController ()
 {
@@ -39,12 +41,19 @@
     
     //downloader
     SDWebImageManager * manager;
+    NSMutableDictionary * paper;
+    BOOL isShouldDownExamPaper;
+    NSInteger paperCount;
+    
+    BOOL isLogout;
 }
+@property (assign ,nonatomic) NSInteger downloadedPaperCount;
+
 @end
 
 @implementation YDRightMenuViewController
 @synthesize userInfo;
-
+@synthesize downloadedPaperCount;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -84,15 +93,44 @@
     self.passwordTextField.tag = PassWordTextFieldTag;
     self.userNameTextField.delegate = self;
     self.passwordTextField.delegate = self;
-    self.userNameTextField.returnKeyType = UIReturnKeyNext;
     self.passwordTextField.returnKeyType = UIReturnKeyDone;
     self.userNameTextField.text = @"";
     self.passwordTextField.text = @"";
     
-    [self fillData];
+   
     [self refreshStatus];
     
+    isShouldDownExamPaper = NO;
+    paper = [NSMutableDictionary dictionary];
+    paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+    if ([paper count]==0) {
+        isShouldDownExamPaper = YES;
+    }
+    [self addObserver:self forKeyPath:@"downloadedPaperCount" options:NSKeyValueObservingOptionNew context:NULL];
+    isLogout = NO;
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(isUserLoginout) name:LogoutNotification object:nil];
+}
 
+-(void)isUserLoginout
+{
+    isLogout = YES;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    if (!isLogout) {
+        self.userInfo = nil;
+        [self fillData];
+        [self refreshStatus];
+    }else
+    {
+        self.beforeLoginView.alpha = 1.0;
+        self.userNameTextField.text = @"";
+        self.passwordTextField.text = @"";
+        [self.beforeLoginView setHidden:NO];
+        [self.afterLoginView setHidden:YES];
+        [self cleanInterface];
+    }
 }
 
 -(void)fillData
@@ -107,16 +145,19 @@
     
     
     if ([dataSource count] == 0) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             __weak YDRightMenuViewController *weakSelf = self;
             [HttpHelper getOtherInformationCompletedBlock:^(id item, NSError *error)
              {
                  if ([item count]) {
                      [[PersistentDataManager sharePersistenDataManager]createOtherInformationTable:(NSArray *)item];
-                     dataSource  = item;
+                     dataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"OtherInformationTable" withObjClass:[FetchDataInfo class]];
+                     [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
                      [weakSelf.rightTable reloadData];
                  }
                  if (error) {
+                     [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
                      NSLog(@"%@",error);
                  }
              }];
@@ -130,16 +171,11 @@
     NSLog(@"%s",__func__);
     dispatch_async(dispatch_get_main_queue(), ^{
    
-        if (userInfo==nil) {
-            NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
-            if ([array count]) {
-                //因为用户始终有一个，所以只读取第零个元素
-                self.userInfo = (UserLoginInfo *)[array objectAtIndex:0];
-            }else
-                self.userInfo = nil;
-            
-        }
-        
+    NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        //因为用户始终有一个，所以只读取第零个元素
+        self.userInfo = (UserLoginInfo *)[array objectAtIndex:0];
+    }
         if (userInfo) {
             [self.afterLoginView setHidden:NO];
             NSString * imageStr = [userInfo valueForKey:@"UserFace"];
@@ -184,10 +220,16 @@
     });
 }
 
-
+-(void)cleanInterface
+{
+    self.userImage = nil;
+    self.userNamelabel.text = @"";
+    self.userDesclabel.text = @"";
+    self.userDetailDescLabel.text = @"";
+}
 - (NSDate *)dateFromString:(NSString *)dateString{
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat: @"yyyy-MM-dd"];
     NSDate *destDate= [dateFormatter dateFromString:dateString];
     return destDate;
     
@@ -202,6 +244,16 @@
 }
 
 - (IBAction)upgrateVersionAction:(id)sender {
+//    NSString * serverlUrl = [AppDelegate getServerAddress];
+//    NSString * requireStr = [NSString stringWithFormat:@"%@/Item/list.asp?id=1518",serverlUrl];
+    NSURL  *url = [NSURL URLWithString:[[NSString stringWithFormat:@"%@",userInfo.vipurl] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    if (url) {
+        [[UIApplication sharedApplication]openURL:url];
+    }else
+    {
+        [self showAlertView:@"指定URL 为空"];
+    }
+
 }
 - (void)viewDidUnload {
     [self setRightTable:nil];
@@ -254,8 +306,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     for (FetchDataInfo * obj in dataSource) {
-        
-        if ([obj.KS_phoneSeq isKindOfClass:[NSString class]]) {
+        NSString * str = [NSString stringWithFormat:@"%@",obj.KS_phoneSeq];
+        if ([str isKindOfClass:[NSString class]]) {
             if (obj.KS_phoneSeq.integerValue == indexPath.row+1) {
                 UIWebView * contentView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, 280, 150)];
                 [contentView stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 10.0;"];
@@ -292,7 +344,6 @@
                 [alert setCustomSubview:contentView];
                 [alert show];
 
-//                NSLog(@"%@",obj.ArticleContent);
             }
         }
     }
@@ -315,19 +366,17 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if (textField.tag == UserNameTextFieldTag) {
-        [self.passwordTextField becomeFirstResponder];
-         return NO;
-    }
+//    if (textField.tag == UserNameTextFieldTag) {
+//        [self.passwordTextField becomeFirstResponder];
+//         return NO;
+//    }
+//    
+    [self.passwordTextField resignFirstResponder];
     [self.userNameTextField resignFirstResponder];
+    
     return  YES;
 }
 
-
--(void)textFieldDidEndEditing:(UITextField *)textField
-{
-    
-}
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
@@ -341,7 +390,7 @@
 
 -(void)showAlertView:(NSString *)message
 {
-    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alert show];
     alert = nil;
 }
@@ -363,11 +412,13 @@
     if (self.passwordTextField.text.length == 0) {
         [self showAlertView:@"密码不能为空"];
     }
-    
+    [[NSUserDefaults standardUserDefaults]setObject:self.passwordTextField.text forKey:PassWordKey];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak YDRightMenuViewController * weakSelf = self;
     [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
         if (item) {
+            isLogout = NO;
             userInfo = (UserLoginInfo *)item;
             [weakSelf saveDataTolocal];
             [weakSelf refreshStatus];
@@ -400,6 +451,8 @@
 {
     [MBProgressHUD  hideHUDForView:self.view animated:YES];
 }
+
+//手机通知
 - (IBAction)phoneAlertBtnAction:(id)sender {
     
     AppDelegate * myDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
@@ -410,27 +463,61 @@
 
 - (IBAction)adviceBtnAction:(id)sender {
     NSString * str = [NSString stringWithFormat:@"http://www.55280.com/shoujijianyi.html/username=%@",[userInfo valueForKey:@"UserName"]];
-    NSURL * url = [NSURL URLWithString:str];
+    NSURL * url = [NSURL URLWithString:@"http://www.55280.com/3g/yijian.asp"];
      [[UIApplication sharedApplication] openURL:url];
 }
 
 - (IBAction)reloadQuesBankAction:(id)sender {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    __weak YDRightMenuViewController * weakSelf =self;
     [HttpHelper getGroupExamListWithId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             //保存数据数据库
+            self.downloadedPaperCount = [item count];
+            paperCount = [item count];
+//            NSString * desStr = [NSString stringWithFormat:@"已下载试卷%d",paperCount];
             NSArray * tempArr = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"PaperListTable" withObjClass:[ExamInfo class]];
             if ([tempArr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createPaperListTable:(NSArray *)item];
             }
-            
-            //TODO:创建标注的信息表
+        
             NSArray * arr = [[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable];
             if ([arr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkPaperTable:item];
             }
+//            if (isShouldDownExamPaper) {
+//                for (ExamInfo * examInfo in item) {
+//                    [self downPaperListWithExamInfo:examInfo];
+//                }
+//
+//            }else
+//            {
+//                [weakSelf showVDAlertViewWithTitle:@"提示" message:desStr];
+//                [MBProgressHUD hideHUDForView:self.view animated:YES];
+//            }
+            for (ExamInfo * examInfo in item) {
+                [self downPaperListWithExamInfo:examInfo];
+            }
+        }else
+        {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
         }
     }];
 
+}
+
+-(void)downPaperListWithExamInfo:(ExamInfo *)tempExamInfo
+{
+   
+    [HttpHelper getExamPaperListWithExamId:[tempExamInfo valueForKey:@"id"] completedBlock:^(id item, NSError *error) {
+        NSArray * arr = (NSArray *)item;
+        self.downloadedPaperCount --;
+        if([arr count])
+        {
+            [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
+        }
+    }];
+    
 }
 
 - (IBAction)userInfoAction:(id)sender {
@@ -443,6 +530,7 @@
 
 - (IBAction)updatePaperAction:(id)sender {
 //案例题目列表
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [HttpHelper getExampleListWithGroupId:[userInfo valueForKey:@"GroupID"] completedBlock:^(id item, NSError *error) {
         if ([item count]) {
             [[PersistentDataManager sharePersistenDataManager]createExampleListTable:(NSArray *)item];
@@ -452,10 +540,12 @@
             if ([arr count]==0) {
                 [[PersistentDataManager sharePersistenDataManager]createAlreadyMarkCaseTable:item];
             }
+
         }
         if (error) {
             NSLog(@"%@",[error description]);
         }
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
     }];
 
 }
@@ -475,11 +565,31 @@
     [self.beforeLoginView setHidden:NO];
 }
 
+- (IBAction)registerAction:(id)sender {
+//    NSString * tempServerUrl = [AppDelegate getServerAddress];
+    
+//    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/3g/reg.asp",tempServerUrl]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.55280.com/3g/reg.asp"]];
+}
+
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqual:@"isShouldShowLoginView"]) {
         //登陆
         [self refreshStatus];
+    }
+    if ([keyPath isEqualToString:@"downloadedPaperCount"]) {
+        NSLog(@"%d",self.downloadedPaperCount);
+        if (self.downloadedPaperCount == 0) {
+            //保存数据到数据库
+            NSMutableArray * tempArray = [NSMutableArray array];
+            NSArray *tempPaperArr = [paper allValues];
+            [tempArray addObjectsFromArray:tempPaperArr];
+            [[PersistentDataManager sharePersistenDataManager]createExamPaperTable:tempArray];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+
+            [self showVDAlertViewWithTitle:@"提示" message:[NSString stringWithFormat:@"成功更新%d 套试卷",paperCount]];
+        }
     }
 }
 
@@ -539,5 +649,37 @@
     if (downloadedImage ==downloadedImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     }
+}
+
+-(void)showVDAlertViewWithTitle:(NSString *)title message:(NSString *)msg
+{
+    VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    
+    UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 180, 30)];
+    [textLabel1 setBackgroundColor:[UIColor clearColor]];
+    textLabel1.font = [UIFont systemFontOfSize:16];
+    textLabel1.textAlignment = NSTextAlignmentCenter;
+    textLabel1.text = msg;
+    
+//    UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
+//    [textLabel2 setBackgroundColor:[UIColor clearColor]];
+//    textLabel2.font = [UIFont systemFontOfSize:13];
+//    textLabel2.text = @"客服热线：40086-55280";
+    
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 180, 100)];
+    [bgView setBackgroundColor:[UIColor clearColor]];
+    [bgView addSubview:textLabel1];
+//    [bgView addSubview:textLabel2];
+    textLabel1 = nil;
+//    textLabel2 = nil;
+    
+    [alertView setCustomSubview:bgView];
+    bgView =nil;
+    [alertView show];
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 @end

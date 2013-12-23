@@ -394,13 +394,13 @@ const CGFloat kTSAlertView_ColumnMargin = 10.0;
 		_messageLabel = [[UILabel alloc] init];
 		_messageLabel.font = [UIFont systemFontOfSize: 16];
 		_messageLabel.backgroundColor = [UIColor clearColor];
-        if ([self CurrentVersionIsIOS7]) {
-            _messageLabel.textColor = [UIColor blackColor];
-        }else
-        {
-            _messageLabel.textColor = [UIColor whiteColor];
-        }
-		
+//        if ([self CurrentVersionIsIOS7]) {
+//            _messageLabel.textColor = [UIColor blackColor];
+//        }else
+//        {
+//            _messageLabel.textColor = [UIColor whiteColor];
+//        }
+		_messageLabel.textColor = [UIColor blackColor];
 		_messageLabel.textAlignment = NSTextAlignmentCenter;
 		_messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 		_messageLabel.numberOfLines = 0;
@@ -531,11 +531,11 @@ const CGFloat kTSAlertView_ColumnMargin = 10.0;
 	UIButton* b = [UIButton buttonWithType: UIButtonTypeCustom];
 	[b setTitle: t forState: UIControlStateNormal];
 	
-	UIImage* buttonBgNormal = [UIImage imageNamed: @"TSAlertViewButtonBackground.png"];
+	UIImage* buttonBgNormal = [UIImage imageNamed: @"VDAlertViewCancelButtonBackground.png"];
 	buttonBgNormal = [buttonBgNormal stretchableImageWithLeftCapWidth: buttonBgNormal.size.width / 2.0 topCapHeight: buttonBgNormal.size.height / 2.0];
 	[b setBackgroundImage: buttonBgNormal forState: UIControlStateNormal];
 	
-	UIImage* buttonBgPressed = [UIImage imageNamed: @"TSAlertViewButtonBackground_Highlighted.png"];
+	UIImage* buttonBgPressed = [UIImage imageNamed: @"VDAlertViewButtonBackground_Highlighted.png"];
 	buttonBgPressed = [buttonBgPressed stretchableImageWithLeftCapWidth: buttonBgPressed.size.width / 2.0 topCapHeight: buttonBgPressed.size.height / 2.0];
 	[b setBackgroundImage: buttonBgPressed forState: UIControlStateHighlighted];
 	

@@ -15,6 +15,7 @@
 #import "SDWebImageManager.h"
 #import "UIImage+SaveToLocal.h"
 #import "MBProgressHUD.h"
+#import "PersistentDataManager.h"
 
 @interface CasePaperViewController ()<UIScrollViewDelegate>
 {
@@ -41,14 +42,22 @@
     
     //答案解释
     NSMutableArray * answerArray;
-
+    
+    //标记是否会做
+    NSMutableArray * canDoOrNotArray;
+    NSMutableDictionary * recordDic;
     //downloader
     SDWebImageManager *manager;
     
     //Image counting
     NSInteger downlingImage;
     NSInteger downledImage;
-}
+    
+    BOOL isShouldBeginExam;
+    BOOL isDownloadAllImage;
+    BOOL hasImagesToDown;
+    BOOL isFirstShow;
+} 
 @end
 
 @implementation CasePaperViewController
@@ -65,8 +74,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    downledImage = 0;
-    downlingImage = 0;
+    downledImage    = 0;
+    downlingImage   = 0;
+    isShouldBeginExam   = NO;
+    isDownloadAllImage  = NO;
+    hasImagesToDown     = NO;
+     isFirstShow        = YES;
+    caseDataSource = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"ExampleListTable" withObjClass:[ExamplePaperInfo class]];
+    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     if (IS_SCREEN_4_INCH) {
@@ -81,6 +96,8 @@
     answerArray         = [NSMutableArray array];
     currentDisplayItems = [NSMutableArray array];
     caseQuestionArray   = [NSMutableArray array];
+    canDoOrNotArray     = [NSMutableArray array];
+    recordDic            = [NSMutableDictionary dictionary];
     manager = [SDWebImageManager sharedManager];
     for (ExamplePaperInfo * info in caseDataSource) {
         @autoreleasepool {
@@ -92,7 +109,13 @@
             NSString * answerStr = [NSString stringWithFormat:@"%@",[info valueForKey:@"KS_daan"]];
             [answerArray addObject:answerStr];
             [self downloadImageWithImageURL:answerStr];
-
+            
+            NSString * tempStr = [info valueForKey:@"canDoOrNot"];
+            if ([tempStr isEqual:@"NULL"]) {
+                NSLog(@"yes");
+            }
+            [canDoOrNotArray addObject:tempStr];
+            [recordDic setObject:tempStr forKey:[info valueForKey:@"ID"]];
         }
     }
     
@@ -110,10 +133,24 @@
     isEndScrolling = YES;
     previousPage = 1;
     currentPage = 0;
-
-    [self refreshScrollViewWithDirection:panDirectioin];
-
+    
+    isShouldBeginExam = YES;
+    if (!hasImagesToDown) {
+        [self refreshScrollViewWithDirection:panDirectioin];
+    }
+    if (isDownloadAllImage) {
+        [self refreshScrollViewWithDirection:panDirectioin];
+    }
+    
     // Do any additional setup after loading the view from its nib.
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    
+   [recordDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+       [[PersistentDataManager sharePersistenDataManager]updateExampleListTableWithKey:key value:obj];
+   }];
 }
 
 #pragma mark - 提取图片url
@@ -151,6 +188,7 @@
 {
     __weak CasePaperViewController * weakSelf =self;
     if (imageurl) {
+        hasImagesToDown = YES;
         NSString * imageName = [self getImageUrl:imageurl];
         if (imageName) {
             NSString *imageUrl = [ServerPrefix stringByAppendingString:[self getImageUrl:imageurl]];
@@ -171,6 +209,10 @@
 {
     if (downlingImage == downledImage) {
         [MBProgressHUD hideHUDForView:self.view animated:YES];
+        isDownloadAllImage = YES;
+        if (isShouldBeginExam) {
+           [self refreshScrollViewWithDirection:panDirectioin];
+        }
     }
 }
 
@@ -279,6 +321,7 @@
 #ifdef LogoutFunctionName
     NSLog(@"%s",__func__);
 #endif
+    
     if ([caseQuestionArray count]<=5) {
             for (NSString * str in caseQuestionArray) {
                 [currentDisplayItems addObject:str];
@@ -320,6 +363,7 @@
     
 }
 - (void)refreshScrollViewWithDirection:(PanDirection)direction {
+    
     prePanDirection = direction;
     [self removeTheOppositeQuestionViewWithDirection:direction];
     [self getDisplayImagesWithCurpage:criticalPage direction:direction];
@@ -350,7 +394,17 @@
         }
 
     }
-        
+    if (isFirstShow) {
+        NSString * tempStr = [canDoOrNotArray objectAtIndex:0];
+        if (![tempStr isEqual:@"NULL"]) {
+            [self.canDoOrNotBtn setSelected:YES];
+        }else
+        {
+            [self.canDoOrNotBtn setSelected:NO];
+        }
+    }
+    
+    isFirstShow = NO;
 }
 
 -(void)addCaseView:(NSString *)descrption withIndex:(NSInteger)index
@@ -392,7 +446,7 @@
     CGFloat pageWidth = scrollView.frame.size.width;
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
-    //    NSLog(@"当前页:%d",page);
+    NSLog(@"当前页:%d",page);
     currentPage = page;
     if (page >2) {
         criticalPage = page;
@@ -412,6 +466,19 @@
             
         }
     }
+    if (isEndScrolling) {
+        if (currentPage < [[recordDic allValues] count]) {
+            NSString * tempStr = [[recordDic allValues]objectAtIndex:currentPage];
+            if (![tempStr isEqual:@"NULL"]) {
+                [self.canDoOrNotBtn setSelected:YES];
+            }else
+            {
+                [self.canDoOrNotBtn setSelected:NO];
+            }
+        }
+    }
+   
+    
 }
 - (void)viewDidUnload {
     [self setContentScrollView:nil];
@@ -419,12 +486,17 @@
     [super viewDidUnload];
 }
 - (IBAction)canDoOrnotActioin:(id)sender {
+    ExamplePaperInfo * info = [caseDataSource objectAtIndex:currentPage];
+    NSString * ID = [info valueForKey:@"ID"];
     UIButton * btn = sender;
     if (!btn.selected) {
         [btn setSelected:YES];
+        [recordDic setObject:@"y" forKey:ID];
+
     }else
     {
         [btn setSelected:NO];
+        [recordDic setObject:@"NULL" forKey:ID];
     }
     
 }

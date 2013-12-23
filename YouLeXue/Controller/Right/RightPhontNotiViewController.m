@@ -12,10 +12,15 @@
 #import "AppDelegate.h"
 #import "FetchUserMessageInfo.h"
 #import "DetailPhoneNotiViewController.h"
-
+#import "MBProgressHUD.h"
+#import "PersistentDataManager.h"
 @interface RightPhontNotiViewController ()
 {
     NSMutableArray *dataSource;
+    NSArray * localMessageData;
+    NSMutableArray * tempData;
+    
+    BOOL isFirstShow;
 }
 @end
 
@@ -35,13 +40,66 @@
 {
     [super viewDidLoad];
     
-//读取用户短消息
-    AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    __weak RightPhontNotiViewController * weakSelf= self;
-    [HttpHelper getUserMessageWithUserName:[myDeleate.userInfo valueForKey:@"UserName"] completedBlock:^(id item, NSError *error) {
-        dataSource = item;
-        [weakSelf.phoneNotiTable reloadData];
-    }];
+   
+    isFirstShow = YES;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    
+    if (isFirstShow) {
+        //读取本地短消息
+        
+        localMessageData = [[PersistentDataManager sharePersistenDataManager]readMessageTableData];
+        
+        //从网络读取数据
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        AppDelegate * myDeleate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        __weak RightPhontNotiViewController * weakSelf= self;
+        [HttpHelper getUserMessageWithUserName:[myDeleate.userInfo valueForKey:@"UserName"] completedBlock:^(id item, NSError *error) {
+            [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+            tempData = [item mutableCopy];
+            
+            [weakSelf eliminateRedundanceData];
+            
+        }];
+        
+    }else
+    {
+         localMessageData = [[PersistentDataManager sharePersistenDataManager]readMessageTableData];
+        [self eliminateRedundanceData];
+    }
+}
+
+-(void)eliminateRedundanceData
+{
+    //对比本地与网络数据，排除已经删除选项
+    if (![localMessageData count]) {
+        for (FetchUserMessageInfo * obj in tempData) {
+            obj.IsSend = @"0";
+        }
+        [[PersistentDataManager sharePersistenDataManager]createMessageTable:tempData];
+        dataSource = tempData;
+    }else
+    {
+        [dataSource removeAllObjects];
+        for (FetchUserMessageInfo * obj in tempData) {
+            for (FetchUserMessageInfo * tempObj in localMessageData) {
+                NSString * objID = [NSString stringWithFormat:@"%@",[obj valueForKey:@"ID"]];
+                NSString * tempObjID = [NSString stringWithFormat:@"%@",[tempObj valueForKey:@"ID"]];
+                if ([objID isEqualToString:tempObjID]) {
+                    if ([[tempObj valueForKey:@"isDelete"]integerValue] == 1) {
+                       
+                    }else
+                    {
+                        [dataSource addObject:obj];
+                    }
+                }
+            }
+        }
+    }
+    isFirstShow =  NO;
+    [self.phoneNotiTable reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -87,6 +145,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FetchUserMessageInfo *info = [dataSource objectAtIndex:indexPath.row];
+    NSString *messageId = [info valueForKey:@"ID"];
+    [[PersistentDataManager sharePersistenDataManager]setMessageIsRead:messageId];
     DetailPhoneNotiViewController * viewcontroller = [[DetailPhoneNotiViewController alloc]initWithNibName:@"DetailPhoneNotiViewController" bundle:nil];
     [viewcontroller setInfo:info];
     [self presentModalViewController:viewcontroller animated:YES];

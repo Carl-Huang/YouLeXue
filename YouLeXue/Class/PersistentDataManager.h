@@ -21,11 +21,20 @@
 -(id)readDataWithTableName:(NSString *)tableName withObjClass:(Class)objClass;
 -(void)createPaperListTable:(NSArray *)array;
 -(void)deleteRecordWithPrimaryKey:(NSString *)key keyValue:(NSString *)keyValue tableName:(NSString *)tableName;
+
 -(void)createExampleListTable:(NSArray *)array;
+-(void)updateExampleListTableWithKey:(NSString *)key value:(NSString *)value;
+
+
 -(void)createOtherInformationTable:(NSArray *)array;
 -(void)createExamPaperTable:(NSArray *)array;
+
+
 -(void)createWrongTextBook:(NSArray *)array;
 -(void)insertValueIntoWrongTextBookTable:(NSArray *)array;
+-(void)deleteWrongTextBookRecordID:(NSString*)idStr;
+-(void)updateWrongTextBookItemCount:(NSString *)countStr key:(NSString *)keyID;
+
 -(void)createUserSettingTable;
 -(void)updateUserSettingTableWithkey:(NSString *)key value:(NSString *)value;
 -(UserSetting *)readUserSettingData;
@@ -48,4 +57,8 @@
 -(NSArray *)readAlreadyMarkCaseTable;
 -(void)updateAlreadyMarkCaseTableWithKey:(NSString *)key  value:(NSString *)value;
 
+-(void)createMessageTable:(NSArray *)array;
+-(void)deleteMessageFromMessageTableWithID:(NSString *)MessageId;
+-(NSArray *)readMessageTableData;
+-(void)setMessageIsRead:(NSString *)MessageId;
 @end
