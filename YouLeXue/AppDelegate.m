@@ -28,8 +28,16 @@
 @synthesize Server_URL;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    NSString *udid = [SvUDIDTools UDID];
-    NSLog(@"udid in keychain %@", udid);
+    
+    //44:2A:60:B2:99:CE
+//    NSString * deviceMacaddr = [[NSUserDefaults standardUserDefaults]stringForKey:@"AppMacAddress"];
+//    if ([deviceMacaddr length]==0) {
+//        NSString *udid = [SvUDIDTools UDID];
+//        NSLog(@"udid in keychain %@", udid);
+//        [[NSUserDefaults standardUserDefaults]setObject:udid forKey:@"AppMacAddress"];
+//    }
+   
+   
     
     
     //服务器地址

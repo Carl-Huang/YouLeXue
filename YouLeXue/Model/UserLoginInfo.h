@@ -86,6 +86,7 @@
 @property (strong ,nonatomic) NSString * LastPostWeiboTime;
 @property (strong ,nonatomic) NSString * LastPostWeiboID;
 @property (strong ,nonatomic) NSString * MyLabel;
+@property (strong ,nonatomic) NSString * KS_IMEI;
 @property (strong ,nonatomic) NSString * KS_kefu;
 @property (strong ,nonatomic) NSString * examTime;
 @property (strong ,nonatomic) NSString * ad1;

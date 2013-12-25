@@ -39,6 +39,33 @@
    
 }
 
+
++(void)userLoginWithName:(NSString *)name pwd:(NSString *)password uuid:(NSString *)uuid completedBlock:(void (^)(id, NSError *))block
+{
+    NSString * cmdStr = [NSString stringWithFormat:@"CheckUserLogin.asp?username=%@&password=%@&imei=%@",name,password,uuid];
+    cmdStr = [[AppDelegate getServerURL] stringByAppendingString:cmdStr];
+    
+    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:[cmdStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSInteger count = [responseObject count];
+        if (count> 4) {
+            UserLoginInfo * info = [HttpHelper mapModelProcess:responseObject withClass:[UserLoginInfo class]];
+            block(info,nil);
+        }else
+        {
+            //登陆失败
+            NSString * errorCode = [responseObject valueForKey:@"result"];
+            NSError * error = [[NSError alloc]initWithDomain:@"LoginError" code:errorCode.integerValue userInfo:nil];
+            block(nil,error);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        block(nil,error);
+    }];
+
+}
+
+
 +(void)getGroupExamListWithId:(NSString *)groupId completedBlock:(void (^)(id item,NSError * error))block
 {
     NSString * cmdStr = [NSString stringWithFormat:@"exam/search.asp?groupid=%@",groupId];
