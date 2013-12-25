@@ -27,6 +27,25 @@
 @synthesize Server_URL;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    NSString *accessGroup = [NSString stringWithUTF8String:"APPIdentifier.com.cnblogs.smileEvday"];
+    if (accessGroup != nil)
+    {
+#if TARGET_IPHONE_SIMULATOR
+        // Ignore the access group if running on the iPhone simulator.
+        //
+        // Apps that are built for the simulator aren't signed, so there's no keychain access group
+        // for the simulator to check. This means that all apps can see all keychain items when run
+        // on the simulator.
+        //
+        // If a SecItem contains an access group attribute, SecItemAdd and SecItemUpdate on the
+        // simulator will return -25243 (errSecNoAccessForItem).
+#else
+        [dictForQuery setObject:accessGroup forKey:(id)kSecAttrAccessGroup];
+#endif
+    }
+    
+    
     //服务器地址
     Server_URL = [AppDelegate getServerURL];
     

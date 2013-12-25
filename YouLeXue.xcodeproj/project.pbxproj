@@ -389,6 +389,7 @@
 		4EF187EE182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187ED182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m */; };
 		4EF187F3182AA70500E5EEA8 /* SVPullToRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4EF187F0182AA70500E5EEA8 /* SVPullToRefresh.bundle */; };
 		4EF187F4182AA70500E5EEA8 /* SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */; };
+		4EF373D3186A75850002CAE1 /* KeychainAccessGroups.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */; };
 		4EF8F5A5184C2F3400EC8928 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E20F6B2184249C100DCA5AC /* Default.png */; };
 		4EFAA04918408D4A000AB053 /* CaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFAA04818408D4A000AB053 /* CaseView.m */; };
 		4EFF03AC18339C3B005B13BA /* PaperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF03AA18339C3B005B13BA /* PaperViewController.m */; };
@@ -883,6 +884,7 @@
 		4EF187F0182AA70500E5EEA8 /* SVPullToRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVPullToRefresh.bundle; sourceTree = "<group>"; };
 		4EF187F1182AA70500E5EEA8 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
+		4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KeychainAccessGroups.plist; sourceTree = "<group>"; };
 		4EFAA04718408D4A000AB053 /* CaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaseView.h; sourceTree = "<group>"; };
 		4EFAA04818408D4A000AB053 /* CaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaseView.m; sourceTree = "<group>"; };
 		4EFF03A918339C3B005B13BA /* PaperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperViewController.h; sourceTree = "<group>"; };
@@ -1748,6 +1750,7 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
+				4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
 				C32C214F1828912200FBF75C /* Products */,
@@ -2116,6 +2119,7 @@
 				4E1AFF7118434A8E008333F1 /* 57x57.png in Resources */,
 				4EF8F5A5184C2F3400EC8928 /* Default.png in Resources */,
 				4E2A641318508A6300D5D158 /* PopUpWrongRuleViewController.xib in Resources */,
+				4EF373D3186A75850002CAE1 /* KeychainAccessGroups.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2323,6 +2327,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Connection\"",
@@ -2358,6 +2363,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Connection\"",

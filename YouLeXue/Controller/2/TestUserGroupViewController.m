@@ -115,6 +115,46 @@ static NSString *identifier = @"Cell";
     
     //保存标志
     markArray = [[[PersistentDataManager sharePersistenDataManager]readAlreadyMarkPaperTable]mutableCopy];
+    
+//    NSArray * array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+//    if ([array count]) {
+//        info = [array objectAtIndex:0];
+//        isShouldDownExamPaper = NO;
+//        paper = [NSMutableDictionary dictionary];
+//        paper = [[PersistentDataManager sharePersistenDataManager]readExamPaperToDic];
+//        if ([paper count]==0) {
+//            isShouldDownExamPaper = YES;
+//        }
+//        [self dataSourceSetting];
+//        [self settingPullRefreshAction];
+//        
+//        
+//        //标记选中的项
+//        selectedRow1 = -1;
+//        selectedRow2 = -1;
+//        selectedRow3 = -1;
+//        selectedRow4 = -1;
+//        preSelectedRow1 = -1;
+//        preSelectedRow2 = -1;
+//        preSelectedRow3 = -1;
+//        preSelectedRow4 = -1;
+//    }
+
+    
+    self.firstTable.tag = FirTableTag;
+    self.secondTable.tag = SecTableTag;
+    self.thirdTable.tag = ThiTableTag;
+    self.fourthTable.tag = FouTableTag;
+    //标记选中的项
+    selectedRow1 = -1;
+    selectedRow2 = -1;
+    selectedRow3 = -1;
+    selectedRow4 = -1;
+    preSelectedRow1 = -1;
+    preSelectedRow2 = -1;
+    preSelectedRow3 = -1;
+    preSelectedRow4 = -1;
+    
 }
 
 -(void)reloadUserInfo
@@ -138,17 +178,7 @@ static NSString *identifier = @"Cell";
         }
         [self dataSourceSetting];
         [self settingPullRefreshAction];
-        
-        
-        //标记选中的项
-        selectedRow1 = -1;
-        selectedRow2 = -1;
-        selectedRow3 = -1;
-        selectedRow4 = -1;
-        preSelectedRow1 = -1;
-        preSelectedRow2 = -1;
-        preSelectedRow3 = -1;
-        preSelectedRow4 = -1;
+   
     }
 
 }
@@ -226,8 +256,8 @@ static NSString *identifier = @"Cell";
                 [self downPaperListWithExamInfo:examInfo];
             }
         }
+    [self reloadAllTable];
     }
-
 }
 
 -(void)cleanDataSource
@@ -250,9 +280,6 @@ static NSString *identifier = @"Cell";
                 [paper setObject:arr forKey:[tempExamInfo valueForKey:@"id"]];
             }
         }];
-    }else
-    {
-        [self stopReloadData];
     }
 }
 
@@ -261,7 +288,6 @@ static NSString *identifier = @"Cell";
     __weak TestUserGroupViewController *weakSelf = self;
     
     __weak UITableView *weakFirstTable = self.firstTable;
-    self.firstTable.tag = FirTableTag;
     [self.firstTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         //执行下啦时候的操作
@@ -270,21 +296,18 @@ static NSString *identifier = @"Cell";
     
     
      __weak UITableView *weakSecondTable = self.secondTable;
-    self.secondTable.tag = SecTableTag;
     [self.secondTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         [weakSelf pullToUpdateWithTable:weakSecondTable];
     }];
     
     __weak UITableView *weakThirdTable = self.thirdTable;
-    self.thirdTable.tag = ThiTableTag;
     [self.thirdTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
         [weakSelf pullToUpdateWithTable:weakThirdTable];
     }];
     
     __weak UITableView *weakFourthTable = self.fourthTable;
-    self.fourthTable.tag = FouTableTag;
     [self.fourthTable addPullToRefreshWithActionHandler:^{
         NSLog(@"refresh dataSource");
           [weakSelf pullToUpdateWithTable:weakFourthTable];
@@ -559,6 +582,7 @@ static NSString *identifier = @"Cell";
 -(void)viewControllerActionWithDataSource:(NSArray *)dataSource row:(NSInteger)seletedRow exciseOrNot:(BOOL)exciseOrnot
 {
     //对应的试卷信息
+    NSLog(@"seletedRow :%d",seletedRow);
     ExamInfo * selectedInfo = [dataSource objectAtIndex:seletedRow];
     
     //根据id 拿出相应的试卷
