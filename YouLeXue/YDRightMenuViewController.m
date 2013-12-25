@@ -417,8 +417,8 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak YDRightMenuViewController * weakSelf = self;
     
-//    NSString * uuidStr = [[NSUserDefaults standardUserDefaults]stringForKey:@"AppMacAddress"];
-    NSString * uuidStr = @"244:2A:60:B2:99:CE";
+    NSMutableString * uuidStr = [NSMutableString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]stringForKey:@"AppMacAddress"]];
+    [uuidStr replaceOccurrencesOfString:@":" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [uuidStr length])];
     if ([uuidStr length]) {
         [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text uuid:uuidStr completedBlock:^(id item, NSError *error) {
             if (item) {
