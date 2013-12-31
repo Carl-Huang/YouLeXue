@@ -29,9 +29,9 @@
 #import "MBProgressHUD.h"
 #import "SDWebImageManager.h"
 #import "Constant.h"
+#import "VDAlertView.h"
 
-
-@interface YDRightMenuViewController ()
+@interface YDRightMenuViewController ()<VDAlertViewDelegate>
 {
     NSArray * descriptionArray;
     NSArray * dataSource;
@@ -119,6 +119,10 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     if (!isLogout) {
+        //检查机器码的绑定
+        
+        
+        
         self.userInfo = nil;
         [self fillData];
         [self refreshStatus];
@@ -132,6 +136,27 @@
         [self cleanInterface];
     }
 }
+
+-(BOOL)checkingTheMacAddress
+{
+    NSArray *array = [[PersistentDataManager sharePersistenDataManager]readDataWithTableName:@"UserLoginInfoTable" withObjClass:[UserLoginInfo class]];
+    if ([array count]) {
+        self.userInfo = (UserLoginInfo *)[array objectAtIndex:0];
+    }
+    NSMutableString * uuidStr = [NSMutableString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]stringForKey:@"AppMacAddress"]];
+    [uuidStr replaceOccurrencesOfString:@":" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [uuidStr length])];
+    [HttpHelper userLoginWithName:self.userInfo.UserName pwd:self.userInfo.PassWord uuid:uuidStr completedBlock:^(id item, NSError *error) {
+        if (item) {
+            userInfo = (UserLoginInfo *)item;
+            if (![userInfo.KS_IMEI isEqualToString:uuidStr]) {
+               
+            }
+        }
+    }];
+    return YES;
+}
+
+
 
 -(void)fillData
 {
@@ -437,7 +462,7 @@
                     }];
                 }else
                 {
-                    [weakSelf showAlertView:@"验证失败"];
+                    [weakSelf showVerificationError];
                 }
                 
             }
@@ -450,6 +475,38 @@
     }
 
 }
+
+-(void)showVerificationError
+{
+    VDAlertView * alertView = [[VDAlertView alloc]initWithTitle:@"提示" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"免费获取账户",nil];
+
+    UILabel * textLabel1 = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, 260, 50)];
+    [textLabel1 setBackgroundColor:[UIColor clearColor]];
+    textLabel1.font = [UIFont systemFontOfSize:14];
+    textLabel1.numberOfLines = 2;
+    textLabel1.lineBreakMode = NSLineBreakByWordWrapping;
+    textLabel1.textAlignment = NSTextAlignmentCenter;
+    textLabel1.text = @"您的账户已经在其他手机上登陆使用,若不是您本人所为,请联系优乐学客服人员,电话:";
+    
+    UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(30, 60, 200, 30)];
+    textLabel2.textAlignment = NSTextAlignmentCenter;
+    [textLabel2 setBackgroundColor:[UIColor clearColor]];
+    textLabel2.font = [UIFont systemFontOfSize:14];
+    textLabel2.text = @"40086-55280";
+    
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 260, 100)];
+    [bgView setBackgroundColor:[UIColor clearColor]];
+    [bgView addSubview:textLabel1];
+    [bgView addSubview:textLabel2];
+    textLabel1 = nil;
+    textLabel2 = nil;
+    
+    [alertView setCustomSubview:bgView];
+    bgView =nil;
+    [alertView show];
+    alertView = nil;
+}
+
 
 -(void)processingError:(NSError *)error
 {
@@ -702,26 +759,31 @@
     textLabel1.font = [UIFont systemFontOfSize:16];
     textLabel1.textAlignment = NSTextAlignmentCenter;
     textLabel1.text = msg;
-    
-//    UILabel * textLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(0, 40, 200, 30)];
-//    [textLabel2 setBackgroundColor:[UIColor clearColor]];
-//    textLabel2.font = [UIFont systemFontOfSize:13];
-//    textLabel2.text = @"客服热线：40086-55280";
+
     
     UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 180, 100)];
     [bgView setBackgroundColor:[UIColor clearColor]];
     [bgView addSubview:textLabel1];
-//    [bgView addSubview:textLabel2];
     textLabel1 = nil;
-//    textLabel2 = nil;
     
     [alertView setCustomSubview:bgView];
     bgView =nil;
     [alertView show];
 }
 
+-(void)alertView:(VDAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        //打开注册链接
+         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.55280.com/3g/reg.asp"]];
+    }
+}
+
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
+
+
+
 @end
