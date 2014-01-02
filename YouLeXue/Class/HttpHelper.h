@@ -8,9 +8,23 @@
 
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
+
+typedef NS_ENUM(NSInteger, LoginStatus)
+{
+    LoginStatusFailed       = 1,
+    LoginStatusLock         = 2,
+    LoginStatusNotActive    = 3,
+    LoginStatusNotVerify    = 4,
+    LoginStatusUUID         = 5,
+};
+
+
 @interface HttpHelper : NSObject
 //用户登陆验证
 +(void)userLoginWithName:(NSString *)name pwd:(NSString *)password completedBlock:(void (^)(id item,NSError * error))block;
+
+//新接口，增加了绑定功能
++(void)userLoginWithName:(NSString *)name pwd:(NSString *)password uuid:(NSString *)uuid completedBlock:(void (^)(id, NSError *))block;
 
 
 //读取某用户组的考试列表

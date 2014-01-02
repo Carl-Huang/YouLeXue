@@ -86,9 +86,9 @@
     [self setBackItem:@selector(back) withImage:@"Bottom_Icon_Back"];
     if (IS_SCREEN_4_INCH) {
         questionViewHeight = 408;
-        CGRect rect= self.contentScrollView.frame;
-        rect.size.height +=88;
-        self.contentScrollView.frame = rect;
+//        CGRect rect= self.contentScrollView.frame;
+//        rect.size.height +=88;
+//        self.contentScrollView.frame = rect;
     }else
     {
         questionViewHeight = 320;
@@ -500,5 +500,8 @@
     }
     
 }
+
+
+
 @end
 

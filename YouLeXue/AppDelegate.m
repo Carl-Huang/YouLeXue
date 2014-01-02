@@ -20,6 +20,7 @@
 #import "VDAlertView.h"
 #import <ShareSDK/ShareSDK.h>
 #import "Constant.h"
+#import "SvUDIDTools.h"
 
 @implementation AppDelegate
 @synthesize akTabBarController;
@@ -27,6 +28,19 @@
 @synthesize Server_URL;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    //44:2A:60:B2:99:CE
+    NSString * deviceMacaddr = [[NSUserDefaults standardUserDefaults]stringForKey:@"AppMacAddress"];
+    if ([deviceMacaddr length]==0) {
+        NSString *udid = [SvUDIDTools UDID];
+        NSLog(@"udid in keychain %@", udid);
+        [[NSUserDefaults standardUserDefaults]setObject:udid forKey:@"AppMacAddress"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    }
+   
+   
+    
+    
     //服务器地址
     Server_URL = [AppDelegate getServerURL];
     
@@ -264,4 +278,5 @@
     }
     return serverUrl;
 }
+
 @end

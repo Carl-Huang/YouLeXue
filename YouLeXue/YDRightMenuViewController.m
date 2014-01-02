@@ -416,36 +416,78 @@
     [[NSUserDefaults standardUserDefaults]synchronize];
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak YDRightMenuViewController * weakSelf = self;
-    [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text completedBlock:^(id item, NSError *error) {
-        if (item) {
-            isLogout = NO;
-            userInfo = (UserLoginInfo *)item;
-            [weakSelf saveDataTolocal];
-            [weakSelf refreshStatus];
-            [weakSelf.afterLoginView setHidden:NO];
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"LoginNotification" object:nil];
-            
-            [UIView animateWithDuration:0.3 animations:^{
-                weakSelf.beforeLoginView.alpha = 0.0;
-                weakSelf.afterLoginView.alpha = 1.0;
-                [weakSelf.beforeLoginView setHidden:YES];
-            }];
-            
-        }
-        [weakSelf removeMBView];
-        if (error) {
-            
-            if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
-                UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"与服务器连接失败，请检查" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                [alertView show];
-                alertView = nil;
+    
+    NSMutableString * uuidStr = [NSMutableString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults]stringForKey:@"AppMacAddress"]];
+    [uuidStr replaceOccurrencesOfString:@":" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [uuidStr length])];
+    if ([uuidStr length]) {
+        [HttpHelper userLoginWithName:self.userNameTextField.text pwd:self.passwordTextField.text uuid:uuidStr completedBlock:^(id item, NSError *error) {
+            if (item) {
+                isLogout = NO;
+                userInfo = (UserLoginInfo *)item;
+                if ([userInfo.KS_IMEI isEqualToString:uuidStr]) {
+                    [weakSelf saveDataTolocal];
+                    [weakSelf refreshStatus];
+                    [weakSelf.afterLoginView setHidden:NO];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:@"LoginNotification" object:nil];
+                    
+                    [UIView animateWithDuration:0.3 animations:^{
+                        weakSelf.beforeLoginView.alpha = 0.0;
+                        weakSelf.afterLoginView.alpha = 1.0;
+                        [weakSelf.beforeLoginView setHidden:YES];
+                    }];
+                }else
+                {
+                    [weakSelf showAlertView:@"验证失败"];
+                }
+                
             }
-        }
-       
-    }];
-    
-    
+            [weakSelf removeMBView];
+            if (error) {
+                [weakSelf processingError:error];
+            }
+            
+        }];
+    }
+
 }
+
+-(void)processingError:(NSError *)error
+{
+    if ([[error domain]isEqualToString:@"LoginError"]) {
+        NSString * errorDes = nil;
+        switch (error.code) {
+            case LoginStatusFailed:
+                errorDes  = @"用户名或密码错误";
+                break;
+            case LoginStatusLock:
+                errorDes = @"账号已被管理员锁定";
+                break;
+            case LoginStatusNotActive:
+                errorDes = @"账号还没有激活";
+                break;
+            case LoginStatusNotVerify:
+                errorDes = @"账号还没有通过认证";
+                break;
+            case LoginStatusUUID:
+                errorDes = @"验证失败";
+                break;
+            default:
+                break;
+        }
+        if ([errorDes length]) {
+            [self showAlertView:errorDes];
+        }
+    
+    }
+    
+    if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
+        UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"与服务器连接失败，请检查" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alertView show];
+        alertView = nil;
+    }
+
+}
+
 
 -(void)removeMBView
 {
