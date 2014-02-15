@@ -40,18 +40,14 @@
     [self setForwardItem:@selector(endExamAction) withImage:@"Exercise_Model_Button_Submit"];
     self.timeLabel.text = self.timeStamp;
     __block NSInteger alreadyAnswerQuesCount = 0;
-    [answerDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        if ([obj length]) {
-            alreadyAnswerQuesCount++;
+    for (int i = 0; i<[[answerDic allValues]count]; i++) {
+        NSString * str = [[answerDic allValues]objectAtIndex:i];
+        if ([str length]) {
+             alreadyAnswerQuesCount++;
         }
-        if (stop) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.doneQuestionCount.text = [NSString stringWithFormat:@"已答%d题",alreadyAnswerQuesCount];
-            });
-        }
-    }];
-    
-    
+        
+    }
+     self.doneQuestionCount.text = [NSString stringWithFormat:@"已答%d题",alreadyAnswerQuesCount];
     //AnswerSheet
     NSInteger count = [self.dataSourece count];
     self.answerSheetView = [[AnswerSheetView alloc]initWithFrame:CGRectMake(10, 122, 310, (count/5.0)*AnswerSheetRowHeight)];

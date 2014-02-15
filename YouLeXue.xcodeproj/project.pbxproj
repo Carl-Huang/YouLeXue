@@ -508,8 +508,8 @@
 		4E2A640F18508A6300D5D158 /* PopUpWrongRuleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopUpWrongRuleViewController.h; sourceTree = "<group>"; };
 		4E2A641018508A6300D5D158 /* PopUpWrongRuleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopUpWrongRuleViewController.m; sourceTree = "<group>"; };
 		4E2A641118508A6300D5D158 /* PopUpWrongRuleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopUpWrongRuleViewController.xib; sourceTree = "<group>"; };
-		4E313562186A7EBF004D7A76 /* SvUDIDTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SvUDIDTools.h; sourceTree = "<group>"; };
-		4E313563186A7EBF004D7A76 /* SvUDIDTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SvUDIDTools.m; sourceTree = "<group>"; };
+		4E313562186A7EBF004D7A76 /* SvUDIDTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SvUDIDTools.h; path = ../../SvUDIDTools.h; sourceTree = "<group>"; };
+		4E313563186A7EBF004D7A76 /* SvUDIDTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SvUDIDTools.m; path = ../../SvUDIDTools.m; sourceTree = "<group>"; };
 		4E317C0E182C940D0009FEC3 /* UserLoginInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginInfo.h; sourceTree = "<group>"; };
 		4E317C0F182C940D0009FEC3 /* UserLoginInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginInfo.m; sourceTree = "<group>"; };
 		4E34D8A9182B8A7200965E55 /* CaseAnalysisViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CaseAnalysisViewController.xib; sourceTree = "<group>"; };
@@ -887,7 +887,7 @@
 		4EF187F0182AA70500E5EEA8 /* SVPullToRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVPullToRefresh.bundle; sourceTree = "<group>"; };
 		4EF187F1182AA70500E5EEA8 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
 		4EF187F2182AA70500E5EEA8 /* SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVPullToRefresh.m; sourceTree = "<group>"; };
-		4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KeychainAccessGroups.plist; sourceTree = "<group>"; };
+		4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = KeychainAccessGroups.plist; path = ../KeychainAccessGroups.plist; sourceTree = "<group>"; };
 		4EFAA04718408D4A000AB053 /* CaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaseView.h; sourceTree = "<group>"; };
 		4EFAA04818408D4A000AB053 /* CaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaseView.m; sourceTree = "<group>"; };
 		4EFF03A918339C3B005B13BA /* PaperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperViewController.h; sourceTree = "<group>"; };
@@ -1727,6 +1727,8 @@
 		4EF187EB182A9DD500E5EEA8 /* Class */ = {
 			isa = PBXGroup;
 			children = (
+				4E313562186A7EBF004D7A76 /* SvUDIDTools.h */,
+				4E313563186A7EBF004D7A76 /* SvUDIDTools.m */,
 				4EF187EC182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.h */,
 				4EF187ED182A9DFC00E5EEA8 /* UIViewController+TabbarConfigure.m */,
 				4E691C4C182C7AF400EB73EA /* HttpHelper.h */,
@@ -1753,9 +1755,6 @@
 		C32C21451828912200FBF75C = {
 			isa = PBXGroup;
 			children = (
-				4E313562186A7EBF004D7A76 /* SvUDIDTools.h */,
-				4E313563186A7EBF004D7A76 /* SvUDIDTools.m */,
-				4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */,
 				C32C21571828912200FBF75C /* YouLeXue */,
 				C32C21501828912200FBF75C /* Frameworks */,
 				C32C214F1828912200FBF75C /* Products */,
@@ -1816,6 +1815,7 @@
 		C32C21581828912200FBF75C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4EF373D2186A75850002CAE1 /* KeychainAccessGroups.plist */,
 				C32C21601828912200FBF75C /* AppDelegate.h */,
 				C32C21611828912200FBF75C /* AppDelegate.m */,
 				C32C21591828912200FBF75C /* YouLeXue-Info.plist */,
@@ -2295,6 +2295,8 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "E216B08B-3041-4156-98D9-3C29F5840BC5";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E216B08B-3041-4156-98D9-3C29F5840BC5";
+				PROVISIONING_PROFILE = "99ACEFB7-7C80-4C1D-893A-76EA14D1823E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "281A622E-DAF8-44D0-A570-87DBD2EFEE64";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = armv7;
 			};
@@ -2331,6 +2333,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PROVISIONING_PROFILE = "E216B08B-3041-4156-98D9-3C29F5840BC5";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E216B08B-3041-4156-98D9-3C29F5840BC5";
+				PROVISIONING_PROFILE = "99ACEFB7-7C80-4C1D-893A-76EA14D1823E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "281A622E-DAF8-44D0-A570-87DBD2EFEE64";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = armv7;
@@ -2345,8 +2349,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
 				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Connection\"",
@@ -2373,7 +2377,8 @@
 				PROVISIONING_PROFILE = "E216B08B-3041-4156-98D9-3C29F5840BC5";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E216B08B-3041-4156-98D9-3C29F5840BC5";
 				PRODUCT_NAME = "优乐学";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "E66D73AC-B796-4247-801F-787FE9FFA62A";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E66D73AC-B796-4247-801F-787FE9FFA62A";
 				SDKROOT = iphoneos6.1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = armv7;
@@ -2389,8 +2394,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
 				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: xiaoqi Huang (PNQK998G6W)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ShareSDK_v2.6.0/Connection\"",
@@ -2417,7 +2422,8 @@
 				PROVISIONING_PROFILE = "E216B08B-3041-4156-98D9-3C29F5840BC5";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E216B08B-3041-4156-98D9-3C29F5840BC5";
 				PRODUCT_NAME = "优乐学";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "E66D73AC-B796-4247-801F-787FE9FFA62A";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E66D73AC-B796-4247-801F-787FE9FFA62A";
 				SDKROOT = iphoneos6.1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = armv7;
